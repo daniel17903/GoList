@@ -1,23 +1,17 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/service/icon_finder.dart';
-import 'package:go_list/style/colors.dart';
-import 'package:go_list/view/shopping_list.dart';
-
-import '../../model/item.dart';
-import 'dialog_utils.dart';
 
 class EditDialog extends StatefulWidget {
   const EditDialog(
       {Key? key,
       required this.shoppingList,
-      required this.onShoppingListChanged})
+      required this.onShoppingListChanged,
+      required this.onShoppingListDeleted})
       : super(key: key);
 
   final ShoppingList shoppingList;
   final Function onShoppingListChanged;
+  final Function onShoppingListDeleted;
 
   @override
   State<EditDialog> createState() => _EditDialogState();
@@ -39,23 +33,51 @@ class _EditDialogState extends State<EditDialog> {
     super.dispose();
   }
 
+  void _showAlertDialog({required Function onConfirmed}) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text('Soll diese Liste wirklich gelöscht werden?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Abbrechen'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onConfirmed();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Liste bearbeiten'),
-      content: SingleChildScrollView(
-        child: TextFormField(
-          controller: nameTextInputController,
-          decoration: const InputDecoration(
-            labelText: "Name",
-          ),
-          onSaved: (String? value) {},
-          validator: (String? value) {
-            return (value == null || value.isEmpty)
-                ? 'Name darf nicht leer sein'
-                : null;
-          },
-        ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextFormField(
+              controller: nameTextInputController,
+              decoration: const InputDecoration(
+                labelText: "Name",
+              )),
+          Padding(
+            padding: const EdgeInsets.only(top: 14, bottom: 0),
+            child: TextButton(
+              onPressed: () => _showAlertDialog(onConfirmed: () {
+                Navigator.pop(context);
+                widget.onShoppingListDeleted();
+              }),
+              child: const Text("Liste löschen",
+                  style: TextStyle(color: Colors.red)),
+            ),
+          )
+        ],
       ),
       actions: <Widget>[
         TextButton(

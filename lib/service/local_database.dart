@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:go_list/model/shopping_list.dart';
@@ -11,21 +13,19 @@ class LocalDatabase extends GetxController {
     await GetStorage.init();
   }
 
-  void saveList(ShoppingList shoppingList) {
-    box.write("shoppingList", shoppingList.toJson());
+  void saveLists(List<ShoppingList> shoppingLists) {
+    box.write("shoppingLists", shoppingLists.map((shoppingList) => shoppingList.toJson()).toList());
   }
 
-  List<String> _loadListOfStrings(String key) {
-    if (box.hasData(key)) {
-      return box.read(key) as List<String>;
+  List<ShoppingList> loadShoppingLists() {
+    if (box.hasData("shoppingLists")) {
+      return box
+          .read("shoppingLists")
+          .map<ShoppingList>((element) => ShoppingList.fromJson(element))
+          .toList();
     }
-    return [];
-  }
-
-  ShoppingList loadShoppingList() {
-    if (box.hasData("shoppingList")) {
-      return ShoppingList.fromJson(box.read("shoppingList"));
-    }
-    return ShoppingList(name: 'Einkaufsliste', items: [], recentlyUsedItems: []);
+    return [
+      ShoppingList(name: 'Einkaufsliste', items: [], recentlyUsedItems: [])
+    ];
   }
 }

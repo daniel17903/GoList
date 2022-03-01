@@ -95,7 +95,7 @@ class _SearchDialogState extends State<SearchDialog> {
           ),
         ),
         Expanded(
-          child: ShoppingListWidget(
+          child: GoListWidget(
             onItemTapped: widget.onItemTapped,
             items: [if (newItem != null) newItem!, ...recentlyUsedItemsSorted],
             backgroundColor: backgroundColor,

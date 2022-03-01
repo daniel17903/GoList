@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/icon_finder.dart';
@@ -5,6 +7,7 @@ import 'package:go_list/service/local_database.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/dialog/edit_dialog.dart';
 import 'package:go_list/view/dialog/search_dialog.dart';
+import 'package:go_list/view/golist_drawer.dart';
 import 'package:go_list/view/shopping_list.dart';
 import 'package:get/get.dart';
 
@@ -12,50 +15,62 @@ import '../model/item.dart';
 import 'dialog/dialog_utils.dart';
 
 class _ShoppingListPageState extends State<ShoppingListPage> {
-  final ShoppingList _shoppingList =
-      Get.find<LocalDatabase>().loadShoppingList();
+  final List<ShoppingList> _shoppingLists =
+      Get.find<LocalDatabase>().loadShoppingLists();
+  late ShoppingList _shoppingListOfCurrentPage;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _handleItemTapped(Item tappedItem) {
     setState(() {
-      _shoppingList.items.removeWhere((e) => e.id == tappedItem.id);
+      _shoppingListOfCurrentPage.items
+          .removeWhere((e) => e.id == tappedItem.id);
     });
-    Get.find<LocalDatabase>().saveList(_shoppingList);
+    Get.find<LocalDatabase>().saveLists(_shoppingLists);
   }
 
   void _handleItemCreated(Item newItem) {
     setState(() {
-      _shoppingList.items.add(newItem);
-      _shoppingList.recentlyUsedItems.insert(0, newItem);
-      while (_shoppingList.recentlyUsedItems.length > 20) {
-        _shoppingList.recentlyUsedItems.removeLast();
+      _shoppingListOfCurrentPage.items.add(newItem);
+      _shoppingListOfCurrentPage.recentlyUsedItems.insert(0, newItem);
+      while (_shoppingListOfCurrentPage.recentlyUsedItems.length > 20) {
+        _shoppingListOfCurrentPage.recentlyUsedItems.removeLast();
       }
     });
-    Get.find<LocalDatabase>().saveList(_shoppingList);
+    Get.find<LocalDatabase>().saveLists(_shoppingLists);
+  }
+
+  void initializeWithEmptyList() {
+    _shoppingLists.add(
+        ShoppingList(name: "Einkaufsliste", items: [], recentlyUsedItems: []));
+    _shoppingLists[0].items.addAll(IconFinder.sampleNamesWithIcon()
+        .entries
+        .map((entry) => Item(name: entry.value, iconName: entry.key))
+        .toList());
+    _shoppingListOfCurrentPage = _shoppingLists[0];
+    Get.find<LocalDatabase>().saveLists(_shoppingLists);
   }
 
   @override
   void initState() {
-    // TODO: remove sample item creation
-    if (_shoppingList.items.isEmpty) {
-      _shoppingList.items.addAll(IconFinder.sampleNamesWithIcon()
-          .entries
-          .map((entry) => Item(name: entry.value, iconName: entry.key))
-          .toList());
+    if (_shoppingLists.isEmpty) {
+      initializeWithEmptyList();
     }
+    _shoppingListOfCurrentPage = _shoppingLists[0];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: GoListColors.turquoise,
-          leading: const IconButton(
+          leading: IconButton(
             icon: Icon(Icons.menu),
             tooltip: 'Menü',
-            onPressed: null,
+            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
           ),
-          title: Text(_shoppingList.name),
+          title: Text(_shoppingListOfCurrentPage.name),
           actions: [
             IconButton(
               icon: const Icon(Icons.edit),
@@ -63,19 +78,42 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
               onPressed: () => DialogUtils.showSmallAlertDialog(
                   context: context,
                   content: EditDialog(
-                    shoppingList: _shoppingList,
+                    shoppingList: _shoppingListOfCurrentPage,
                     onShoppingListChanged: () {
                       setState(() {});
-                      Get.find<LocalDatabase>().saveList(_shoppingList);
+                      Get.find<LocalDatabase>().saveLists(_shoppingLists);
+                    },
+                    onShoppingListDeleted: () {
+                      _shoppingLists.removeWhere(
+                          (e) => e.id == _shoppingListOfCurrentPage.id);
+                      Get.find<LocalDatabase>().saveLists(_shoppingLists);
+                      if (_shoppingLists.isEmpty) {
+                        setState(() {
+                          initializeWithEmptyList();
+                        });
+                      }
                     },
                   )),
             ),
           ],
         ),
-        body: ShoppingListWidget(
-          items: _shoppingList.items,
+        body: GoListWidget(
+          items: _shoppingListOfCurrentPage.items,
           onItemTapped: _handleItemTapped,
           backgroundColor: GoListColors.darkBlue,
+        ),
+        drawer: GoListDrawer(
+          shoppingLists: _shoppingLists,
+          onListClicked: (clickedShoppingList) =>
+              setState(() => _shoppingListOfCurrentPage = clickedShoppingList),
+          onListCreated: (listName) {
+            setState(() {
+              _shoppingLists.add(ShoppingList(
+                  name: listName, items: [], recentlyUsedItems: []));
+              _shoppingListOfCurrentPage = _shoppingLists.last;
+            });
+            Get.find<LocalDatabase>().saveLists(_shoppingLists);
+          },
         ),
         floatingActionButton: FloatingActionButton(
             tooltip: 'Add Item',
@@ -87,7 +125,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                     Navigator.pop(context);
                     _handleItemCreated(tappedItem.copy());
                   },
-                  recentlyUsedItems: _shoppingList.recentlyUsedItems,
+                  recentlyUsedItems:
+                      _shoppingListOfCurrentPage.recentlyUsedItems,
                 )),
             child: const Icon(Icons.add)));
   }

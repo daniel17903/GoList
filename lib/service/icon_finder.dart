@@ -34,7 +34,8 @@ class IconFinder {
     "cabbage": ["kohl", "wirsing"],
     "eggplant": ["aubergine"],
     "salad": ["salat"],
-    "chocolate": ["schokolade"]
+    "chocolate": ["schokolade"],
+    "ice": ["eis", "magnum"]
   };
 
   static String findMatchingIconForName(String name) {

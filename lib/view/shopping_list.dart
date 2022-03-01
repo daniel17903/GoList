@@ -4,8 +4,8 @@ import 'package:go_list/view/shopping_list_item.dart';
 
 import '../model/item.dart';
 
-class ShoppingListWidget extends StatelessWidget {
-  const ShoppingListWidget(
+class GoListWidget extends StatelessWidget {
+  const GoListWidget(
       {Key? key,
       required this.items,
       required this.onItemTapped,
