@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/icon_finder.dart';
@@ -46,7 +44,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
         .entries
         .map((entry) => Item(name: entry.value, iconName: entry.key))
         .toList());
-    _shoppingListOfCurrentPage = _shoppingLists[0];
+    _shoppingListOfCurrentPage = _shoppingLists.first;
     Get.find<LocalDatabase>().saveLists(_shoppingLists);
   }
 
@@ -87,11 +85,12 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                       _shoppingLists.removeWhere(
                           (e) => e.id == _shoppingListOfCurrentPage.id);
                       Get.find<LocalDatabase>().saveLists(_shoppingLists);
-                      if (_shoppingLists.isEmpty) {
-                        setState(() {
+                      setState(() {
+                        if (_shoppingLists.isEmpty) {
                           initializeWithEmptyList();
-                        });
-                      }
+                        }
+                        _shoppingListOfCurrentPage = _shoppingLists.last;
+                      });
                     },
                   )),
             ),
