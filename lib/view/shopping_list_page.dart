@@ -5,7 +5,7 @@ import 'package:go_list/service/local_database.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/dialog/edit_dialog.dart';
 import 'package:go_list/view/dialog/search_dialog.dart';
-import 'package:go_list/view/golist_drawer.dart';
+import 'package:go_list/view/shopping_list_drawer.dart';
 import 'package:go_list/view/shopping_list.dart';
 import 'package:get/get.dart';
 
@@ -61,16 +61,18 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(
-          backgroundColor: GoListColors.turquoise,
-          leading: IconButton(
-            icon: Icon(Icons.menu),
-            tooltip: 'Menü',
-            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-          ),
-          title: Text(_shoppingListOfCurrentPage.name),
-          actions: [
+        extendBody: true,
+        bottomNavigationBar: BottomAppBar(
+          child: Row(children: <Widget>[
             IconButton(
+              color: Colors.white,
+              tooltip: 'Open navigation menu',
+              icon: const Icon(Icons.menu),
+              onPressed: () => _scaffoldKey.currentState?.openDrawer()
+            ),
+            const Spacer(),
+            IconButton(
+              color: Colors.white,
               icon: const Icon(Icons.edit),
               tooltip: 'Bearbeiten',
               onPressed: () => DialogUtils.showSmallAlertDialog(
@@ -94,14 +96,13 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                     },
                   )),
             ),
-          ],
+          ]),
         ),
-        body: GoListWidget(
+        body: ShoppingListWidget(
           items: _shoppingListOfCurrentPage.items,
-          onItemTapped: _handleItemTapped,
-          backgroundColor: GoListColors.darkBlue,
+          onItemTapped: _handleItemTapped
         ),
-        drawer: GoListDrawer(
+        drawer: ShoppingListDrawer(
           shoppingLists: _shoppingLists,
           onListClicked: (clickedShoppingList) =>
               setState(() => _shoppingListOfCurrentPage = clickedShoppingList),
@@ -114,9 +115,9 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
             Get.find<LocalDatabase>().saveLists(_shoppingLists);
           },
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
-            tooltip: 'Add Item',
-            backgroundColor: Colors.orange,
+            tooltip: "Neuer Eintrag",
             onPressed: () => DialogUtils.showLargeAnimatedDialog(
                 content: context,
                 child: SearchDialog(

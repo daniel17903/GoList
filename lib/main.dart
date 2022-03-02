@@ -7,10 +7,27 @@ import 'package:get/get.dart';
 void main() async {
   await Get.put(LocalDatabase()).initStorage();
   runApp(MaterialApp(
-    title: 'Shopping App',
-    home: Container(
-        color: GoListColors.darkBlue,
-        constraints: const BoxConstraints.expand(),
-        child: ShoppingListPage()),
+    title: 'GoList',
+    theme: ThemeData(
+      backgroundColor: GoListColors.darkBlue,
+      cardColor: Colors.cyan.shade800,
+      bottomAppBarTheme: const BottomAppBarTheme(
+          shape: const CircularNotchedRectangle(), color: Colors.teal),
+      colorScheme: const ColorScheme(
+        secondary: Colors.teal,
+        // fab color
+        brightness: Brightness.light,
+        primary: Colors.cyan,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        background: Colors.blue,
+        onBackground: Colors.green,
+        surface: Colors.red,
+        onSurface: Colors.yellow,
+        error: Colors.grey,
+        onError: Colors.grey,
+      ),
+    ),
+    home: const ShoppingListPage(),
   ));
 }

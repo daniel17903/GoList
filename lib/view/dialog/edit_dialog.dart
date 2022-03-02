@@ -18,7 +18,7 @@ class EditDialog extends StatefulWidget {
 }
 
 class _EditDialogState extends State<EditDialog> {
-  late final nameTextInputController;
+  late final TextEditingController nameTextInputController;
 
   @override
   void initState() {

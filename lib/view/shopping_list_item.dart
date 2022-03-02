@@ -5,24 +5,24 @@ import '../model/item.dart';
 
 class ShoppingListItem extends StatelessWidget {
   const ShoppingListItem(
-      {Key? key,
-      required this.item,
-      required this.onItemTapped,
-      required this.backgroundColor})
+      {Key? key, required this.item, required this.onItemTapped})
       : super(key: key);
 
   final Item item;
   final Function(Item) onItemTapped;
-  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () => onItemTapped(item),
         child: Container(
-            width: 120,
-            height: 120,
-            padding: const EdgeInsets.all(8.0),
+            width: 110,
+            height: 110,
+            padding: const EdgeInsets.all(6.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              color: Theme.of(context).cardColor,
+            ),
             child: Column(children: [
               Expanded(
                   child: Padding(

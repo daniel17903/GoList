@@ -23,7 +23,6 @@ class _SearchDialogState extends State<SearchDialog> {
   Item? newItem;
   Timer? _debounce;
   late final List<Item> recentlyUsedItemsSorted;
-  static const Color backgroundColor = GoListColors.pink;
 
   void _debounced(Function function) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
@@ -42,7 +41,7 @@ class _SearchDialogState extends State<SearchDialog> {
       child: Column(children: [
         Container(
           padding: const EdgeInsets.all(8.0),
-          color: backgroundColor,
+          color: Theme.of(context).backgroundColor,
           child: TextField(
             autofocus: true,
             cursorColor: Colors.white,
@@ -95,10 +94,9 @@ class _SearchDialogState extends State<SearchDialog> {
           ),
         ),
         Expanded(
-          child: GoListWidget(
+          child: ShoppingListWidget(
             onItemTapped: widget.onItemTapped,
-            items: [if (newItem != null) newItem!, ...recentlyUsedItemsSorted],
-            backgroundColor: backgroundColor,
+            items: [if (newItem != null) newItem!, ...recentlyUsedItemsSorted]
           ),
         )
       ]),

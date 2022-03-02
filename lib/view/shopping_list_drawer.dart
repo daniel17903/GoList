@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_list/model/shopping_list.dart';
 
-class GoListDrawer extends StatefulWidget {
-  GoListDrawer(
+class ShoppingListDrawer extends StatefulWidget {
+  ShoppingListDrawer(
       {Key? key,
       required this.shoppingLists,
       required this.onListClicked,
@@ -16,10 +16,10 @@ class GoListDrawer extends StatefulWidget {
   Function onListCreated;
 
   @override
-  State<GoListDrawer> createState() => _GoListDrawerState();
+  State<ShoppingListDrawer> createState() => _ShoppingListDrawerState();
 }
 
-class _GoListDrawerState extends State<GoListDrawer> {
+class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
   late final TextEditingController newListNameInputController;
 
   @override
@@ -39,11 +39,11 @@ class _GoListDrawerState extends State<GoListDrawer> {
     return Drawer(
         child: ListView(
       children: [
-        const DrawerHeader(
+        DrawerHeader(
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Theme.of(context).bottomAppBarTheme.color,
           ),
-          child: Text(
+          child: const Text(
             'GoList',
             style: TextStyle(
               color: Colors.white,
@@ -70,7 +70,7 @@ class _GoListDrawerState extends State<GoListDrawer> {
             ]),
         ListTile(
           leading: const Icon(Icons.add),
-          title: Text("Neue Liste erstellen"),
+          title: const Text("Neue Liste erstellen"),
           onTap: () {
             showDialog<String>(
                 context: context,

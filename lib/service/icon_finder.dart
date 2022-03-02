@@ -13,7 +13,9 @@ class IconFinder {
       "fanta",
       "eistee",
       "limo",
-      "limonade"
+      "limonade",
+      "sprite",
+      "apfelschorle"
     ],
     'box': ["box", "salz", "mehl"],
     'bread': ["brot", "brötchen", "laugenstange"],
@@ -35,7 +37,13 @@ class IconFinder {
     "eggplant": ["aubergine"],
     "salad": ["salat"],
     "chocolate": ["schokolade"],
-    "ice": ["eis", "magnum"]
+    "ice": ["eis", "magnum"],
+    "berries": ["beeren", "himbeeren", "johannisbeeren", "heidelbeeren", "blaubeeren"],
+    "block": ["tofu", "butter", "margarine", "fett"],
+    "burger": ["burger"],
+    "herbs": ["kräuter", "petersilie", "basilikum", "koriander", "dill"],
+    "pizza_cake": ["pizza", "kuchen", "torte", "flammkuchen"],
+    "yeast": ["hefe"]
   };
 
   static String findMatchingIconForName(String name) {
