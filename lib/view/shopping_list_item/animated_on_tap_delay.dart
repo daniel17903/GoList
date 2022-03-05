@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_list/view/shopping_list_item/bounce_then_disappear_animation.dart';
 
 class AnimatedOnTapDelay extends StatefulWidget {
   const AnimatedOnTapDelay(
@@ -17,29 +18,19 @@ class AnimatedOnTapDelay extends StatefulWidget {
 class _AnimatedOnTapDelayState extends State<AnimatedOnTapDelay>
     with TickerProviderStateMixin {
   bool hasBeenTapped = false;
-  late Animation _animation;
-  late AnimationController _animationController;
   Timer? _removeTimer;
-  static const int boxSize = 110;
+  late BounceThenDisappearAnimation _bounceThenDisappearAnimation;
 
   @override
   void initState() {
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
-    _animation = Tween(
-      begin: boxSize.toDouble(),
-      end: 105.0,
-    ).animate(CurvedAnimation(
-        parent: _animationController, curve: Curves.easeInOutSine))
-      ..addListener(() {
-        setState(() {});
-      });
+    _bounceThenDisappearAnimation = BounceThenDisappearAnimation(
+        onValueChanged: () => setState(() {}), tickProvider: this);
     super.initState();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _bounceThenDisappearAnimation.dispose();
     super.dispose();
   }
 
@@ -49,12 +40,12 @@ class _AnimatedOnTapDelayState extends State<AnimatedOnTapDelay>
         onTap: () {
           if (hasBeenTapped) {
             _removeTimer?.cancel();
-            _animationController.reset();
+            _bounceThenDisappearAnimation.stop();
             setState(() {
               hasBeenTapped = false;
             });
           } else {
-            _animationController.repeat(reverse: true);
+            _bounceThenDisappearAnimation.start();
             setState(() {
               hasBeenTapped = true;
             });
@@ -62,19 +53,14 @@ class _AnimatedOnTapDelayState extends State<AnimatedOnTapDelay>
           }
         },
         child: Container(
-            width: boxSize.toDouble(),
-            height: boxSize.toDouble(),
-            alignment: Alignment.center,
-            child: Container(
-              width: _animation.value,
-              height: _animation.value,
-              padding: const EdgeInsets.all(6.0),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                color:
-                    hasBeenTapped ? Colors.grey : Theme.of(context).cardColor,
-              ),
-              child: widget.child,
-            )));
+          width: _bounceThenDisappearAnimation.value,
+          height: _bounceThenDisappearAnimation.value,
+          padding: const EdgeInsets.all(6.0),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            color: hasBeenTapped ? Colors.grey : Theme.of(context).cardColor,
+          ),
+          child: widget.child,
+        ));
   }
 }

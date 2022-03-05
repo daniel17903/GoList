@@ -1,0 +1,77 @@
+import 'dart:async';
+import 'dart:math';
+
+import 'package:flutter/animation.dart';
+
+class BounceThenDisappearAnimation {
+  late Animation _bounceAnimation;
+  late Animation _disappearAnimation;
+  late AnimationController _disappearAnimationController;
+  late AnimationController _bounceAnimationController;
+
+  final Function() onValueChanged;
+
+  Timer? _bounceAnimationFinishedTimer;
+  double value = 110;
+
+  static const int bounceDurationMs = 2700;
+  static const int disappearDurationMs = 300;
+
+  BounceThenDisappearAnimation(
+      {required tickProvider, required this.onValueChanged}) {
+    _bounceAnimationController = AnimationController(
+        vsync: tickProvider, duration: const Duration(milliseconds: 300));
+    _disappearAnimationController = AnimationController(
+        vsync: tickProvider,
+        duration: const Duration(milliseconds: disappearDurationMs));
+
+    _bounceAnimation = Tween(
+      begin: 110.0,
+      end: 105.0,
+    ).animate(CurvedAnimation(
+      parent: _bounceAnimationController,
+      curve: Curves.easeInOutSine,
+    ))
+      ..addListener(() {
+        value = _bounceAnimation.value;
+        onValueChanged();
+      })
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _disappearAnimationController.forward();
+        }
+      });
+
+    _disappearAnimation = Tween(
+      begin: 110.0,
+      end: 0.0,
+    ).animate(CurvedAnimation(
+      parent: _disappearAnimationController,
+      curve: Curves.easeOut,
+    ))
+      ..addListener(() {
+        value = _disappearAnimation.value;
+        onValueChanged();
+      });
+  }
+
+  void start() {
+    _bounceAnimationController.repeat(reverse: true);
+    _bounceAnimationFinishedTimer =
+        Timer(const Duration(milliseconds: bounceDurationMs), () {
+      _bounceAnimationController.reset();
+      _disappearAnimationController.forward();
+    });
+  }
+
+  void stop() {
+    _bounceAnimationFinishedTimer?.cancel();
+    _bounceAnimationController.reset();
+    _disappearAnimationController.reset();
+  }
+
+  void dispose() {
+    _bounceAnimationController.dispose();
+    _disappearAnimationController.dispose();
+  }
+}

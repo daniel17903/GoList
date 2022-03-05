@@ -8,11 +8,12 @@ import 'package:get/get.dart';
 
 void main() async {
   await Get.put(LocalDatabase()).initStorage();
-
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final materialTheme = ThemeData(
@@ -38,7 +39,6 @@ class MyApp extends StatelessWidget {
       data: materialTheme,
       child: PlatformProvider(
         settings: PlatformSettingsData(iosUsesMaterialWidgets: true),
-        initialPlatform: TargetPlatform.iOS,
         builder: (context) {
           //PlatformProvider.of(context)?.changeToCupertinoPlatform();
           return PlatformApp(
