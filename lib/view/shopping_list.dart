@@ -26,6 +26,7 @@ class ShoppingListWidget extends StatelessWidget {
                       spacing: 6.0, // gap between adjacent chips
                       runSpacing: 6.0,
                       direction: Axis.horizontal,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: items.map((Item item) {
                         return ShoppingListItem(
                           key: ValueKey(item.id),

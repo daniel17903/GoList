@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/animation.dart';
+import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
 class BounceThenDisappearAnimation {
   late Animation _bounceAnimation;
@@ -12,7 +13,8 @@ class BounceThenDisappearAnimation {
   final Function() onValueChanged;
 
   Timer? _bounceAnimationFinishedTimer;
-  double value = 110;
+  double bounceValue = itemBoxSize.toDouble();
+  double disappearValue = itemBoxSize.toDouble();
 
   static const int bounceDurationMs = 2700;
   static const int disappearDurationMs = 300;
@@ -26,14 +28,14 @@ class BounceThenDisappearAnimation {
         duration: const Duration(milliseconds: disappearDurationMs));
 
     _bounceAnimation = Tween(
-      begin: 110.0,
+      begin: itemBoxSize.toDouble(),
       end: 105.0,
     ).animate(CurvedAnimation(
       parent: _bounceAnimationController,
       curve: Curves.easeInOutSine,
     ))
       ..addListener(() {
-        value = _bounceAnimation.value;
+        bounceValue = _bounceAnimation.value;
         onValueChanged();
       })
       ..addStatusListener((status) {
@@ -43,14 +45,14 @@ class BounceThenDisappearAnimation {
       });
 
     _disappearAnimation = Tween(
-      begin: 110.0,
+      begin: itemBoxSize.toDouble(),
       end: 0.0,
     ).animate(CurvedAnimation(
       parent: _disappearAnimationController,
       curve: Curves.easeOut,
     ))
       ..addListener(() {
-        value = _disappearAnimation.value;
+        disappearValue = _disappearAnimation.value;
         onValueChanged();
       });
   }
@@ -59,6 +61,7 @@ class BounceThenDisappearAnimation {
     _bounceAnimationController.repeat(reverse: true);
     _bounceAnimationFinishedTimer =
         Timer(const Duration(milliseconds: bounceDurationMs), () {
+      bounceValue = itemBoxSize.toDouble();
       _bounceAnimationController.reset();
       _disappearAnimationController.forward();
     });

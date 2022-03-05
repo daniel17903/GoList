@@ -4,6 +4,8 @@ import 'package:go_list/view/shopping_list_item/animated_on_tap_delay.dart';
 
 import '../../model/item.dart';
 
+const int itemBoxSize = 110;
+
 class ShoppingListItem extends StatelessWidget {
   const ShoppingListItem(
       {Key? key, required this.item, required this.onItemTapped})
@@ -12,36 +14,29 @@ class ShoppingListItem extends StatelessWidget {
   final Item item;
   final Function(Item) onItemTapped;
 
-  static const int boxSize = 110;
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: boxSize.toDouble(),
-        height: boxSize.toDouble(),
-        alignment: Alignment.center,
-        child: AnimatedOnTapDelay(
-          onTapped: () => onItemTapped(item),
-          child: Column(children: [
-            Expanded(
-              flex: 3,
-                child: Padding(
+    return AnimatedOnTapDelay(
+      onTapped: () => onItemTapped(item),
+      child: (scaleFactor) => Column(children: [
+        Expanded(
+            flex: 3,
+            child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: GoListIcons.icon(item.iconName),
             )),
-            Expanded(
-              flex: 1,
-              child: Container(
-                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                  child: Text(
-                    item.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  )),
-            )
-          ]),
-        ));
+        Expanded(
+            child: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            item.name,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16 * scaleFactor,
+            ),
+          ),
+        ))
+      ]),
+    );
   }
 }
