@@ -24,8 +24,6 @@ class LocalDatabase extends GetxController {
           .map<ShoppingList>((element) => ShoppingList.fromJson(element))
           .toList();
     }
-    return [
-      ShoppingList(name: 'Einkaufsliste', items: [], recentlyUsedItems: [])
-    ];
+    return [];
   }
 }

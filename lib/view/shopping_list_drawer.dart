@@ -37,6 +37,7 @@ class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      //backgroundColor: Theme.of(context).backgroundColor,
         child: ListView(
       children: [
         DrawerHeader(

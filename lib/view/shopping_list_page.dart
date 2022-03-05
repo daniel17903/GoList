@@ -59,76 +59,78 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        extendBody: true,
-        bottomNavigationBar: BottomAppBar(
-          child: Row(children: <Widget>[
-            IconButton(
-              color: Colors.white,
-              tooltip: 'Open navigation menu',
-              icon: const Icon(Icons.menu),
-              onPressed: () => _scaffoldKey.currentState?.openDrawer()
-            ),
-            const Spacer(),
-            IconButton(
-              color: Colors.white,
-              icon: const Icon(Icons.edit),
-              tooltip: 'Bearbeiten',
-              onPressed: () => DialogUtils.showSmallAlertDialog(
-                  context: context,
-                  content: EditDialog(
-                    shoppingList: _shoppingListOfCurrentPage,
-                    onShoppingListChanged: () {
-                      setState(() {});
-                      Get.find<LocalDatabase>().saveLists(_shoppingLists);
+    return SafeArea(
+      child: Scaffold(
+          key: _scaffoldKey,
+          extendBody: true,
+          bottomNavigationBar: BottomAppBar(
+            child: Row(children: <Widget>[
+              IconButton(
+                color: Colors.white,
+                tooltip: 'Open navigation menu',
+                icon: const Icon(Icons.menu),
+                onPressed: () => _scaffoldKey.currentState?.openDrawer()
+              ),
+              const Spacer(),
+              IconButton(
+                color: Colors.white,
+                icon: const Icon(Icons.edit),
+                tooltip: 'Bearbeiten',
+                onPressed: () => DialogUtils.showSmallAlertDialog(
+                    context: context,
+                    content: EditDialog(
+                      shoppingList: _shoppingListOfCurrentPage,
+                      onShoppingListChanged: () {
+                        setState(() {});
+                        Get.find<LocalDatabase>().saveLists(_shoppingLists);
+                      },
+                      onShoppingListDeleted: () {
+                        _shoppingLists.removeWhere(
+                            (e) => e.id == _shoppingListOfCurrentPage.id);
+                        Get.find<LocalDatabase>().saveLists(_shoppingLists);
+                        setState(() {
+                          if (_shoppingLists.isEmpty) {
+                            initializeWithEmptyList();
+                          }
+                          _shoppingListOfCurrentPage = _shoppingLists.last;
+                        });
+                      },
+                    )),
+              ),
+            ]),
+          ),
+          body: ShoppingListWidget(
+            items: _shoppingListOfCurrentPage.items,
+            onItemTapped: _handleItemTapped
+          ),
+          drawer: ShoppingListDrawer(
+            shoppingLists: _shoppingLists,
+            onListClicked: (clickedShoppingList) =>
+                setState(() => _shoppingListOfCurrentPage = clickedShoppingList),
+            onListCreated: (listName) {
+              setState(() {
+                _shoppingLists.add(ShoppingList(
+                    name: listName, items: [], recentlyUsedItems: []));
+                _shoppingListOfCurrentPage = _shoppingLists.last;
+              });
+              Get.find<LocalDatabase>().saveLists(_shoppingLists);
+            },
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: FloatingActionButton(
+              tooltip: "Neuer Eintrag",
+              onPressed: () => DialogUtils.showLargeAnimatedDialog(
+                  content: context,
+                  child: SearchDialog(
+                    onItemTapped: (tappedItem) {
+                      Navigator.pop(context);
+                      _handleItemCreated(tappedItem.copy());
                     },
-                    onShoppingListDeleted: () {
-                      _shoppingLists.removeWhere(
-                          (e) => e.id == _shoppingListOfCurrentPage.id);
-                      Get.find<LocalDatabase>().saveLists(_shoppingLists);
-                      setState(() {
-                        if (_shoppingLists.isEmpty) {
-                          initializeWithEmptyList();
-                        }
-                        _shoppingListOfCurrentPage = _shoppingLists.last;
-                      });
-                    },
+                    recentlyUsedItems:
+                        _shoppingListOfCurrentPage.recentlyUsedItems,
                   )),
-            ),
-          ]),
-        ),
-        body: ShoppingListWidget(
-          items: _shoppingListOfCurrentPage.items,
-          onItemTapped: _handleItemTapped
-        ),
-        drawer: ShoppingListDrawer(
-          shoppingLists: _shoppingLists,
-          onListClicked: (clickedShoppingList) =>
-              setState(() => _shoppingListOfCurrentPage = clickedShoppingList),
-          onListCreated: (listName) {
-            setState(() {
-              _shoppingLists.add(ShoppingList(
-                  name: listName, items: [], recentlyUsedItems: []));
-              _shoppingListOfCurrentPage = _shoppingLists.last;
-            });
-            Get.find<LocalDatabase>().saveLists(_shoppingLists);
-          },
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-            tooltip: "Neuer Eintrag",
-            onPressed: () => DialogUtils.showLargeAnimatedDialog(
-                content: context,
-                child: SearchDialog(
-                  onItemTapped: (tappedItem) {
-                    Navigator.pop(context);
-                    _handleItemCreated(tappedItem.copy());
-                  },
-                  recentlyUsedItems:
-                      _shoppingListOfCurrentPage.recentlyUsedItems,
-                )),
-            child: const Icon(Icons.add)));
+              child: const Icon(Icons.add))),
+    );
   }
 }
 

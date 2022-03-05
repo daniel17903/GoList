@@ -21,7 +21,7 @@ class ShoppingListWidget extends StatelessWidget {
           child: Center(
               child: Container(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 6.0),
+                      const EdgeInsets.only(left: 6, right: 6.0, top: 6, bottom: 70),
                   child: Wrap(
                       spacing: 6.0, // gap between adjacent chips
                       runSpacing: 6.0,

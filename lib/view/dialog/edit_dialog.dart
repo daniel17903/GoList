@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
 
 class EditDialog extends StatefulWidget {
   const EditDialog(
@@ -34,41 +36,38 @@ class _EditDialogState extends State<EditDialog> {
   }
 
   void _showAlertDialog({required Function onConfirmed}) {
-    showDialog(
+    showPlatformDialog(
         context: context,
-        builder: (BuildContext context) => AlertDialog(
+        builder: (BuildContext context) => PlatformAlertDialog(
               title: const Text('Soll diese Liste wirklich gelöscht werden?'),
               actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
+                PlatformDialogAction(
                   child: const Text('Abbrechen'),
+                  onPressed: () => Navigator.pop(context),
                 ),
-                TextButton(
+                PlatformDialogAction(
+                  child: const Text('OK'),
                   onPressed: () {
                     Navigator.pop(context);
                     onConfirmed();
                   },
-                  child: const Text('OK'),
-                ),
+                )
               ],
             ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return PlatformAlertDialog(
       title: const Text('Liste bearbeiten'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextFormField(
-              controller: nameTextInputController,
-              decoration: const InputDecoration(
-                labelText: "Name",
-              )),
+          GoListPlatformTextFormField(
+              controller: nameTextInputController, labelText: "Name"),
           Padding(
             padding: const EdgeInsets.only(top: 14, bottom: 0),
-            child: TextButton(
+            child: PlatformTextButton(
               onPressed: () => _showAlertDialog(onConfirmed: () {
                 Navigator.pop(context);
                 widget.onShoppingListDeleted();
@@ -80,18 +79,17 @@ class _EditDialogState extends State<EditDialog> {
         ],
       ),
       actions: <Widget>[
-        TextButton(
-          child: const Text("Abbrechen"),
+        PlatformDialogAction(
+          child: const Text('Abbrechen'),
           onPressed: () => Navigator.pop(context),
         ),
-        TextButton(
-          child: const Text("Speichern"),
-          onPressed: () {
-            widget.shoppingList.name = nameTextInputController.text;
-            widget.onShoppingListChanged();
-            Navigator.pop(context);
-          },
-        ),
+        PlatformDialogAction(
+            child: const Text('Speichern'),
+            onPressed: () {
+              widget.shoppingList.name = nameTextInputController.text;
+              widget.onShoppingListChanged();
+              Navigator.pop(context);
+            })
       ],
     );
   }

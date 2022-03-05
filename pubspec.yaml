@@ -37,6 +37,7 @@ dependencies:
   uuid: ^3.0.6
   shared_preferences: ^2.0.13
   get_storage: ^2.0.3
+  flutter_platform_widgets: ^1.20.0
 
 dev_dependencies:
   flutter_test:
