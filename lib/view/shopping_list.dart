@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
 import '../model/item.dart';
@@ -10,6 +11,18 @@ class ShoppingListWidget extends StatelessWidget {
 
   final List<Item> items;
   final Function(Item) onItemTapped;
+  
+  final double horizontalPadding = 6;
+  final double spacing = 6;
+  
+  double _calcPerfectWidth(BuildContext context){
+    double listWidth = MediaQuery.of(context).size.width - 2 * horizontalPadding;
+    int itemsPerRow = listWidth ~/ itemBoxSize;
+    if(itemsPerRow * itemBoxSize + (itemsPerRow - 1) * spacing > listWidth ){
+      itemsPerRow -= 1;
+    }
+    return itemsPerRow * itemBoxSize  + (itemsPerRow - 1) * spacing + 2 * horizontalPadding;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +33,12 @@ class ShoppingListWidget extends StatelessWidget {
           scrollDirection: Axis.vertical,
           child: Center(
               child: Container(
+                width: _calcPerfectWidth(context),
                   padding:
-                      const EdgeInsets.only(left: 6, right: 6.0, top: 6, bottom: 70),
+                      EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 6, bottom: 70),
                   child: Wrap(
-                      spacing: 6.0, // gap between adjacent chips
-                      runSpacing: 6.0,
+                      spacing: spacing, // gap between adjacent chips
+                      runSpacing: spacing,
                       direction: Axis.horizontal,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: items.map((Item item) {
