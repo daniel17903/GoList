@@ -37,13 +37,16 @@ class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      //backgroundColor: Theme.of(context).backgroundColor,
+        //backgroundColor: Theme.of(context).backgroundColor,
         child: ListView(
       children: [
         DrawerHeader(
           decoration: BoxDecoration(
-            color: Theme.of(context).bottomAppBarTheme.color,
-          ),
+              color: Theme.of(context).bottomAppBarTheme.color,
+              image: const DecorationImage(
+                  image: const AssetImage("assets/icon_foreground.png"),
+                  fit: BoxFit.contain,
+                  alignment: Alignment.bottomRight)),
           child: const Text(
             'GoList',
             style: TextStyle(
