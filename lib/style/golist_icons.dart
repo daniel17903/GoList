@@ -5,6 +5,7 @@ class GoListIcons {
     return Image.asset(
       "assets/$name.png",
       color: Colors.white,
+      fit: BoxFit.contain,
     );
   }
 }

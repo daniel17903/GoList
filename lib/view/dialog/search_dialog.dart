@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:go_list/service/icon_finder.dart';
+import 'package:go_list/service/input_to_item_parser.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list.dart';
 
@@ -84,9 +84,7 @@ class _SearchDialogState extends State<SearchDialog> {
                           text == recentlyUsedItemsSorted[0].name) {
                     newItem = null;
                   } else {
-                    newItem = Item(
-                        name: text,
-                        iconName: IconFinder.findMatchingIconForName(text));
+                    newItem = InputToItemParser.parseInput(text);
                   }
                 });
               });

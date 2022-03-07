@@ -22,20 +22,34 @@ class ShoppingListItem extends StatelessWidget {
         Expanded(
             flex: 3,
             child: Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(2.0),
               child: GoListIcons.icon(item.iconName),
             )),
         Expanded(
+            flex: 2,
             child: Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: Text(
-            item.name,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16 * scaleFactor,
-            ),
-          ),
-        ))
+                padding: const EdgeInsets.only(top: 4),
+                child: Center(
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text: item.name,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16 * scaleFactor,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text:
+                                item.amount != null ? "\n" + item.amount! : "",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13 * scaleFactor,
+                            )),
+                      ],
+                    ),
+                  ),
+                )))
       ]),
     );
   }

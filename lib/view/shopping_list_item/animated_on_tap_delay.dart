@@ -42,7 +42,7 @@ class _AnimatedOnTapDelayState extends State<AnimatedOnTapDelay>
         width: _bounceThenDisappearAnimation.disappearValue,
         height: _bounceThenDisappearAnimation.disappearValue,
         alignment: Alignment.center,
-        child: GestureDetector(
+        child: InkWell(
             onTap: () {
               if (hasBeenTapped) {
                 _removeTimer?.cancel();

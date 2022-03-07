@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/service/icon_finder.dart';
+import 'package:go_list/service/input_to_item_parser.dart';
 import 'package:go_list/service/local_database.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/dialog/edit_dialog.dart';
@@ -40,7 +40,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
   void initializeWithEmptyList() {
     _shoppingLists.add(
         ShoppingList(name: "Einkaufsliste", items: [], recentlyUsedItems: []));
-    _shoppingLists[0].items.addAll(IconFinder.sampleNamesWithIcon()
+    _shoppingLists[0].items.addAll(InputToItemParser.sampleNamesWithIcon()
         .entries
         .map((entry) => Item(name: entry.value, iconName: entry.key))
         .toList());
