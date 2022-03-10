@@ -11,6 +11,7 @@ class BounceThenDisappearAnimation {
   late AnimationController _bounceAnimationController;
 
   final Function() onValueChanged;
+  Function()? onCompleted;
 
   Timer? _bounceAnimationFinishedTimer;
   double bounceValue = itemBoxSize.toDouble();
@@ -54,6 +55,11 @@ class BounceThenDisappearAnimation {
       ..addListener(() {
         disappearValue = _disappearAnimation.value;
         onValueChanged();
+      })
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed && onCompleted != null) {
+          onCompleted!();
+        }
       });
   }
 

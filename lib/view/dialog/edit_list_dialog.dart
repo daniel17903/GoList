@@ -3,8 +3,8 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
 
-class EditDialog extends StatefulWidget {
-  const EditDialog(
+class EditListDialog extends StatefulWidget {
+  const EditListDialog(
       {Key? key,
       required this.shoppingList,
       required this.onShoppingListChanged,
@@ -16,10 +16,10 @@ class EditDialog extends StatefulWidget {
   final Function onShoppingListDeleted;
 
   @override
-  State<EditDialog> createState() => _EditDialogState();
+  State<EditListDialog> createState() => _EditListDialogState();
 }
 
-class _EditDialogState extends State<EditDialog> {
+class _EditListDialogState extends State<EditListDialog> {
   late final TextEditingController nameTextInputController;
 
   @override

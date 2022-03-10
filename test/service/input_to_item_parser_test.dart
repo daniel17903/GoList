@@ -15,11 +15,17 @@ void main() {
       "2literwrgwg": null,
       "kuchen 2 Stück": "2 Stück",
       "kuchen 2": "2",
+      "2.5 liter wasser": "2.5 liter",
+      "2,5 liter wasser": "2,5 liter",
     };
     inputsToExpected.forEach((input, expected) {
       test("$input -> $expected", () {
         expect(InputToItemParser.parseAmount(input), expected);
       });
     });
+  });
+
+  test("Should find correct icon", (){
+    expect(InputToItemParser.findMatchingIconForName("apfelschorle"), "bottle");
   });
 }

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../model/item.dart';
 
 Map<String, List<String>> _namesMatchingForIcon = {
@@ -21,7 +19,7 @@ Map<String, List<String>> _namesMatchingForIcon = {
   'box': ["box", "salz", "mehl"],
   'bread': ["brot", "brötchen", "laugenstange"],
   'can': ["bohnen", "dose"],
-  'carrot': ["karotte"],
+  'carrot': ["karotte", "pastinake", "rübe", "ruebe"],
   'corn': ["samen", "körner"],
   'cup': ["becher", "yoghurt"],
   'glas': ["glas", "marmelade", "gläser"],
@@ -50,7 +48,18 @@ Map<String, List<String>> _namesMatchingForIcon = {
   "burger": ["burger"],
   "herbs": ["kräuter", "petersilie", "basilikum", "koriander", "dill"],
   "pizza_cake": ["pizza", "kuchen", "torte", "flammkuchen"],
-  "yeast": ["hefe"]
+  "yeast": ["hefe"],
+  "package": [
+    "backpulver",
+    "natron",
+    "vanillezucker",
+    "trockenhefe",
+    "agar-agar",
+    "agar agar"
+  ],
+  "pasta": ["nudeln", "spaghetti", "pasta"],
+  "lemon": ["zitrone"],
+  "potatos": ["kartoffel"]
 }.map((iconName, matchingProductNames) {
   matchingProductNames.sort((a, b) => b.length - a.length);
   return MapEntry(iconName, matchingProductNames);
@@ -70,7 +79,7 @@ class InputToItemParser {
 
   static String? parseAmount(String input) {
     Iterable<String?> amount = RegExp(
-            "(^| +)([0-9]+ ?(liter|ml|l|g|kg|kilo|gramm|kilogramm|becher|glas|packung(en)?|gläser|glaeser|stueck(e)?|stück(e)?|dose(n)?|flasche(n)?|kiste(n)?|beutel(n)?|tuete(n)?|tüte(n)?|becher)?)( +|\$)",
+            "(^| +)([0-9]+((.|,)[0-9])? ?(liter|ml|l|g|kg|kilo|gramm|kilogramm|becher|glas|bund|scheiben|packung(en)?|gläser|glaeser|stueck(e)?|stück(e)?|dose(n)?|flasche(n)?|kiste(n)?|beutel(n)?|tuete(n)?|tüte(n)?|becher)?)( +|\$)",
             caseSensitive: false)
         .allMatches(input)
         .map((m) => m.group(2));
@@ -88,10 +97,10 @@ class InputToItemParser {
           .where((matchingWord) => name.contains(matchingWord))
           .fold(
               null,
-              (longestMatch, element) => longestMatch == null ||
-                      element.length > (longestMatch as String).length
-                  ? element
-                  : longestMatch)?[0];
+              (longestMatch, element) =>
+                  longestMatch == null || element.length > longestMatch.length
+                      ? element
+                      : longestMatch);
 
       if (matchingWordForIconName != null &&
           matchingWordForIconName.length > matchingWordLength) {

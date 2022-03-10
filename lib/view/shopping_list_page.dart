@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/input_to_item_parser.dart';
 import 'package:go_list/service/local_database.dart';
-import 'package:go_list/style/colors.dart';
-import 'package:go_list/view/dialog/edit_dialog.dart';
+import 'package:go_list/view/dialog/edit_list_dialog.dart';
 import 'package:go_list/view/dialog/search_dialog.dart';
-import 'package:go_list/view/shopping_list_drawer.dart';
 import 'package:go_list/view/shopping_list.dart';
-import 'package:get/get.dart';
+import 'package:go_list/view/shopping_list_drawer.dart';
 
 import '../model/item.dart';
 import 'dialog/dialog_utils.dart';
@@ -66,11 +65,10 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
           bottomNavigationBar: BottomAppBar(
             child: Row(children: <Widget>[
               IconButton(
-                color: Colors.white,
-                tooltip: 'Open navigation menu',
-                icon: const Icon(Icons.menu),
-                onPressed: () => _scaffoldKey.currentState?.openDrawer()
-              ),
+                  color: Colors.white,
+                  tooltip: 'Open navigation menu',
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => _scaffoldKey.currentState?.openDrawer()),
               const Spacer(),
               IconButton(
                 color: Colors.white,
@@ -78,7 +76,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                 tooltip: 'Bearbeiten',
                 onPressed: () => DialogUtils.showSmallAlertDialog(
                     context: context,
-                    content: EditDialog(
+                    content: EditListDialog(
                       shoppingList: _shoppingListOfCurrentPage,
                       onShoppingListChanged: () {
                         setState(() {});
@@ -101,12 +99,13 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
           ),
           body: ShoppingListWidget(
             items: _shoppingListOfCurrentPage.items,
-            onItemTapped: _handleItemTapped
+            onItemTapped: _handleItemTapped,
+            delayItemTap: true,
           ),
           drawer: ShoppingListDrawer(
             shoppingLists: _shoppingLists,
-            onListClicked: (clickedShoppingList) =>
-                setState(() => _shoppingListOfCurrentPage = clickedShoppingList),
+            onListClicked: (clickedShoppingList) => setState(
+                () => _shoppingListOfCurrentPage = clickedShoppingList),
             onListCreated: (listName) {
               setState(() {
                 _shoppingLists.add(ShoppingList(
@@ -116,7 +115,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
               Get.find<LocalDatabase>().saveLists(_shoppingLists);
             },
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
           floatingActionButton: FloatingActionButton(
               tooltip: "Neuer Eintrag",
               onPressed: () => DialogUtils.showLargeAnimatedDialog(
