@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
 import '../model/item.dart';
 
-class ShoppingListWidget extends StatelessWidget {
-  const ShoppingListWidget(
+class ItemListViewer extends StatelessWidget {
+  const ItemListViewer(
       {Key? key,
       required this.items,
       required this.onItemTapped,
-      this.delayItemTap: false})
+      this.delayItemTap = false})
       : super(key: key);
 
   final List<Item> items;
-  final Function(Item) onItemTapped;
+  final void Function(Item) onItemTapped;
   final bool delayItemTap;
 
   final double horizontalPadding = 6;

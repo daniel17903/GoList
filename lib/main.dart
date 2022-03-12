@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:go_list/service/local_database.dart';
+import 'package:go_list/model/app_state.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list_page.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
-  await Get.put(LocalDatabase()).initStorage();
   runApp(const MyApp());
 }
 
@@ -48,17 +47,17 @@ class MyApp extends StatelessWidget {
               DefaultCupertinoLocalizations.delegate,
             ],
             title: 'Flutter Platform Widgets',
-            home: const ShoppingListPage(),
-            material: (_, __) =>
-                MaterialAppData(
-                  theme: materialTheme,
-                ),
-            cupertino: (_, __) =>
-                CupertinoAppData(
-                  theme: const CupertinoThemeData(
-                    primaryColor: Color(0xff127EFB),
-                  ),
-                ),
+            home: ChangeNotifierProvider<AppState>(
+                create: (context) => AppState(shoppingLists: []),
+                child: const ShoppingListPage()),
+            material: (_, __) => MaterialAppData(
+              theme: materialTheme,
+            ),
+            cupertino: (_, __) => CupertinoAppData(
+              theme: const CupertinoThemeData(
+                primaryColor: Color(0xff127EFB),
+              ),
+            ),
           );
         },
       ),

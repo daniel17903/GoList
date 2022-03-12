@@ -13,8 +13,21 @@ class LocalDatabase extends GetxController {
     await GetStorage.init();
   }
 
-  void saveLists(List<ShoppingList> shoppingLists) {
-    box.write("shoppingLists", shoppingLists.map((shoppingList) => shoppingList.toJson()).toList());
+  void saveList(ShoppingList shoppingList) {
+    removeList(shoppingList);
+    List<ShoppingList> shoppingLists = loadShoppingLists();
+    shoppingLists.add(shoppingList);
+    box.write("shoppingLists",
+        shoppingLists.map((shoppingList) => shoppingList.toJson()).toList());
+  }
+
+  void removeList(ShoppingList shoppingList) {
+    box.write(
+        "shoppingLists",
+        loadShoppingLists()
+            .where((sl) => sl.id != shoppingList.id)
+            .map((shoppingList) => shoppingList.toJson())
+            .toList());
   }
 
   List<ShoppingList> loadShoppingLists() {

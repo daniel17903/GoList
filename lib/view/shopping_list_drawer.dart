@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/model/app_state.dart';
+import 'package:go_list/view/dialog/dialog_utils.dart';
+import 'package:provider/provider.dart';
 
 class ShoppingListDrawer extends StatefulWidget {
-  ShoppingListDrawer(
-      {Key? key,
-      required this.shoppingLists,
-      required this.onListClicked,
-      required this.onListCreated})
-      : super(key: key);
-
-  List<ShoppingList> shoppingLists;
-
-  Function onListClicked;
-
-  Function onListCreated;
+  const ShoppingListDrawer({Key? key}) : super(key: key);
 
   @override
   State<ShoppingListDrawer> createState() => _ShoppingListDrawerState();
@@ -44,7 +35,7 @@ class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
           decoration: BoxDecoration(
               color: Theme.of(context).bottomAppBarTheme.color,
               image: const DecorationImage(
-                  image: const AssetImage("assets/icon_foreground.png"),
+                  image: AssetImage("assets/icon_foreground.png"),
                   fit: BoxFit.contain,
                   alignment: Alignment.bottomRight)),
           child: const Text(
@@ -59,48 +50,50 @@ class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
             title: const Text('Meine Listen'),
             initiallyExpanded: true,
             children: [
-              ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  itemCount: widget.shoppingLists.length,
-                  itemBuilder: (BuildContext context, int index) => ListTile(
-                        leading: const Icon(Icons.list),
-                        title: Text(widget.shoppingLists[index].name),
-                        onTap: () {
-                          Navigator.pop(context);
-                          widget.onListClicked(widget.shoppingLists[index]);
-                        },
-                      ))
+              Consumer<AppState>(
+                builder: (context, appState, child) => ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    itemCount: appState.shoppingLists.length,
+                    itemBuilder: (BuildContext context, int index) => ListTile(
+                          leading: const Icon(Icons.list),
+                          title: Text(appState.shoppingLists[index].name),
+                          onTap: () {
+                            Navigator.pop(context);
+                            appState.selectedList = index;
+                          },
+                        )),
+              )
             ]),
         ListTile(
           leading: const Icon(Icons.add),
           title: const Text("Neue Liste erstellen"),
           onTap: () {
-            showDialog<String>(
+            DialogUtils.showSmallAlertDialog(
                 context: context,
-                builder: (BuildContext context) => AlertDialog(
-                      title: const Text('Neue Liste erstellen'),
-                      content: TextFormField(
-                          controller: newListNameInputController,
-                          decoration: const InputDecoration(
-                            labelText: "Name",
-                          )),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Abbrechen'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            widget
-                                .onListCreated(newListNameInputController.text);
-                          },
-                          child: const Text('Speichern'),
-                        ),
-                      ],
-                    ));
+                content: AlertDialog(
+                  title: const Text('Neue Liste erstellen'),
+                  content: TextFormField(
+                      controller: newListNameInputController,
+                      decoration: const InputDecoration(
+                        labelText: "Name",
+                      )),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Abbrechen'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Provider.of<AppState>(context, listen: false)
+                            .createList(newListNameInputController.text);
+                      },
+                      child: const Text('Speichern'),
+                    ),
+                  ],
+                ));
           },
         )
       ],

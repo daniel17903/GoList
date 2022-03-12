@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/animation.dart';
 import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
