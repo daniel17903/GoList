@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_list/style/golist_icons.dart';
-import 'package:go_list/view/dialog/edit_item_dialog.dart';
 import 'package:go_list/view/shopping_list_item/animated_item_container.dart';
 import 'package:go_list/view/shopping_list_item/item_animation_controller.dart';
 import 'package:go_list/view/shopping_list_item/tap_detector.dart';
 
 import '../../model/item.dart';
-import '../dialog/dialog_utils.dart';
 
 const int itemBoxSize = 110;
 
@@ -15,11 +13,12 @@ class ShoppingListItem extends StatefulWidget {
       {Key? key,
       required this.item,
       required this.onItemTapped,
-      required this.delayItemTap})
+      required this.delayItemTap, required this.onItemTappedLong})
       : super(key: key);
 
   final Item item;
   final Function(Item) onItemTapped;
+  final void Function(Item) onItemTappedLong;
   final bool delayItemTap;
 
   @override
@@ -49,15 +48,7 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
         }
       },
       onReTap: animationController.cancelAnimation,
-      onLongTap: () => DialogUtils.showSmallAlertDialog(
-          context: context,
-          content: EditItemDialog(
-            item: widget.item,
-            onItemChanged: () {
-              setState(() {});
-              //TODO save
-            },
-          )),
+      onLongTap: () => widget.onItemTappedLong(widget.item),
       child: AnimatedItemContainer(
         animationController: animationController,
         child: (scaleFactor) => Column(children: [

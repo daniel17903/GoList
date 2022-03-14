@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state.dart';
+import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/input_to_item_parser.dart';
-import 'package:go_list/view/item_list_viewer.dart';
+import 'package:go_list/service/storage/storage.dart';
+import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/item.dart';
@@ -37,9 +39,19 @@ class _SearchDialogState extends State<SearchDialog> {
 
   void addNewItemToList(Item? item) {
     if (item != null) {
-      Provider.of<AppState>(context, listen: false)
-          .currentShoppingList
-          .addItem(item);
+      ShoppingList shoppingList =
+          Provider.of<AppState>(context, listen: false).currentShoppingList;
+      shoppingList.addItem(item);
+      Storage().saveItem(shoppingList, item);
+      Item recentlyUsedItem = item.copy();
+      shoppingList.addRecentlyUsedItem(recentlyUsedItem);
+      Storage().saveRecentlyUsedItem(shoppingList, recentlyUsedItem);
+      while (shoppingList.recentlyUsedItems.length > 20) {
+        Storage().removeRecentlyUsedItem(
+            shoppingList, shoppingList.recentlyUsedItems.last);
+        shoppingList
+            .removeRecentlyUsedItem(shoppingList.recentlyUsedItems.last);
+      }
       Navigator.pop(context);
     }
   }

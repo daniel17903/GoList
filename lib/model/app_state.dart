@@ -2,55 +2,86 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/input_to_item_parser.dart';
+import 'package:go_list/service/storage/storage.dart';
 
 class AppState extends ChangeNotifier {
-  List<ShoppingList> shoppingLists;
+  late List<ShoppingList> _shoppingLists;
   late int _selectedList;
+  bool _isLoading = true;
 
-  AppState({required this.shoppingLists, int selectedList = 0}) {
+  AppState({List<ShoppingList>? shoppingLists, int selectedList = 0}) {
+    _shoppingLists = shoppingLists ?? [];
     _selectedList = selectedList;
-    _initializeWithEmptyList();
+    _subscribeToLists();
   }
 
-  void _initializeWithEmptyList() {
-    if (shoppingLists.isEmpty) {
-      shoppingLists.add(ShoppingList(
+  List<ShoppingList> get shoppingLists => _shoppingLists;
+
+  bool get isLoading => _isLoading;
+
+  void _subscribeToLists() {
+    for (ShoppingList shoppingList in _shoppingLists) {
+      shoppingList.addListener(notifyListeners);
+    }
+  }
+
+  void _unsubscribeFromLists() {
+    for (ShoppingList shoppingList in _shoppingLists) {
+      shoppingList.removeListener(notifyListeners);
+    }
+  }
+
+  void initializeWithEmptyList() {
+    if (_shoppingLists.isEmpty) {
+      _shoppingLists.add(ShoppingList(
           name: "Einkaufsliste", items: [], recentlyUsedItems: []));
-      shoppingLists[0].items.addAll(InputToItemParser.sampleNamesWithIcon()
+      Storage().saveList(_shoppingLists[0]);
+      _shoppingLists[0].items.addAll(InputToItemParser.sampleNamesWithIcon()
           .entries
           .map((entry) => Item(name: entry.value, iconName: entry.key))
           .toList());
-      for (ShoppingList shoppingList in shoppingLists) {
-        shoppingList.addListener(notifyListeners);
+      for (Item item in _shoppingLists[0].items) {
+        Storage().saveItem(_shoppingLists[0], item);
       }
       notifyListeners();
       // TODO sort
-      // TODO save
     }
   }
 
   void removeCurrentList() {
     int indexToRemove =
-        shoppingLists.indexWhere((sl) => sl.id == currentShoppingList.id);
-    shoppingLists[indexToRemove].removeListener(notifyListeners);
-    shoppingLists.removeAt(indexToRemove);
-    _initializeWithEmptyList();
-    notifyListeners();
-    // TODO save
-  }
-
-  void createList(String name) {
-    ShoppingList newShoppingList = ShoppingList(name: name);
-    newShoppingList.addListener(notifyListeners);
-    shoppingLists.add(newShoppingList);
-    _selectedList = shoppingLists.length - 1;
+        _shoppingLists.indexWhere((sl) => sl.id == currentShoppingList.id);
+    _selectedList = 0;
+    _shoppingLists[indexToRemove].removeListener(notifyListeners);
+    _shoppingLists.removeAt(indexToRemove);
+    initializeWithEmptyList();
     notifyListeners();
   }
 
-  set selectedList(int selectedList){
+  void createList(ShoppingList shoppingList) {
+    shoppingList.addListener(notifyListeners);
+    _shoppingLists.add(shoppingList);
+    _selectedList = _shoppingLists.length - 1;
+    shoppingList.addListener(notifyListeners);
+    notifyListeners();
+  }
+
+  set selectedList(int selectedList) {
     _selectedList = selectedList;
     notifyListeners();
   }
 
-  ShoppingList get currentShoppingList => shoppingLists[_selectedList];
+  ShoppingList get currentShoppingList => _shoppingLists[_selectedList];
+
+  set shoppingLists(List<ShoppingList> shoppingLists) {
+    _unsubscribeFromLists();
+    _shoppingLists = shoppingLists;
+    _subscribeToLists();
+    notifyListeners();
+  }
+
+  set isLoading(bool isLoading) {
+    _isLoading = isLoading;
+    notifyListeners();
+  }
 }

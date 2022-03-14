@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/app_state.dart';
+import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/service/storage/storage.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
 import 'package:provider/provider.dart';
 
@@ -17,11 +19,12 @@ class _EditListDialogState extends State<EditListDialog> {
   @override
   void initState() {
     super.initState();
+    nameTextInputController = TextEditingController();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      nameTextInputController = TextEditingController(
-          text: Provider.of<AppState>(context, listen: false)
+      nameTextInputController.text =
+          Provider.of<AppState>(context, listen: false)
               .currentShoppingList
-              .name);
+              .name;
     });
   }
 
@@ -66,8 +69,10 @@ class _EditListDialogState extends State<EditListDialog> {
             child: PlatformTextButton(
               onPressed: () => _showAlertDialog(onConfirmed: () {
                 Navigator.pop(context);
-                Provider.of<AppState>(context, listen: false)
-                    .removeCurrentList();
+                AppState appState =
+                    Provider.of<AppState>(context, listen: false);
+                Storage().removeList(appState.currentShoppingList);
+                appState.removeCurrentList();
               }),
               child: const Text("Liste löschen",
                   style: TextStyle(color: Colors.red)),
@@ -83,9 +88,11 @@ class _EditListDialogState extends State<EditListDialog> {
         PlatformDialogAction(
             child: const Text('Speichern'),
             onPressed: () {
-              Provider.of<AppState>(context, listen: false)
-                  .currentShoppingList
-                  .name = nameTextInputController.text;
+              ShoppingList shoppingList =
+                  Provider.of<AppState>(context, listen: false)
+                      .currentShoppingList;
+              shoppingList.name = nameTextInputController.text;
+              Storage().saveList(shoppingList);
               Navigator.pop(context);
             })
       ],

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
-import '../model/item.dart';
+import '../../model/item.dart';
 
 class ItemListViewer extends StatelessWidget {
   const ItemListViewer(
       {Key? key,
       required this.items,
       required this.onItemTapped,
-      this.delayItemTap = false})
+      this.delayItemTap = false,
+      this.onItemTappedLong})
       : super(key: key);
 
   final List<Item> items;
   final void Function(Item) onItemTapped;
+  final void Function(Item)? onItemTappedLong;
   final bool delayItemTap;
 
   final double horizontalPadding = 6;
@@ -56,6 +58,7 @@ class ItemListViewer extends StatelessWidget {
                           key: ValueKey(item.id),
                           item: item,
                           onItemTapped: onItemTapped,
+                          onItemTappedLong: onItemTappedLong ?? (_) {},
                           delayItemTap: delayItemTap,
                         );
                       }).toList())))),

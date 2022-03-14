@@ -2,16 +2,28 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/app_state.dart';
+import 'package:go_list/service/storage/local_storage_provider.dart';
+import 'package:go_list/service/storage/storage.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  runApp(const MyApp());
+  await Storage().init([LocalStorageProvider()]);
+  AppState appState = AppState();
+  Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
+    appState.shoppingLists = shoppingListsFromStorage;
+  }, onDone: () {
+    appState.initializeWithEmptyList();
+    appState.isLoading = false;
+  });
+  runApp(MyApp(appState: appState));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final AppState appState;
+
+  const MyApp({Key? key, required this.appState}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +60,7 @@ class MyApp extends StatelessWidget {
             ],
             title: 'Flutter Platform Widgets',
             home: ChangeNotifierProvider<AppState>(
-                create: (context) => AppState(shoppingLists: []),
-                child: const ShoppingListPage()),
+                create: (context) => appState, child: const ShoppingListPage()),
             material: (_, __) => MaterialAppData(
               theme: materialTheme,
             ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state.dart';
+import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/service/storage/storage.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:provider/provider.dart';
 
@@ -87,8 +89,11 @@ class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
                       onPressed: () {
                         Navigator.pop(context);
                         Navigator.pop(context);
+                        ShoppingList newShoppingList =
+                            ShoppingList(name: newListNameInputController.text);
+                        Storage().saveList(newShoppingList);
                         Provider.of<AppState>(context, listen: false)
-                            .createList(newListNameInputController.text);
+                            .createList(newShoppingList);
                       },
                       child: const Text('Speichern'),
                     ),

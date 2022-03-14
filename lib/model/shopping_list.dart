@@ -24,6 +24,7 @@ class ShoppingList with ChangeNotifier {
 
   set name(String name) {
     _name = name;
+    notifyListeners();
   }
 
   String get name => _name;
@@ -32,29 +33,37 @@ class ShoppingList with ChangeNotifier {
 
   List<Item> get recentlyUsedItems => _recentlyUsedItems;
 
+  void _listenForItemChanges(Item item) {
+    item.addListener(() {
+      notifyListeners();
+    });
+  }
+
   void subscribeToItems() {
     for (Item item in items) {
-      item.addListener(notifyListeners);
+      _listenForItemChanges(item);
     }
   }
 
   void addItem(Item item) {
     _items.add(item);
-    _recentlyUsedItems.insert(0, item);
-    while (_recentlyUsedItems.length > 20) {
-      _recentlyUsedItems.removeLast();
-    }
-    item.addListener(notifyListeners);
+    _listenForItemChanges(item);
     notifyListeners();
     // TODO sort
-    // TODO save
+  }
+
+  void addRecentlyUsedItem(Item recentlyUsedItem) {
+    _recentlyUsedItems.insert(0, recentlyUsedItem);
   }
 
   void removeItem(Item item) {
     items.removeWhere((i) => i.id == item.id);
     item.removeListener(notifyListeners);
     notifyListeners();
-    //TODO save
+  }
+
+  void removeRecentlyUsedItem(Item recentlyUsedItem) {
+    _recentlyUsedItems.removeWhere((i) => i.id == recentlyUsedItem.id);
   }
 
   ShoppingList.fromJson(Map<String, dynamic> json) {

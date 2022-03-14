@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:go_list/model/app_state.dart';
+import 'package:go_list/service/storage/storage.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
+import 'package:provider/provider.dart';
 
 import '../../model/item.dart';
 
 class EditItemDialog extends StatefulWidget {
-  const EditItemDialog(
-      {Key? key, required this.item, required this.onItemChanged})
-      : super(key: key);
+  const EditItemDialog({Key? key, required this.item}) : super(key: key);
 
   final Item item;
-  final Function onItemChanged;
 
   @override
   State<EditItemDialog> createState() => _EditItemDialogState();
@@ -57,7 +57,10 @@ class _EditItemDialogState extends State<EditItemDialog> {
             onPressed: () {
               widget.item.name = nameTextInputController.text;
               widget.item.amount = amountInputController.text;
-              widget.onItemChanged();
+              Storage().saveItem(
+                  Provider.of<AppState>(context, listen: false)
+                      .currentShoppingList,
+                  widget.item);
               Navigator.pop(context);
             })
       ],
