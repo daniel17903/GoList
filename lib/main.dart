@@ -15,7 +15,6 @@ void main() async {
     appState.shoppingLists = shoppingListsFromStorage;
   }, onDone: () {
     appState.initializeWithEmptyList();
-    appState.isLoading = false;
   });
   runApp(MyApp(appState: appState));
 }

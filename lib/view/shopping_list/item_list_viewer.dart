@@ -9,13 +9,15 @@ class ItemListViewer extends StatelessWidget {
       required this.items,
       required this.onItemTapped,
       this.delayItemTap = false,
-      this.onItemTappedLong})
+      this.onItemTappedLong,
+      this.title})
       : super(key: key);
 
   final List<Item> items;
   final void Function(Item) onItemTapped;
   final void Function(Item)? onItemTappedLong;
   final bool delayItemTap;
+  final String? title;
 
   final double horizontalPadding = 6;
   final double spacing = 6;
@@ -47,21 +49,33 @@ class ItemListViewer extends StatelessWidget {
                       right: horizontalPadding,
                       top: 6,
                       bottom: 70),
-                  child: Wrap(
-                      spacing: spacing,
-                      // gap between adjacent chips
-                      runSpacing: spacing,
-                      direction: Axis.horizontal,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: items.map((Item item) {
-                        return ShoppingListItem(
-                          key: ValueKey(item.id),
-                          item: item,
-                          onItemTapped: onItemTapped,
-                          onItemTappedLong: onItemTappedLong ?? (_) {},
-                          delayItemTap: delayItemTap,
-                        );
-                      }).toList())))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (title != null)
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 12.0, top: 5),
+                          child: Text(title!,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 22)),
+                        ),
+                      Wrap(
+                          spacing: spacing,
+                          // gap between adjacent chips
+                          runSpacing: spacing,
+                          direction: Axis.horizontal,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: items.map((Item item) {
+                            return ShoppingListItem(
+                              key: ValueKey(item.id),
+                              item: item,
+                              onItemTapped: onItemTapped,
+                              onItemTappedLong: onItemTappedLong ?? (_) {},
+                              delayItemTap: delayItemTap,
+                            );
+                          }).toList()),
+                    ],
+                  )))),
     );
   }
 }

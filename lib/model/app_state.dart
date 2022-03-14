@@ -7,7 +7,6 @@ import 'package:go_list/service/storage/storage.dart';
 class AppState extends ChangeNotifier {
   late List<ShoppingList> _shoppingLists;
   late int _selectedList;
-  bool _isLoading = true;
 
   AppState({List<ShoppingList>? shoppingLists, int selectedList = 0}) {
     _shoppingLists = shoppingLists ?? [];
@@ -16,8 +15,6 @@ class AppState extends ChangeNotifier {
   }
 
   List<ShoppingList> get shoppingLists => _shoppingLists;
-
-  bool get isLoading => _isLoading;
 
   void _subscribeToLists() {
     for (ShoppingList shoppingList in _shoppingLists) {
@@ -77,11 +74,6 @@ class AppState extends ChangeNotifier {
     _unsubscribeFromLists();
     _shoppingLists = shoppingLists;
     _subscribeToLists();
-    notifyListeners();
-  }
-
-  set isLoading(bool isLoading) {
-    _isLoading = isLoading;
     notifyListeners();
   }
 }
