@@ -30,9 +30,25 @@ class _SearchDialogState extends State<SearchDialog> {
   @override
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      recentlyUsedItemsSorted = Provider.of<AppState>(context, listen: false)
-          .currentShoppingList
-          .recentlyUsedItems;
+      setState(() {
+        recentlyUsedItemsSorted = [
+          ...Provider.of<AppState>(context, listen: false)
+              .currentShoppingList
+              .items
+        ];
+        recentlyUsedItemsSorted.retainWhere((i) => i.deleted == true);
+        sortItems();
+
+        // remove items with same name
+        Set<String> itemNames = {};
+        for (int i = 0; i < recentlyUsedItemsSorted.length; i++) {
+          if(itemNames.contains(recentlyUsedItemsSorted[i].name.toLowerCase())){
+            recentlyUsedItemsSorted.removeAt(i);
+            i--;
+          }
+          itemNames.add(recentlyUsedItemsSorted[i].name);
+        }
+      });
     });
     super.initState();
   }
@@ -41,18 +57,31 @@ class _SearchDialogState extends State<SearchDialog> {
     if (item != null) {
       ShoppingList shoppingList =
           Provider.of<AppState>(context, listen: false).currentShoppingList;
+      item.modified = DateTime.now().millisecondsSinceEpoch;
       shoppingList.addItem(item);
-      Storage().saveItem(shoppingList, item);
-      Item recentlyUsedItem = item.copy();
-      shoppingList.addRecentlyUsedItem(recentlyUsedItem);
-      Storage().saveRecentlyUsedItem(shoppingList, recentlyUsedItem);
-      while (shoppingList.recentlyUsedItems.length > 20) {
-        Storage().removeRecentlyUsedItem(
-            shoppingList, shoppingList.recentlyUsedItems.last);
-        shoppingList
-            .removeRecentlyUsedItem(shoppingList.recentlyUsedItems.last);
-      }
+      Storage().saveItems(shoppingList, [item]);
       Navigator.pop(context);
+    }
+  }
+
+  void sortItems({String? inputText}) {
+    if (recentlyUsedItemsSorted.isNotEmpty) {
+      recentlyUsedItemsSorted.sort((item1, item2) {
+        startsWithIgnoreCase(String value, String start) {
+          return value.toLowerCase().startsWith(start.toLowerCase());
+        }
+
+        if (inputText != null) {
+          if (startsWithIgnoreCase(item2.name, inputText)) {
+            return 1;
+          } else if (startsWithIgnoreCase(item1.name, inputText)) {
+            return -1;
+          }
+          return 0;
+        } else {
+          return item1.modified.compareTo(item2.modified);
+        }
+      });
     }
   }
 
@@ -82,22 +111,7 @@ class _SearchDialogState extends State<SearchDialog> {
             onChanged: (text) {
               _debounced(() {
                 setState(() {
-                  if (recentlyUsedItemsSorted.isNotEmpty) {
-                    recentlyUsedItemsSorted.sort((item1, item2) {
-                      startsWithIgnoreCase(String value, String start) {
-                        return value
-                            .toLowerCase()
-                            .startsWith(start.toLowerCase());
-                      }
-
-                      if (startsWithIgnoreCase(item2.name, text)) {
-                        return 1;
-                      } else if (startsWithIgnoreCase(item1.name, text)) {
-                        return -1;
-                      }
-                      return 0;
-                    });
-                  }
+                  sortItems(inputText: text);
                   if (text.isEmpty ||
                       recentlyUsedItemsSorted.isNotEmpty &&
                           text == recentlyUsedItemsSorted[0].name) {
@@ -112,7 +126,8 @@ class _SearchDialogState extends State<SearchDialog> {
         ),
         Expanded(
           child: ItemListViewer(
-              onItemTapped: (item) => addNewItemToList(item),
+              onItemTapped: (item) =>
+                  addNewItemToList(item.copy()..deleted = false),
               items: [
                 if (newItem != null) newItem!,
                 ...recentlyUsedItemsSorted

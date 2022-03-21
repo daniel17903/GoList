@@ -1,16 +1,19 @@
-import 'package:flutter/cupertino.dart';
-import 'package:uuid/uuid.dart';
+import 'package:go_list/model/golist_model.dart';
 
-class Item extends ChangeNotifier {
-  String id = const Uuid().v4();
-
+class Item extends GoListModel {
   late String _name;
 
   late String _iconName;
 
   String? _amount = "";
 
-  Item({required String name, required String iconName, String? amount}) {
+  Item(
+      {required String name,
+      required String iconName,
+      String? amount,
+      bool? deleted,
+      int? modified})
+      : super(deleted: deleted, modified: modified) {
     _name = name;
     _iconName = iconName;
     _amount = amount;
@@ -38,15 +41,26 @@ class Item extends ChangeNotifier {
   String? get amount => _amount;
 
   Item.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        _name = json['name'],
-        _iconName = json["iconName"],
-        _amount = json["amount"];
+      : super(
+            deleted: json["deleted"],
+            id: json["id"],
+            modified: json["modified"]) {
+    _name = json['name'];
+    _iconName = json["iconName"];
+    _amount = json["amount"];
+  }
 
-  Map<String, dynamic> toJson() =>
-      {'id': id, 'name': name, 'iconName': iconName, 'amount': amount};
+  @override
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'iconName': iconName,
+        'amount': amount,
+        'deleted': deleted,
+        'modified': modified
+      };
 
-  /// returns a copy of this object with new id
+  /// returns an item with same name and icon
   Item copy() {
     return Item(name: name, iconName: iconName, amount: '');
   }

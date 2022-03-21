@@ -10,15 +10,5 @@ abstract class StorageProvider {
 
   FutureOr<void> saveList(ShoppingList shoppingList);
 
-  FutureOr<void> removeList(ShoppingList shoppingList);
-
-  FutureOr<void> saveItem(ShoppingList shoppingList, Item item);
-
-  FutureOr<void> saveRecentlyUsedItem(
-      ShoppingList shoppingList, Item recentlyUsedItem);
-
-  FutureOr<void> removeRecentlyUsedItem(
-      ShoppingList shoppingList, Item recentlyUsedItem);
-
-  FutureOr<void> removeItem(ShoppingList shoppingList, Item item);
+  FutureOr<void> saveItems(ShoppingList shoppingList, List<Item> items);
 }

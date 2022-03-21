@@ -23,11 +23,10 @@ class DialogUtils {
         barrierLabel: '',
         context: context,
         pageBuilder: (context, animation1, animation2) {
-          return SafeArea(
-              child: ChangeNotifierProvider<AppState>.value(
+          return ChangeNotifierProvider<AppState>.value(
             value: appState,
             child: Dialog(child: child),
-          ));
+          );
         });
   }
 

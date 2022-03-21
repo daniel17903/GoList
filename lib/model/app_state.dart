@@ -28,18 +28,16 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  void initializeWithEmptyList() {
+  void initializeWithEmptyList() async {
     if (_shoppingLists.isEmpty) {
       _shoppingLists.add(ShoppingList(
           name: "Einkaufsliste", items: [], recentlyUsedItems: []));
-      Storage().saveList(_shoppingLists[0]);
+      await Storage().saveList(_shoppingLists[0]);
       _shoppingLists[0].items.addAll(InputToItemParser.sampleNamesWithIcon()
           .entries
           .map((entry) => Item(name: entry.value, iconName: entry.key))
           .toList());
-      for (Item item in _shoppingLists[0].items) {
-        Storage().saveItem(_shoppingLists[0], item);
-      }
+      await Storage().saveItems(_shoppingLists[0], _shoppingLists[0].items);
       notifyListeners();
       // TODO sort
     }
@@ -72,7 +70,13 @@ class AppState extends ChangeNotifier {
 
   set shoppingLists(List<ShoppingList> shoppingLists) {
     _unsubscribeFromLists();
-    _shoppingLists = shoppingLists;
+    _shoppingLists.clear();
+    _shoppingLists.addAll(shoppingLists);
+    if (_shoppingLists.isNotEmpty) {
+      _selectedList = 0;
+    } else {
+      _selectedList = -1;
+    }
     _subscribeToLists();
     notifyListeners();
   }

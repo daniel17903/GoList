@@ -13,17 +13,21 @@ class ShoppingListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppState>(
       builder: (BuildContext context, AppState appState, Widget? child) =>
-          ItemListViewer(
-        items: appState.currentShoppingList.items,
-        title: appState.currentShoppingList.name,
-        onItemTapped: (tappedItem) {
-          Storage().removeItem(appState.currentShoppingList, tappedItem);
-          appState.currentShoppingList.removeItem(tappedItem);
-        },
-        onItemTappedLong: (item) => DialogUtils.showSmallAlertDialog(
-            context: context, content: EditItemDialog(item: item)),
-        delayItemTap: true,
-      ),
+          appState.shoppingLists.isNotEmpty
+              ? ItemListViewer(
+                  items: [...appState.currentShoppingList.items]
+                    ..retainWhere((i) => i.deleted == false),
+                  title: appState.currentShoppingList.name,
+                  onItemTapped: (tappedItem) {
+                    appState.currentShoppingList.deleteItem(tappedItem);
+                    Storage()
+                        .saveItems(appState.currentShoppingList, [tappedItem]);
+                  },
+                  onItemTappedLong: (item) => DialogUtils.showSmallAlertDialog(
+                      context: context, content: EditItemDialog(item: item)),
+                  delayItemTap: true,
+                )
+              : Text("lädt"),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/app_state.dart';
+import 'package:go_list/service/input_to_item_parser.dart';
 import 'package:go_list/service/storage/storage.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
 import 'package:provider/provider.dart';
@@ -57,10 +58,13 @@ class _EditItemDialogState extends State<EditItemDialog> {
             onPressed: () {
               widget.item.name = nameTextInputController.text;
               widget.item.amount = amountInputController.text;
-              Storage().saveItem(
+              widget.item.iconName = InputToItemParser.findMatchingIconForName(
+                  nameTextInputController.text);
+              widget.item.modified = DateTime.now().millisecondsSinceEpoch;
+              Storage().saveItems(
                   Provider.of<AppState>(context, listen: false)
                       .currentShoppingList,
-                  widget.item);
+                  [widget.item]);
               Navigator.pop(context);
             })
       ],

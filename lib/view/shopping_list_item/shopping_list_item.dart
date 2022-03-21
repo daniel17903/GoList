@@ -13,7 +13,8 @@ class ShoppingListItem extends StatefulWidget {
       {Key? key,
       required this.item,
       required this.onItemTapped,
-      required this.delayItemTap, required this.onItemTappedLong})
+      required this.delayItemTap,
+      required this.onItemTappedLong})
       : super(key: key);
 
   final Item item;
@@ -73,7 +74,8 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
                         ),
                         children: <TextSpan>[
                           TextSpan(
-                              text: widget.item.amount != null
+                              text: widget.item.amount != null &&
+                                      widget.item.amount!.isNotEmpty
                                   ? "\n" + widget.item.amount!
                                   : "",
                               style: TextStyle(

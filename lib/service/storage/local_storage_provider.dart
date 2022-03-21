@@ -2,6 +2,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/storage_provider.dart';
+import 'package:collection/collection.dart';
 
 class LocalStorageProvider implements StorageProvider {
   final box = GetStorage();
@@ -14,85 +15,62 @@ class LocalStorageProvider implements StorageProvider {
   @override
   List<ShoppingList> loadShoppingLists() {
     if (box.hasData("shoppingLists")) {
-      return box.read("shoppingLists").map<ShoppingList>((element) {
+      List<ShoppingList> shoppingLists =
+          box.read("shoppingLists").map<ShoppingList>((element) {
         if (element is ShoppingList) {
           return element;
         }
         return ShoppingList.fromJson(element);
       }).toList();
+      shoppingLists.retainWhere((sl) => sl.deleted == false);
+      return shoppingLists;
     }
     return [];
   }
 
-  @override
-  void removeItem(ShoppingList shoppingList, Item item) {
-    box.write(
-        "shoppingLists",
-        loadShoppingLists().map((sl) {
-          if (sl.id == shoppingList.id) {
-            sl.items.removeWhere((i) => i.id == item.id);
-          }
-          return sl;
-        }).toList());
+  ShoppingList? _shoppingListById(List<ShoppingList> shoppingLists, String id) {
+    return loadShoppingLists().firstWhereOrNull((sl) => sl.id == id);
   }
 
   @override
-  void removeList(ShoppingList shoppingList) {
-    box.write(
-        "shoppingLists",
-        loadShoppingLists()
-            .where((sl) => sl.id != shoppingList.id)
-            .map((shoppingList) => shoppingList.toJson())
-            .toList());
-  }
+  void saveItems(ShoppingList shoppingList, List<Item> items) {
+    List<ShoppingList> shoppingLists = loadShoppingLists();
+    ShoppingList shoppingListToUpdate =
+        _shoppingListById(shoppingLists, shoppingList.id)!;
 
-  @override
-  void saveItem(ShoppingList shoppingList, Item item) {
-    box.write(
-        "shoppingLists",
-        loadShoppingLists().map((sl) {
-          if (sl.id == shoppingList.id) {
-            sl.items.removeWhere((i) => i.id == item.id);
-            sl.items.add(item);
-          }
-          return sl;
-        }).toList());
+    // update all items that already existed
+    for (int i = 0; i < shoppingListToUpdate.items.length; i++) {
+      for (int x = 0; x < items.length; x++) {
+        if (shoppingListToUpdate.items[i].id == items[x].id) {
+          shoppingListToUpdate.items[i] = items[x];
+          items.removeAt(x);
+          x--;
+        }
+      }
+    }
+
+    // insert all items that did not exist yet
+    shoppingListToUpdate.items.addAll(items);
+
+    box.write("shoppingLists", shoppingLists.map((sl) => sl.toJson()).toList());
   }
 
   @override
   void saveList(ShoppingList shoppingList) {
-    removeList(shoppingList);
     List<ShoppingList> shoppingLists = loadShoppingLists();
-    shoppingLists.add(shoppingList);
+    ShoppingList? shoppingListToUpdate =
+        _shoppingListById(shoppingLists, shoppingList.id);
+    if (shoppingListToUpdate == null) {
+      shoppingLists.add(ShoppingList(
+          name: shoppingList.name,
+          deleted: shoppingList.deleted,
+          modified: shoppingList.modified));
+    } else {
+      shoppingListToUpdate.name = shoppingList.name;
+      shoppingListToUpdate.deleted = shoppingList.deleted;
+      shoppingListToUpdate.modified = shoppingList.modified;
+    }
     box.write("shoppingLists",
         shoppingLists.map((shoppingList) => shoppingList.toJson()).toList());
-  }
-
-  @override
-  void saveRecentlyUsedItem(ShoppingList shoppingList, Item recentlyUsedItem) {
-    box.write(
-        "shoppingLists",
-        loadShoppingLists().map((sl) {
-          if (sl.id == shoppingList.id) {
-            sl.recentlyUsedItems
-                .removeWhere((i) => i.id == recentlyUsedItem.id);
-            sl.recentlyUsedItems.add(recentlyUsedItem);
-          }
-          return sl;
-        }).toList());
-  }
-
-  @override
-  void removeRecentlyUsedItem(
-      ShoppingList shoppingList, Item recentlyUsedItem) {
-    box.write(
-        "shoppingLists",
-        loadShoppingLists().map((sl) {
-          if (sl.id == shoppingList.id) {
-            sl.recentlyUsedItems
-                .removeWhere((i) => i.id == recentlyUsedItem.id);
-          }
-          return sl;
-        }).toList());
   }
 }

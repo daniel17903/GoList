@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/service/storage/local_storage_provider.dart';
+import 'package:go_list/service/storage/remote_storage_provider.dart';
 import 'package:go_list/service/storage/storage.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  await Storage().init([LocalStorageProvider()]);
+  await Storage().init([LocalStorageProvider(), RemoteStorageProvider()]);
   AppState appState = AppState();
   Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
     appState.shoppingLists = shoppingListsFromStorage;

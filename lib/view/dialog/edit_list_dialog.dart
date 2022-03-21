@@ -71,7 +71,9 @@ class _EditListDialogState extends State<EditListDialog> {
                 Navigator.pop(context);
                 AppState appState =
                     Provider.of<AppState>(context, listen: false);
-                Storage().removeList(appState.currentShoppingList);
+                appState.currentShoppingList.deleted = true;
+                appState.currentShoppingList.modified = DateTime.now().millisecondsSinceEpoch;
+                Storage().saveList(appState.currentShoppingList);
                 appState.removeCurrentList();
               }),
               child: const Text("Liste löschen",
@@ -92,6 +94,7 @@ class _EditListDialogState extends State<EditListDialog> {
                   Provider.of<AppState>(context, listen: false)
                       .currentShoppingList;
               shoppingList.name = nameTextInputController.text;
+              shoppingList.modified = DateTime.now().millisecondsSinceEpoch;
               Storage().saveList(shoppingList);
               Navigator.pop(context);
             })
