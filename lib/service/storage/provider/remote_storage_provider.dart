@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/service/storage/storage_provider.dart';
+import 'package:go_list/service/storage/provider/storage_provider.dart';
 import 'package:http/http.dart';
 
 enum HttpMethod { GET, POST }
@@ -48,31 +48,46 @@ class RemoteStorageProvider extends StorageProvider {
 
   @override
   Future<List<ShoppingList>> loadShoppingLists() async {
-    final response = await _sendHttpRequest(
-        endpoint: "/api/shoppinglists", httpMethod: HttpMethod.GET);
+    try {
+      final response = await _sendHttpRequest(
+          endpoint: "/api/shoppinglists", httpMethod: HttpMethod.GET);
 
-    return jsonDecode(utf8.decode(response.bodyBytes))
-        .map<ShoppingList>((element) {
-      if (element is ShoppingList) {
-        return element;
-      }
-      return ShoppingList.fromJson(element);
-    }).toList();
+      return jsonDecode(utf8.decode(response.bodyBytes))
+          .map<ShoppingList>((element) {
+        if (element is ShoppingList) {
+          return element;
+        }
+        return ShoppingList.fromJson(element);
+      }).toList();
+    } catch (e) {
+      print("failed to load shopping lists from server: $e");
+      rethrow;
+    }
   }
 
   @override
   Future<void> saveItems(ShoppingList shoppingList, List<Item> items) {
-    return _sendHttpRequest(
-        endpoint: "/api/shoppinglist/${shoppingList.id}/items",
-        httpMethod: HttpMethod.POST,
-        body: items.map((i) => i.toJson()).toList());
+    try {
+      return _sendHttpRequest(
+          endpoint: "/api/shoppinglist/${shoppingList.id}/items",
+          httpMethod: HttpMethod.POST,
+          body: items.map((i) => i.toJson()).toList());
+    } catch (e) {
+      print("failed to save items on server: $e");
+    }
+    return Future.value();
   }
 
   @override
   Future<void> saveList(ShoppingList shoppingList) {
-    return _sendHttpRequest(
-        endpoint: "/api/shoppinglist",
-        httpMethod: HttpMethod.POST,
-        body: shoppingList.toJson());
+    try {
+      return _sendHttpRequest(
+          endpoint: "/api/shoppinglist",
+          httpMethod: HttpMethod.POST,
+          body: shoppingList.toJson());
+    } catch (e) {
+      print("failed to save shopping list on server: $e");
+    }
+    return Future.value();
   }
 }

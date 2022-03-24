@@ -63,7 +63,7 @@ class _EditItemDialogState extends State<EditItemDialog> {
               widget.item.modified = DateTime.now().millisecondsSinceEpoch;
               Storage().saveItems(
                   Provider.of<AppState>(context, listen: false)
-                      .currentShoppingList,
+                      .currentShoppingList!,
                   [widget.item]);
               Navigator.pop(context);
             })

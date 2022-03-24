@@ -33,7 +33,7 @@ class _SearchDialogState extends State<SearchDialog> {
       setState(() {
         recentlyUsedItemsSorted = [
           ...Provider.of<AppState>(context, listen: false)
-              .currentShoppingList
+              .currentShoppingList!
               .items
         ];
         recentlyUsedItemsSorted.retainWhere((i) => i.deleted == true);
@@ -56,7 +56,7 @@ class _SearchDialogState extends State<SearchDialog> {
   void addNewItemToList(Item? item) {
     if (item != null) {
       ShoppingList shoppingList =
-          Provider.of<AppState>(context, listen: false).currentShoppingList;
+          Provider.of<AppState>(context, listen: false).currentShoppingList!;
       item.modified = DateTime.now().millisecondsSinceEpoch;
       shoppingList.addItem(item);
       Storage().saveItems(shoppingList, [item]);

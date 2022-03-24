@@ -1,7 +1,7 @@
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/service/storage/storage_provider.dart';
+import 'package:go_list/service/storage/provider/storage_provider.dart';
 import 'package:collection/collection.dart';
 
 class LocalStorageProvider implements StorageProvider {
@@ -15,21 +15,18 @@ class LocalStorageProvider implements StorageProvider {
   @override
   List<ShoppingList> loadShoppingLists() {
     if (box.hasData("shoppingLists")) {
-      List<ShoppingList> shoppingLists =
-          box.read("shoppingLists").map<ShoppingList>((element) {
+      return box.read("shoppingLists").map<ShoppingList>((element) {
         if (element is ShoppingList) {
           return element;
         }
         return ShoppingList.fromJson(element);
       }).toList();
-      shoppingLists.retainWhere((sl) => sl.deleted == false);
-      return shoppingLists;
     }
     return [];
   }
 
   ShoppingList? _shoppingListById(List<ShoppingList> shoppingLists, String id) {
-    return loadShoppingLists().firstWhereOrNull((sl) => sl.id == id);
+    return shoppingLists.firstWhereOrNull((sl) => sl.id == id);
   }
 
   @override
@@ -61,10 +58,7 @@ class LocalStorageProvider implements StorageProvider {
     ShoppingList? shoppingListToUpdate =
         _shoppingListById(shoppingLists, shoppingList.id);
     if (shoppingListToUpdate == null) {
-      shoppingLists.add(ShoppingList(
-          name: shoppingList.name,
-          deleted: shoppingList.deleted,
-          modified: shoppingList.modified));
+      shoppingLists.add(shoppingList);
     } else {
       shoppingListToUpdate.name = shoppingList.name;
       shoppingListToUpdate.deleted = shoppingList.deleted;

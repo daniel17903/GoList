@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/sync/diff.dart';
-import 'package:go_list/service/storage/storage_provider.dart';
+import 'package:go_list/service/storage/provider/storage_provider.dart';
 
 class StorageProviderSync {
   static ShoppingList? _shoppingListById(List<ShoppingList> shoppingLists, id) {

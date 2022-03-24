@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class GoListModel extends ChangeNotifier {
@@ -22,6 +23,6 @@ abstract class GoListModel extends ChangeNotifier {
   Map<String, dynamic> toJson();
 
   bool isEqualTo(GoListModel other) {
-    return mapEquals(toJson(), other.toJson());
+    return const DeepCollectionEquality().equals(toJson(), other.toJson());
   }
 }

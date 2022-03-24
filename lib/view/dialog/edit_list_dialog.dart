@@ -23,7 +23,7 @@ class _EditListDialogState extends State<EditListDialog> {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       nameTextInputController.text =
           Provider.of<AppState>(context, listen: false)
-              .currentShoppingList
+              .currentShoppingList!
               .name;
     });
   }
@@ -71,9 +71,9 @@ class _EditListDialogState extends State<EditListDialog> {
                 Navigator.pop(context);
                 AppState appState =
                     Provider.of<AppState>(context, listen: false);
-                appState.currentShoppingList.deleted = true;
-                appState.currentShoppingList.modified = DateTime.now().millisecondsSinceEpoch;
-                Storage().saveList(appState.currentShoppingList);
+                appState.currentShoppingList!.deleted = true;
+                appState.currentShoppingList!.modified = DateTime.now().millisecondsSinceEpoch;
+                Storage().saveList(appState.currentShoppingList!);
                 appState.removeCurrentList();
               }),
               child: const Text("Liste löschen",
@@ -92,7 +92,7 @@ class _EditListDialogState extends State<EditListDialog> {
             onPressed: () {
               ShoppingList shoppingList =
                   Provider.of<AppState>(context, listen: false)
-                      .currentShoppingList;
+                      .currentShoppingList!;
               shoppingList.name = nameTextInputController.text;
               shoppingList.modified = DateTime.now().millisecondsSinceEpoch;
               Storage().saveList(shoppingList);

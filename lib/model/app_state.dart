@@ -28,16 +28,15 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  void initializeWithEmptyList() async {
+  Future<void> initializeWithEmptyList() async {
     if (_shoppingLists.isEmpty) {
-      _shoppingLists.add(ShoppingList(
-          name: "Einkaufsliste", items: [], recentlyUsedItems: []));
+      _shoppingLists.add(ShoppingList(name: "Einkaufsliste"));
       await Storage().saveList(_shoppingLists[0]);
-      _shoppingLists[0].items.addAll(InputToItemParser.sampleNamesWithIcon()
+      /**_shoppingLists[0].items.addAll(InputToItemParser.sampleNamesWithIcon()
           .entries
           .map((entry) => Item(name: entry.value, iconName: entry.key))
           .toList());
-      await Storage().saveItems(_shoppingLists[0], _shoppingLists[0].items);
+          await Storage().saveItems(_shoppingLists[0], _shoppingLists[0].items);**/
       notifyListeners();
       // TODO sort
     }
@@ -45,7 +44,7 @@ class AppState extends ChangeNotifier {
 
   void removeCurrentList() {
     int indexToRemove =
-        _shoppingLists.indexWhere((sl) => sl.id == currentShoppingList.id);
+        _shoppingLists.indexWhere((sl) => sl.id == currentShoppingList!.id);
     _selectedList = 0;
     _shoppingLists[indexToRemove].removeListener(notifyListeners);
     _shoppingLists.removeAt(indexToRemove);
@@ -66,16 +65,16 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  ShoppingList get currentShoppingList => _shoppingLists[_selectedList];
+  ShoppingList? get currentShoppingList => _selectedList < _shoppingLists.length
+      ? _shoppingLists[_selectedList]
+      : null;
 
   set shoppingLists(List<ShoppingList> shoppingLists) {
     _unsubscribeFromLists();
     _shoppingLists.clear();
     _shoppingLists.addAll(shoppingLists);
-    if (_shoppingLists.isNotEmpty) {
+    if (_selectedList >= _shoppingLists.length) {
       _selectedList = 0;
-    } else {
-      _selectedList = -1;
     }
     _subscribeToLists();
     notifyListeners();

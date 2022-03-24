@@ -9,11 +9,7 @@ class ShoppingList extends GoListModel {
   late List<Item> _items;
 
   ShoppingList(
-      {required String name,
-      List<Item>? items,
-      List<Item>? recentlyUsedItems,
-      bool? deleted,
-      int? modified})
+      {required String name, List<Item>? items, bool? deleted, int? modified})
       : super(modified: modified, deleted: deleted) {
     _name = name;
     _items = items ?? [];
@@ -72,6 +68,7 @@ class ShoppingList extends GoListModel {
         'id': id,
         'name': name,
         'items': items.map((item) => item.toJson()).toList(),
-        'deleted': deleted
+        'deleted': deleted,
+        'modified': modified
       };
 }
