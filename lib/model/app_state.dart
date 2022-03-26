@@ -32,11 +32,11 @@ class AppState extends ChangeNotifier {
     if (_shoppingLists.isEmpty) {
       _shoppingLists.add(ShoppingList(name: "Einkaufsliste"));
       await Storage().saveList(_shoppingLists[0]);
-      /**_shoppingLists[0].items.addAll(InputToItemParser.sampleNamesWithIcon()
+      _shoppingLists[0].items.addAll(InputToItemParser.sampleNamesWithIcon()
           .entries
           .map((entry) => Item(name: entry.value, iconName: entry.key))
           .toList());
-          await Storage().saveItems(_shoppingLists[0], _shoppingLists[0].items);**/
+      await Storage().saveItems(_shoppingLists[0], _shoppingLists[0].items);
       notifyListeners();
       // TODO sort
     }

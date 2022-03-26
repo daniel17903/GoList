@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
@@ -10,6 +11,7 @@ import 'package:go_list/view/shopping_list_page.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  await GetStorage.init();
   await Storage().init([LocalStorageProvider(), RemoteStorageProvider()]);
   AppState appState = AppState();
   Storage().loadShoppingLists().listen((shoppingListsFromStorage) {

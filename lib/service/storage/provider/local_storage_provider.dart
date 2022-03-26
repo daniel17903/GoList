@@ -5,22 +5,18 @@ import 'package:go_list/service/storage/provider/storage_provider.dart';
 import 'package:collection/collection.dart';
 
 class LocalStorageProvider implements StorageProvider {
-  final box = GetStorage();
-
-  @override
-  Future<void> init() async {
-    await GetStorage.init();
-  }
+  final getStorage = GetStorage();
 
   @override
   List<ShoppingList> loadShoppingLists() {
-    if (box.hasData("shoppingLists")) {
-      return box.read("shoppingLists").map<ShoppingList>((element) {
+    if (getStorage.hasData("shoppingLists")) {
+      return getStorage.read("shoppingLists").map<ShoppingList>((element) {
         if (element is ShoppingList) {
           return element;
         }
         return ShoppingList.fromJson(element);
-      }).toList();
+      }).toList()
+        ..retainWhere((sl) => !sl.deleted);
     }
     return [];
   }
@@ -49,7 +45,7 @@ class LocalStorageProvider implements StorageProvider {
     // insert all items that did not exist yet
     shoppingListToUpdate.items.addAll(items);
 
-    box.write("shoppingLists", shoppingLists.map((sl) => sl.toJson()).toList());
+    getStorage.write("shoppingLists", shoppingLists.map((sl) => sl.toJson()).toList());
   }
 
   @override
@@ -64,7 +60,13 @@ class LocalStorageProvider implements StorageProvider {
       shoppingListToUpdate.deleted = shoppingList.deleted;
       shoppingListToUpdate.modified = shoppingList.modified;
     }
-    box.write("shoppingLists",
+    getStorage.write("shoppingLists",
         shoppingLists.map((shoppingList) => shoppingList.toJson()).toList());
+  }
+
+  @override
+  Future<void> init() {
+    // TODO: implement init
+    throw UnimplementedError();
   }
 }
