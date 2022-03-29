@@ -1,14 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/app_state.dart';
+import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:go_list/service/storage/storage.dart';
-import 'package:go_list/style/colors.dart';
+import 'package:go_list/style/themed_app.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_links/uni_links.dart';
+
+bool _initialUriIsHandled = false;
 
 void main() async {
   await GetStorage.init();
@@ -22,58 +28,45 @@ void main() async {
   runApp(MyApp(appState: appState));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final AppState appState;
 
   const MyApp({Key? key, required this.appState}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final materialTheme = ThemeData(
-        backgroundColor: GoListColors.darkBlue,
-        cardColor: Colors.cyan.shade800,
-        bottomAppBarTheme: const BottomAppBarTheme(
-            shape: CircularNotchedRectangle(), color: Colors.teal),
-        colorScheme: const ColorScheme(
-            secondary: Colors.teal,
-            // fab color
-            brightness: Brightness.light,
-            primary: Colors.cyan,
-            onPrimary: Colors.white,
-            onSecondary: Colors.white,
-            background: Colors.blue,
-            onBackground: Colors.green,
-            surface: Colors.red,
-            onSurface: Colors.yellow,
-            error: Colors.grey,
-            onError: Colors.grey));
+  State<MyApp> createState() => _MyAppState();
+}
 
-    return Theme(
-      data: materialTheme,
-      child: PlatformProvider(
-        settings: PlatformSettingsData(iosUsesMaterialWidgets: true),
-        builder: (context) {
-          //PlatformProvider.of(context)?.changeToCupertinoPlatform();
-          return PlatformApp(
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              DefaultMaterialLocalizations.delegate,
-              DefaultWidgetsLocalizations.delegate,
-              DefaultCupertinoLocalizations.delegate,
-            ],
-            title: 'Flutter Platform Widgets',
-            home: ChangeNotifierProvider<AppState>(
-                create: (context) => appState, child: const ShoppingListPage()),
-            material: (_, __) => MaterialAppData(
-              theme: materialTheme,
-            ),
-            cupertino: (_, __) => CupertinoAppData(
-              theme: const CupertinoThemeData(
-                primaryColor: Color(0xff127EFB),
-              ),
-            ),
-          );
-        },
-      ),
-    );
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _handleInitialUri();
+  }
+
+  Future<void> _handleInitialUri() async {
+    if (!_initialUriIsHandled) {
+      _initialUriIsHandled = true;
+      try {
+        final uri = await getInitialUri();
+        if (uri != null && uri.queryParameters.containsKey("token")) {
+          print('got initial uri: $uri');
+          print('got uri params: ${uri.queryParameters}');
+          GoListClient()
+            ..init()
+            ..sendRequest(
+                endpoint: "/api/joinwithtoken/${uri.queryParameters["token"]}",
+                httpMethod: HttpMethod.post);
+        }
+      } catch (_) {}
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ThemedApp(
+        child: ChangeNotifierProvider<AppState>(
+            create: (context) => widget.appState,
+            child: const ShoppingListPage()));
   }
 }

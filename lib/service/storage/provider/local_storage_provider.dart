@@ -45,7 +45,8 @@ class LocalStorageProvider implements StorageProvider {
     // insert all items that did not exist yet
     shoppingListToUpdate.items.addAll(items);
 
-    getStorage.write("shoppingLists", shoppingLists.map((sl) => sl.toJson()).toList());
+    getStorage.write(
+        "shoppingLists", shoppingLists.map((sl) => sl.toJson()).toList());
   }
 
   @override
@@ -65,8 +66,5 @@ class LocalStorageProvider implements StorageProvider {
   }
 
   @override
-  Future<void> init() {
-    // TODO: implement init
-    throw UnimplementedError();
-  }
+  Future<void> init() async {}
 }

@@ -15,13 +15,15 @@ class DeviceId {
   Future<void> init() async {
     String? deviceId;
     var deviceInfo = DeviceInfoPlugin();
-    if (Platform.isIOS) {
-      var iosDeviceInfo = await deviceInfo.iosInfo;
-      deviceId = iosDeviceInfo.identifierForVendor; // unique ID on iOS
-    } else if (Platform.isAndroid) {
-      var androidDeviceInfo = await deviceInfo.androidInfo;
-      deviceId = androidDeviceInfo.androidId; // unique ID on Android
-    }
+    try {
+      if (Platform.isIOS) {
+        var iosDeviceInfo = await deviceInfo.iosInfo;
+        deviceId = iosDeviceInfo.identifierForVendor; // unique ID on iOS
+      } else if (Platform.isAndroid) {
+        var androidDeviceInfo = await deviceInfo.androidInfo;
+        deviceId = androidDeviceInfo.androidId; // unique ID on Android
+      }
+    } catch (_) {}
     if (deviceId == null) {
       if (!getStorage.hasData("deviceId")) {
         getStorage.write("deviceId", const Uuid().v4());
