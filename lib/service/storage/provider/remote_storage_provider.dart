@@ -37,28 +37,26 @@ class RemoteStorageProvider extends StorageProvider {
   }
 
   @override
-  Future<void> saveItems(ShoppingList shoppingList, List<Item> items) {
+  Future<void> saveItems(ShoppingList shoppingList, List<Item> items) async {
     try {
-      return goListClient.sendRequest(
+      await goListClient.sendRequest(
           endpoint: "/api/shoppinglist/${shoppingList.id}/items",
           httpMethod: HttpMethod.post,
           body: items.map((i) => i.toJson()).toList());
     } catch (e) {
       print("failed to save items on server: $e");
     }
-    return Future.value();
   }
 
   @override
-  Future<void> saveList(ShoppingList shoppingList) {
+  Future<void> saveList(ShoppingList shoppingList) async {
     try {
-      return goListClient.sendRequest(
+      await goListClient.sendRequest(
           endpoint: "/api/shoppinglist",
           httpMethod: HttpMethod.post,
           body: shoppingList.toJson());
     } catch (e) {
       print("failed to save shopping list on server: $e");
     }
-    return Future.value();
   }
 }

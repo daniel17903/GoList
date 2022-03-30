@@ -43,6 +43,6 @@ class StorageProviderSync {
       })
     ]);
 
-    return storageProvider1.loadShoppingLists();
+    return await storageProvider1.loadShoppingLists();
   }
 }

@@ -26,9 +26,7 @@ class ShoppingList extends GoListModel {
   List<Item> get items => _items;
 
   void _listenForItemChanges(Item item) {
-    item.addListener(() {
-      notifyListeners();
-    });
+    item.addListener(notifyListeners);
   }
 
   void subscribeToItems() {

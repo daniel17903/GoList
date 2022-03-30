@@ -38,10 +38,29 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  StreamSubscription? _uriLinkStreamSubscription;
+
   @override
   void initState() {
     super.initState();
+    _handleIncomingLinks();
     _handleInitialUri();
+  }
+
+  @override
+  void dispose() {
+    _uriLinkStreamSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _handleIncomingLinks() {
+    if (!kIsWeb) {
+      _uriLinkStreamSubscription = uriLinkStream.listen((Uri? uri) {
+        if (!mounted) return;
+        print('got uri: $uri');
+        print('got uri: ${uri!.queryParameters}');
+      });
+    }
   }
 
   Future<void> _handleInitialUri() async {
