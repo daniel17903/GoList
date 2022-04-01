@@ -30,19 +30,18 @@ class _SearchDialogState extends State<SearchDialog> {
   @override
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      AppState appState = context.read<AppState>();
+      print("SearchDialog: list ${appState.currentShoppingList!.id} with ${appState.currentShoppingList?.items.length} items");
       setState(() {
-        recentlyUsedItemsSorted = [
-          ...Provider.of<AppState>(context, listen: false)
-              .currentShoppingList!
-              .items
-        ];
+        recentlyUsedItemsSorted = [...appState.currentShoppingList!.items];
         recentlyUsedItemsSorted.retainWhere((i) => i.deleted == true);
         sortItems();
 
         // remove items with same name
         Set<String> itemNames = {};
         for (int i = 0; i < recentlyUsedItemsSorted.length; i++) {
-          if(itemNames.contains(recentlyUsedItemsSorted[i].name.toLowerCase())){
+          if (itemNames
+              .contains(recentlyUsedItemsSorted[i].name.toLowerCase())) {
             recentlyUsedItemsSorted.removeAt(i);
             i--;
           }
@@ -50,13 +49,14 @@ class _SearchDialogState extends State<SearchDialog> {
         }
       });
     });
+
     super.initState();
   }
 
-  void addNewItemToList(Item? item) {
+  void addNewItemToList(Item? item, AppState appState) {
+    print("SearchDialog: list ${appState.currentShoppingList!.id} with ${appState.currentShoppingList?.items.length} items");
     if (item != null) {
-      ShoppingList shoppingList =
-          Provider.of<AppState>(context, listen: false).currentShoppingList!;
+      ShoppingList shoppingList = appState.currentShoppingList!;
       item.modified = DateTime.now().millisecondsSinceEpoch;
       shoppingList.addItem(item);
       Storage().saveItems(shoppingList, [item]);
@@ -88,52 +88,56 @@ class _SearchDialogState extends State<SearchDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Column(children: [
-        Container(
-          padding: const EdgeInsets.all(8.0),
-          color: Theme.of(context).backgroundColor,
-          child: TextField(
-            autofocus: true,
-            cursorColor: Colors.white,
-            style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              hintText: 'Was möchtest du einkaufen?',
-              hintStyle: TextStyle(color: Colors.white),
-              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  borderSide: BorderSide(color: Colors.white)),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  borderSide: BorderSide(color: Colors.white)),
-            ),
-            onSubmitted: (_) => addNewItemToList(newItem),
-            onChanged: (text) {
-              _debounced(() {
-                setState(() {
-                  sortItems(inputText: text);
-                  if (text.isEmpty ||
-                      recentlyUsedItemsSorted.isNotEmpty &&
-                          text == recentlyUsedItemsSorted[0].name) {
-                    newItem = null;
-                  } else {
-                    newItem = InputToItemParser.parseInput(text);
-                  }
+      child: Consumer(
+        builder: (BuildContext context, AppState appState, Widget? child) =>
+            Column(children: [
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            color: Theme.of(context).backgroundColor,
+            child: TextField(
+              autofocus: true,
+              cursorColor: Colors.white,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                hintText: 'Was möchtest du einkaufen?',
+                hintStyle: TextStyle(color: Colors.white),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderSide: BorderSide(color: Colors.white)),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderSide: BorderSide(color: Colors.white)),
+              ),
+              onSubmitted: (_) => addNewItemToList(newItem, appState),
+              onChanged: (text) {
+                _debounced(() {
+                  setState(() {
+                    sortItems(inputText: text);
+                    if (text.isEmpty ||
+                        recentlyUsedItemsSorted.isNotEmpty &&
+                            text == recentlyUsedItemsSorted[0].name) {
+                      newItem = null;
+                    } else {
+                      newItem = InputToItemParser.parseInput(text);
+                    }
+                  });
                 });
-              });
-            },
+              },
+            ),
           ),
-        ),
-        Expanded(
-          child: ItemListViewer(
-              onItemTapped: (item) =>
-                  addNewItemToList(item.copy()..deleted = false),
-              items: [
-                if (newItem != null) newItem!,
-                ...recentlyUsedItemsSorted
-              ]),
-        )
-      ]),
+          Expanded(
+            child: ItemListViewer(
+                onItemTapped: (item) =>
+                    addNewItemToList(item.copy()..deleted = false, appState),
+                items: [
+                  if (newItem != null) newItem!,
+                  ...recentlyUsedItemsSorted
+                ]),
+          )
+        ]),
+      ),
     );
   }
 

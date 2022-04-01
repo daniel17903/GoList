@@ -9,13 +9,7 @@ import 'package:go_list/service/storage/provider/storage_provider.dart';
 enum HttpMethod { get, post }
 
 class RemoteStorageProvider extends StorageProvider {
-  late GoListClient goListClient;
-
-  @override
-  Future<void> init() async {
-    goListClient = GoListClient();
-    await goListClient.init();
-  }
+  final GoListClient goListClient = GoListClient();
 
   @override
   Future<List<ShoppingList>> loadShoppingLists() async {

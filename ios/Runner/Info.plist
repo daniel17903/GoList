@@ -51,7 +51,7 @@
         <key>CFBundleTypeRole</key>
         <string>Editor</string>
         <key>CFBundleURLName</key>
-        <string>golist.app</string>
+        <string>golist.ge1ger.de</string>
         <key>CFBundleURLSchemes</key>
         <array>
         <string>customscheme</string>

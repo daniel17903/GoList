@@ -92,8 +92,7 @@ class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
                         ShoppingList newShoppingList =
                             ShoppingList(name: newListNameInputController.text);
                         Storage().saveList(newShoppingList);
-                        Provider.of<AppState>(context, listen: false)
-                            .createList(newShoppingList);
+                        context.read<AppState>().createList(newShoppingList);
                       },
                       child: const Text('Speichern'),
                     ),

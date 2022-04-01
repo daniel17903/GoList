@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_list/model/app_state.dart';
 import 'package:go_list/view/botton_navigation_bar.dart';
 import 'package:go_list/view/dialog/search_dialog.dart';
-import 'package:go_list/view/shopping_list_drawer.dart';
 import 'package:go_list/view/shopping_list/shopping_list_widget.dart';
+import 'package:go_list/view/shopping_list_drawer.dart';
+import 'package:provider/provider.dart';
 
 import 'dialog/dialog_utils.dart';
 
@@ -25,7 +27,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
           floatingActionButton: FloatingActionButton(
               tooltip: "Neuer Eintrag",
               onPressed: () => DialogUtils.showLargeAnimatedDialog(
-                  context: context, child: const SearchDialog()),
+                  context: context, child: SearchDialog()),
               child: const Icon(Icons.add))),
     );
   }

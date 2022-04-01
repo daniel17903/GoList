@@ -13,15 +13,14 @@ class GoListClient {
     client = Client();
   }
 
-  Future<void> init() async {
-    await deviceId.init();
-  }
-
   Future<Response> sendRequest(
       {required String endpoint,
       required HttpMethod httpMethod,
       Object? body}) async {
-    Map<String, String> headers = {"api-key": "secure", "user-id": deviceId()};
+    Map<String, String> headers = {
+      "api-key": "secure",
+      "user-id": await deviceId()
+    };
     String? jsonBody;
     if (body != null) {
       jsonBody = json.encode(body);

@@ -12,7 +12,7 @@ class DeviceId {
     getStorage = GetStorage();
   }
 
-  Future<void> init() async {
+  Future<void> _init() async {
     String? deviceId;
     var deviceInfo = DeviceInfoPlugin();
     try {
@@ -33,7 +33,10 @@ class DeviceId {
     cachedDeviceId = deviceId;
   }
 
-  String call() {
+  Future<String> call() async {
+    if (cachedDeviceId == null) {
+      await _init();
+    }
     return cachedDeviceId!;
   }
 }

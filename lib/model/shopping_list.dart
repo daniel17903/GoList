@@ -50,6 +50,12 @@ class ShoppingList extends GoListModel {
     // TODO sort
   }
 
+  void addItems(List<Item> items){
+    for(Item item in items){
+      addItem(item);
+    }
+  }
+
   ShoppingList.fromJson(Map<String, dynamic> json)
       : super(
             id: json["id"],

@@ -65,6 +65,4 @@ class LocalStorageProvider implements StorageProvider {
         shoppingLists.map((shoppingList) => shoppingList.toJson()).toList());
   }
 
-  @override
-  Future<void> init() async {}
 }

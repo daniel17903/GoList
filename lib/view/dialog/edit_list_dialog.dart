@@ -22,9 +22,7 @@ class _EditListDialogState extends State<EditListDialog> {
     nameTextInputController = TextEditingController();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       nameTextInputController.text =
-          Provider.of<AppState>(context, listen: false)
-              .currentShoppingList!
-              .name;
+          context.read<AppState>().currentShoppingList!.name;
     });
   }
 
@@ -57,6 +55,7 @@ class _EditListDialogState extends State<EditListDialog> {
 
   @override
   Widget build(BuildContext context) {
+    AppState appState = context.watch<AppState>();
     return PlatformAlertDialog(
       title: const Text('Liste bearbeiten'),
       content: Column(
@@ -69,11 +68,11 @@ class _EditListDialogState extends State<EditListDialog> {
             child: PlatformTextButton(
               onPressed: () => _showAlertDialog(onConfirmed: () {
                 Navigator.pop(context);
-                AppState appState =
-                    Provider.of<AppState>(context, listen: false);
                 appState.currentShoppingList!.deleted = true;
-                appState.currentShoppingList!.modified = DateTime.now().millisecondsSinceEpoch;
+                appState.currentShoppingList!.modified =
+                    DateTime.now().millisecondsSinceEpoch;
                 Storage().saveList(appState.currentShoppingList!);
+                print("removing ${appState.currentShoppingList!.id}");
                 appState.removeCurrentList();
               }),
               child: const Text("Liste löschen",
@@ -90,9 +89,7 @@ class _EditListDialogState extends State<EditListDialog> {
         PlatformDialogAction(
             child: const Text('Speichern'),
             onPressed: () {
-              ShoppingList shoppingList =
-                  Provider.of<AppState>(context, listen: false)
-                      .currentShoppingList!;
+              ShoppingList shoppingList = appState.currentShoppingList!;
               shoppingList.name = nameTextInputController.text;
               shoppingList.modified = DateTime.now().millisecondsSinceEpoch;
               Storage().saveList(shoppingList);

@@ -19,11 +19,6 @@ class Storage {
     return _singleton;
   }
 
-  Future<void> init(List<StorageProvider> storageProviders) {
-    return Future.wait(
-        [localStorageProvider, remoteStorageProvider].map((sp) => sp.init()));
-  }
-
   Stream<List<ShoppingList>> loadShoppingLists() {
     StreamController<List<ShoppingList>> streamController = StreamController();
     List<ShoppingList> shoppingListsFromLocal =
@@ -31,14 +26,13 @@ class Storage {
     streamController.add(shoppingListsFromLocal);
     remoteStorageProvider
         .loadShoppingLists()
-        .then((shoppingListsFromRemote) {
-          StorageProviderSync.syncStorageProviders(
-                  localStorageProvider,
-                  shoppingListsFromLocal,
-                  remoteStorageProvider,
-                  shoppingListsFromRemote)
-              .then(streamController.add);
-        })
+        .then((shoppingListsFromRemote) =>
+            StorageProviderSync.syncStorageProviders(
+                    localStorageProvider,
+                    shoppingListsFromLocal,
+                    remoteStorageProvider,
+                    shoppingListsFromRemote)
+                .then(streamController.add))
         .catchError((_) => print("failed to load shoppinglists from remote"))
         .whenComplete(streamController.close);
 

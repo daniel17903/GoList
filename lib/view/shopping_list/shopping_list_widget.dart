@@ -11,23 +11,28 @@ class ShoppingListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppState>(
-      builder: (BuildContext context, AppState appState, Widget? child) =>
-          appState.currentShoppingList != null
-              ? ItemListViewer(
-                  items: [...appState.currentShoppingList!.items]
-                    ..retainWhere((i) => i.deleted == false),
-                  title: appState.currentShoppingList!.name,
-                  onItemTapped: (tappedItem) {
-                    appState.currentShoppingList!.deleteItem(tappedItem);
-                    Storage()
-                        .saveItems(appState.currentShoppingList!, [tappedItem]);
-                  },
-                  onItemTappedLong: (item) => DialogUtils.showSmallAlertDialog(
-                      context: context, content: EditItemDialog(item: item)),
-                  delayItemTap: true,
-                )
-              : Text("lädt"),
-    );
+    AppState appState = context.watch<AppState>();
+    if (appState.shoppingLists.isEmpty) {
+      print("new appstate without list");
+    } else {
+      print(
+          "ShoppingListWidget: ${appState.shoppingLists.length} lists with list id ${appState.currentShoppingList!.id} and ${appState.currentShoppingList!.items.length} items");
+    }
+    return appState.currentShoppingList != null
+        ? ItemListViewer(
+            items: [...appState.currentShoppingList!.items]
+              ..retainWhere((i) => i.deleted == false),
+            title: appState.currentShoppingList!.name,
+            onItemTapped: (tappedItem) {
+              print(
+                  "ShoppingListWidget: ${appState.shoppingLists.length} lists with list id ${appState.currentShoppingList!.id} and ${appState.currentShoppingList!.items.length} items");
+              appState.currentShoppingList!.deleteItem(tappedItem);
+              Storage().saveItems(appState.currentShoppingList!, [tappedItem]);
+            },
+            onItemTappedLong: (item) => DialogUtils.showSmallAlertDialog(
+                context: context, content: EditItemDialog(item: item)),
+            delayItemTap: true,
+          )
+        : Text("lädt");
   }
 }

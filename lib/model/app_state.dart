@@ -15,6 +15,7 @@ class AppState extends ChangeNotifier {
   }
 
   List<ShoppingList> get shoppingLists => _shoppingLists;
+  int get selectedList => _selectedList;
 
   void _subscribeToLists() {
     for (ShoppingList shoppingList in _shoppingLists) {
@@ -30,12 +31,13 @@ class AppState extends ChangeNotifier {
 
   Future<void> initializeWithEmptyList() async {
     if (_shoppingLists.isEmpty) {
-      _shoppingLists.add(ShoppingList(name: "Einkaufsliste"));
-      _shoppingLists[0].items.addAll(InputToItemParser.sampleNamesWithIcon()
+      createList(ShoppingList(name: "Einkaufsliste"));
+      currentShoppingList!.addItems(InputToItemParser.sampleNamesWithIcon()
           .entries
           .map((entry) => Item(name: entry.value, iconName: entry.key))
           .toList());
       notifyListeners();
+      print("added ${currentShoppingList?.items.length} items to list ${currentShoppingList?.id}");
       await Storage().saveList(_shoppingLists[0]);
       await Storage().saveItems(_shoppingLists[0], _shoppingLists[0].items);
       // TODO sort
@@ -43,21 +45,18 @@ class AppState extends ChangeNotifier {
   }
 
   void removeCurrentList() {
-    int indexToRemove =
-        _shoppingLists.indexWhere((sl) => sl.id == currentShoppingList!.id);
+    int indexToRemove = _selectedList;
     _selectedList = 0;
     _shoppingLists[indexToRemove].removeListener(notifyListeners);
     _shoppingLists.removeAt(indexToRemove);
-    initializeWithEmptyList();
     notifyListeners();
+    initializeWithEmptyList();
   }
 
   void createList(ShoppingList shoppingList) {
-    shoppingList.addListener(notifyListeners);
     _shoppingLists.add(shoppingList);
-    _selectedList = _shoppingLists.length - 1;
     shoppingList.addListener(notifyListeners);
-    notifyListeners();
+    selectedList = _shoppingLists.length - 1;
   }
 
   set selectedList(int selectedList) {
@@ -71,8 +70,7 @@ class AppState extends ChangeNotifier {
 
   set shoppingLists(List<ShoppingList> shoppingLists) {
     _unsubscribeFromLists();
-    _shoppingLists.clear();
-    _shoppingLists.addAll(shoppingLists);
+    _shoppingLists = shoppingLists;
     if (_selectedList >= _shoppingLists.length) {
       _selectedList = 0;
     }
