@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:go_list/model/backend_url.dart';
 import 'package:go_list/service/storage/provider/device_id.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:http/http.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class GoListClient {
   late Client client;
@@ -26,7 +28,7 @@ class GoListClient {
       jsonBody = json.encode(body);
       headers["Content-Type"] = "application/json";
     }
-    Uri uri = Uri.parse(const String.fromEnvironment('BACKEND_URL') + endpoint);
+    Uri uri = Uri.parse("${BackendUrl.httpUrl()}$endpoint");
     Response response;
     try {
       switch (httpMethod) {
@@ -44,5 +46,14 @@ class GoListClient {
     } catch (_) {
       throw Exception("$httpMethod request to '$endpoint' failed");
     }
+  }
+
+  Future<WebSocketChannel> listenForChanges(String shoppingListId) async {
+    WebSocketChannel webSocketChannel = WebSocketChannel.connect(
+        Uri.parse(
+            "${BackendUrl.websocketUrl()}/api/shoppinglist/${shoppingListId}/listen"));
+    await deviceId().then(webSocketChannel.sink.add);
+    print("sent deviceId ${await deviceId()}");
+    return webSocketChannel;
   }
 }

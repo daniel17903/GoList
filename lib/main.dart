@@ -73,7 +73,6 @@ class _MyAppState extends State<MyApp> {
     return ChangeNotifierProvider<AppState>(
         // ChangeNotifierProvider needs to wrap around whole app
         create: (context) => AppState(),
-        child: ThemedApp(
-            child: const ShoppingListLoader(child: ShoppingListPage())));
+        child: ThemedApp(child: ShoppingListLoader(child: ShoppingListPage())));
   }
 }

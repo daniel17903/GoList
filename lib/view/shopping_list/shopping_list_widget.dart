@@ -21,11 +21,9 @@ class ShoppingListWidget extends StatelessWidget {
     return appState.currentShoppingList != null
         ? ItemListViewer(
             items: [...appState.currentShoppingList!.items]
-              ..retainWhere((i) => i.deleted == false),
+              ..retainWhere((i) => !i.deleted),
             title: appState.currentShoppingList!.name,
             onItemTapped: (tappedItem) {
-              print(
-                  "ShoppingListWidget: ${appState.shoppingLists.length} lists with list id ${appState.currentShoppingList!.id} and ${appState.currentShoppingList!.items.length} items");
               appState.currentShoppingList!.deleteItem(tappedItem);
               Storage().saveItems(appState.currentShoppingList!, [tappedItem]);
             },

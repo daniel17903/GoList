@@ -54,10 +54,10 @@ class ItemListViewer extends StatelessWidget {
                     children: [
                       if (title != null)
                         Padding(
-                          padding: EdgeInsets.only(bottom: 12.0, top: 5),
+                          padding: const EdgeInsets.only(bottom: 12.0, top: 5),
                           child: Text(title!,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 22)),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 22)),
                         ),
                       Wrap(
                           spacing: spacing,
@@ -67,7 +67,7 @@ class ItemListViewer extends StatelessWidget {
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: items.map((Item item) {
                             return ShoppingListItem(
-                              key: ValueKey(item.id),
+                              key: ObjectKey(item),
                               item: item,
                               onItemTapped: onItemTapped,
                               onItemTappedLong: onItemTappedLong ?? (_) {},

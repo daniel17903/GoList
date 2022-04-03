@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state.dart';
+import 'package:go_list/model/backend_url.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +32,8 @@ class GoListBottomNavigationBar extends StatelessWidget {
                 httpMethod: HttpMethod.post)
             .then((response) => jsonDecode(utf8.decode(response.bodyBytes)))
             .then((responseJson) => responseJson["token"])
-            .then((token) => Share.share(
-                "${const String.fromEnvironment('BACKEND_URL')}?token=$token"))
+            .then(
+                (token) => Share.share("${BackendUrl.httpUrl()}?token=$token"))
             .catchError((_) => ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Teilen fehlgeschlagen :("))));
         break;

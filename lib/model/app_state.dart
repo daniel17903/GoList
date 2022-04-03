@@ -68,6 +68,18 @@ class AppState extends ChangeNotifier {
       ? _shoppingLists[_selectedList]
       : null;
 
+  set currentShoppingList(ShoppingList? newCurrentShoppingList){
+    if(newCurrentShoppingList == null) return;
+    if(currentShoppingList == null){
+      createList(newCurrentShoppingList);
+    }else{
+      currentShoppingList!.removeListener(notifyListeners);
+      _shoppingLists[_selectedList] = newCurrentShoppingList;
+      _shoppingLists[_selectedList].addListener(notifyListeners);
+    }
+    notifyListeners();
+  }
+
   set shoppingLists(List<ShoppingList> shoppingLists) {
     _unsubscribeFromLists();
     _shoppingLists = shoppingLists;

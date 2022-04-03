@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/model/app_state.dart';
 import 'package:go_list/view/botton_navigation_bar.dart';
 import 'package:go_list/view/dialog/search_dialog.dart';
 import 'package:go_list/view/shopping_list/shopping_list_widget.dart';
 import 'package:go_list/view/shopping_list_drawer.dart';
-import 'package:provider/provider.dart';
 
 import 'dialog/dialog_utils.dart';
 
-class _ShoppingListPageState extends State<ShoppingListPage> {
+class ShoppingListPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  ShoppingListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +31,4 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
               child: const Icon(Icons.add))),
     );
   }
-}
-
-class ShoppingListPage extends StatefulWidget {
-  const ShoppingListPage({Key? key}) : super(key: key);
-
-  @override
-  _ShoppingListPageState createState() => _ShoppingListPageState();
 }

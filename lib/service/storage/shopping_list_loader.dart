@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/service/storage/storage.dart';
+import 'package:go_list/service/storage/sync/websocket_sync.dart';
 import 'package:provider/provider.dart';
 
 class ShoppingListLoader extends StatefulWidget {
@@ -28,6 +29,6 @@ class _ShoppingListLoaderState extends State<ShoppingListLoader> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return WebsocketSync(child: widget.child);
   }
 }
