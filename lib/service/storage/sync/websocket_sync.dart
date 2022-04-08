@@ -1,29 +1,32 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:go_list/model/app_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/golist_client.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class WebsocketSync extends StatefulWidget {
+class WebsocketSync extends StatefulHookConsumerWidget {
   final Widget child;
 
   const WebsocketSync({Key? key, required this.child}) : super(key: key);
 
   @override
-  State<WebsocketSync> createState() => _WebsocketSyncState();
+  ConsumerState<WebsocketSync> createState() => _WebsocketSyncState();
 }
 
-class _WebsocketSyncState extends State<WebsocketSync> {
+class _WebsocketSyncState extends ConsumerState<WebsocketSync> {
   WebSocketChannel? websocketChannel;
   String? subscribedToShoppingListWithId;
   bool connected = false;
   int retries = 0;
 
-  Future<void> listenForChanges(AppState appState) async {
-    ShoppingList? currentShoppingList = appState.currentShoppingList;
+  Future<void> listenForChanges() async {
+    ShoppingList? currentShoppingList = ref
+        .read(AppStateNotifier.appStateProvider)
+        .currentShoppingList;
     if (retries < 3 &&
         currentShoppingList != null &&
         (subscribedToShoppingListWithId != currentShoppingList.id ||
@@ -41,7 +44,9 @@ class _WebsocketSyncState extends State<WebsocketSync> {
           await GoListClient().listenForChanges(currentShoppingList.id);
       websocketChannel?.stream.listen((data) {
         print("updating shoppinglist from websocket: ${jsonDecode(data)}");
-        appState.currentShoppingList = ShoppingList.fromJson(jsonDecode(data));
+        ref.read(AppStateNotifier.appStateProvider.notifier).updateShoppingList(
+            ShoppingList.fromJson(jsonDecode(data)),
+            updateRemoteStorage: false);
       },
           onError: print,
           onDone: () => setState(() {
@@ -62,8 +67,7 @@ class _WebsocketSyncState extends State<WebsocketSync> {
 
   @override
   Widget build(BuildContext context) {
-    AppState appState = context.watch<AppState>();
-    listenForChanges(appState);
+    listenForChanges();
     return widget.child;
   }
 }

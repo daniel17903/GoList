@@ -1,31 +1,32 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_list/model/app_state.dart';
-import 'package:go_list/model/backend_url.dart';
+import 'package:go_list/model/app_state_notifier.dart';
+import 'package:go_list/service/backend_url.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'dialog/dialog_utils.dart';
 import 'dialog/edit_list_dialog.dart';
 
-class GoListBottomNavigationBar extends StatelessWidget {
+class GoListBottomNavigationBar extends HookConsumerWidget {
   const GoListBottomNavigationBar({Key? key, required this.onMenuButtonTapped})
       : super(key: key);
 
   final void Function() onMenuButtonTapped;
 
-  void handleClick(BuildContext context, String value) {
+  void handleClick(BuildContext context, String value, AppState appState) {
     switch (value) {
       case 'Bearbeiten':
         DialogUtils.showSmallAlertDialog(
             context: context, content: EditListDialog());
         break;
       case 'Teilen':
-        String currentShoppingListId =
-            context.read<AppState>().currentShoppingList!.id;
+        String currentShoppingListId = appState.currentShoppingList!.id;
         GoListClient()
             .sendRequest(
                 endpoint: "/api/shoppinglist/$currentShoppingListId/token",
@@ -41,7 +42,9 @@ class GoListBottomNavigationBar extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    AppState appState =
+        ref.watch(AppStateNotifier.appStateProvider);
     return BottomAppBar(
       child: Row(children: <Widget>[
         IconButton(
@@ -51,7 +54,7 @@ class GoListBottomNavigationBar extends StatelessWidget {
             onPressed: onMenuButtonTapped),
         const Spacer(),
         PopupMenuButton<String>(
-          onSelected: (value) => handleClick(context, value),
+          onSelected: (value) => handleClick(context, value, appState),
           color: Colors.white,
           icon: const Icon(Icons.more_vert_rounded, color: Colors.white),
           itemBuilder: (BuildContext context) {

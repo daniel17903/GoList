@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:go_list/model/backend_url.dart';
+import 'package:go_list/service/backend_url.dart';
 import 'package:go_list/service/storage/provider/device_id.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:http/http.dart';

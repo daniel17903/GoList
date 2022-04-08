@@ -15,8 +15,7 @@ class LocalStorageProvider implements StorageProvider {
           return element;
         }
         return ShoppingList.fromJson(element);
-      }).toList()
-        ..retainWhere((sl) => !sl.deleted);
+      }).toList();
     }
     return [];
   }
@@ -50,19 +49,22 @@ class LocalStorageProvider implements StorageProvider {
   }
 
   @override
-  void saveList(ShoppingList shoppingList) {
+  void saveList(ShoppingList updatedShoppingList) {
     List<ShoppingList> shoppingLists = loadShoppingLists();
     ShoppingList? shoppingListToUpdate =
-        _shoppingListById(shoppingLists, shoppingList.id);
+        _shoppingListById(shoppingLists, updatedShoppingList.id);
     if (shoppingListToUpdate == null) {
-      shoppingLists.add(shoppingList);
+      shoppingLists.add(updatedShoppingList);
     } else {
-      shoppingListToUpdate.name = shoppingList.name;
-      shoppingListToUpdate.deleted = shoppingList.deleted;
-      shoppingListToUpdate.modified = shoppingList.modified;
+      shoppingLists = [
+        for (ShoppingList shoppingList in shoppingLists)
+          if (updatedShoppingList.id == shoppingList.id)
+            updatedShoppingList
+          else
+            shoppingList
+      ];
     }
     getStorage.write("shoppingLists",
         shoppingLists.map((shoppingList) => shoppingList.toJson()).toList());
   }
-
 }

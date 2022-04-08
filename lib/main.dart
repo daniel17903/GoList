@@ -9,13 +9,30 @@ import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:go_list/service/storage/shopping_list_loader.dart';
 import 'package:go_list/style/themed_app.dart';
 import 'package:go_list/view/shopping_list_page.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:uni_links/uni_links.dart';
 
 bool _initialUriIsHandled = false;
 
 void main() {
   runApp(const MyApp());
+}
+
+class Logger extends ProviderObserver {
+  @override
+  void didUpdateProvider(
+    ProviderBase provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
+    if (newValue != null && newValue is AppState) {
+      print(
+          "Logger: ${newValue.shoppingLists.length} ${newValue.currentShoppingList?.items.length}");
+    }else{
+      print(newValue);
+    }
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -70,9 +87,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<AppState>(
-        // ChangeNotifierProvider needs to wrap around whole app
-        create: (context) => AppState(),
+    return ProviderScope(
+        observers: [Logger()],
         child: ThemedApp(child: ShoppingListLoader(child: ShoppingListPage())));
   }
 }

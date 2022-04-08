@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/model/app_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/service/storage/storage.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ShoppingListDrawer extends StatefulWidget {
+class ShoppingListDrawer extends StatefulHookConsumerWidget {
   const ShoppingListDrawer({Key? key}) : super(key: key);
 
   @override
-  State<ShoppingListDrawer> createState() => _ShoppingListDrawerState();
+  ConsumerState<ShoppingListDrawer> createState() => _ShoppingListDrawerState();
 }
 
-class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
+class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
   late final TextEditingController newListNameInputController;
 
   @override
@@ -29,6 +29,8 @@ class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    AppStateNotifier appStateNotifier =
+        ref.watch(AppStateNotifier.appStateProvider.notifier);
     return Drawer(
         //backgroundColor: Theme.of(context).backgroundColor,
         child: ListView(
@@ -52,20 +54,18 @@ class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
             title: const Text('Meine Listen'),
             initiallyExpanded: true,
             children: [
-              Consumer<AppState>(
-                builder: (context, appState, child) => ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    itemCount: appState.shoppingLists.length,
-                    itemBuilder: (BuildContext context, int index) => ListTile(
-                          leading: const Icon(Icons.list),
-                          title: Text(appState.shoppingLists[index].name),
-                          onTap: () {
-                            Navigator.pop(context);
-                            appState.selectedList = index;
-                          },
-                        )),
-              )
+              ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  itemCount: appStateNotifier.shoppingLists.length,
+                  itemBuilder: (BuildContext context, int index) => ListTile(
+                        leading: const Icon(Icons.list),
+                        title: Text(appStateNotifier.shoppingLists[index].name),
+                        onTap: () {
+                          Navigator.pop(context);
+                          appStateNotifier.selectList(index);
+                        },
+                      )),
             ]),
         ListTile(
           leading: const Icon(Icons.add),
@@ -91,8 +91,7 @@ class _ShoppingListDrawerState extends State<ShoppingListDrawer> {
                         Navigator.pop(context);
                         ShoppingList newShoppingList =
                             ShoppingList(name: newListNameInputController.text);
-                        Storage().saveList(newShoppingList);
-                        context.read<AppState>().createList(newShoppingList);
+                        appStateNotifier.addShoppingList(newShoppingList);
                       },
                       child: const Text('Speichern'),
                     ),

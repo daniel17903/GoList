@@ -39,13 +39,17 @@ class Storage {
     return streamController.stream;
   }
 
-  Future<void> saveItems(ShoppingList shoppingList, List<Item> items) async {
-    await Future.wait([localStorageProvider, remoteStorageProvider]
+  Future<void> saveItems(ShoppingList shoppingList, List<Item> items,
+      {bool updateRemoteStorage = true}) async {
+    await Future.wait([localStorageProvider, if (updateRemoteStorage) remoteStorageProvider]
         .map((sp) async => await sp.saveItems(shoppingList, items)));
   }
 
-  Future<void> saveList(ShoppingList shoppingList) async {
-    await Future.wait([localStorageProvider, remoteStorageProvider]
-        .map((sp) async => await sp.saveList(shoppingList)));
+  Future<void> saveList(ShoppingList shoppingList,
+      {bool updateRemoteStorage = true}) async {
+    await Future.wait([
+      localStorageProvider,
+      if (updateRemoteStorage) remoteStorageProvider
+    ].map((sp) async => await sp.saveList(shoppingList)));
   }
 }

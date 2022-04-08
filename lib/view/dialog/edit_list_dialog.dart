@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_list/model/app_state.dart';
+import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/service/storage/storage.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class EditListDialog extends StatefulWidget {
+class EditListDialog extends StatefulHookConsumerWidget {
   const EditListDialog({Key? key}) : super(key: key);
 
   @override
-  State<EditListDialog> createState() => _EditListDialogState();
+  ConsumerState<EditListDialog> createState() => _EditListDialogState();
 }
 
-class _EditListDialogState extends State<EditListDialog> {
+class _EditListDialogState extends ConsumerState<EditListDialog> {
   late final TextEditingController nameTextInputController;
 
   @override
   void initState() {
     super.initState();
     nameTextInputController = TextEditingController();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      nameTextInputController.text =
-          context.read<AppState>().currentShoppingList!.name;
-    });
+    nameTextInputController.text = ref
+        .read<AppState>(AppStateNotifier.appStateProvider)
+        .currentShoppingList!
+        .name;
   }
 
   @override
@@ -55,7 +56,8 @@ class _EditListDialogState extends State<EditListDialog> {
 
   @override
   Widget build(BuildContext context) {
-    AppState appState = context.watch<AppState>();
+    AppStateNotifier appStateNotifier =
+        ref.watch<AppStateNotifier>(AppStateNotifier.appStateProvider.notifier);
     return PlatformAlertDialog(
       title: const Text('Liste bearbeiten'),
       content: Column(
@@ -68,12 +70,8 @@ class _EditListDialogState extends State<EditListDialog> {
             child: PlatformTextButton(
               onPressed: () => _showAlertDialog(onConfirmed: () {
                 Navigator.pop(context);
-                appState.currentShoppingList!.deleted = true;
-                appState.currentShoppingList!.modified =
-                    DateTime.now().millisecondsSinceEpoch;
-                Storage().saveList(appState.currentShoppingList!);
-                print("removing ${appState.currentShoppingList!.id}");
-                appState.removeCurrentList();
+                print("removing ${appStateNotifier.currentShoppingList!.id}");
+                appStateNotifier.deleteCurrentShoppingList();
               }),
               child: const Text("Liste löschen",
                   style: TextStyle(color: Colors.red)),
@@ -89,10 +87,9 @@ class _EditListDialogState extends State<EditListDialog> {
         PlatformDialogAction(
             child: const Text('Speichern'),
             onPressed: () {
-              ShoppingList shoppingList = appState.currentShoppingList!;
-              shoppingList.name = nameTextInputController.text;
-              shoppingList.modified = DateTime.now().millisecondsSinceEpoch;
-              Storage().saveList(shoppingList);
+              ShoppingList shoppingList = appStateNotifier.currentShoppingList!;
+              appStateNotifier.updateShoppingList(
+                  shoppingList.copyWith(name: nameTextInputController.text));
               Navigator.pop(context);
             })
       ],

@@ -1,34 +1,41 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:go_list/model/app_state.dart';
+import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/service/storage/storage.dart';
 import 'package:go_list/service/storage/sync/websocket_sync.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ShoppingListLoader extends StatefulWidget {
+class ShoppingListLoader extends StatefulHookConsumerWidget {
   final Widget child;
 
   const ShoppingListLoader({Key? key, required this.child}) : super(key: key);
 
   @override
-  State<ShoppingListLoader> createState() => _ShoppingListLoaderState();
+  ConsumerState<ShoppingListLoader> createState() => _ShoppingListLoaderState();
 }
 
-class _ShoppingListLoaderState extends State<ShoppingListLoader> {
+class _ShoppingListLoaderState extends ConsumerState<ShoppingListLoader> {
   @override
   void initState() {
-    GetStorage.init().then((_) {
-      Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
-        context.read<AppState>().shoppingLists = shoppingListsFromStorage;
-      }, onDone: () {
-        context.read<AppState>().initializeWithEmptyList();
-      });
-    });
     super.initState();
+    final appStateNotifier =
+        ref.read(AppStateNotifier.appStateProvider.notifier);
+    GetStorage.init().then(
+        (_) => Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
+              appStateNotifier.setShoppingLists(shoppingListsFromStorage);
+            }, onDone: () {
+              print(
+                  "before init: ${appStateNotifier.currentShoppingList?.items.length}");
+              appStateNotifier.initializeWithEmptyList();
+              print(
+                  "after init: ${appStateNotifier.currentShoppingList?.items.length}");
+            }));
   }
 
   @override
   Widget build(BuildContext context) {
-    return WebsocketSync(child: widget.child);
+    //return WebsocketSync(child: widget.child);
+    return widget.child;
   }
 }

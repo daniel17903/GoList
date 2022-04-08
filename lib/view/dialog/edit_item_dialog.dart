@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:go_list/model/app_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/service/input_to_item_parser.dart';
-import 'package:go_list/service/storage/storage.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
-import 'package:provider/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../model/item.dart';
 
-class EditItemDialog extends StatefulWidget {
+class EditItemDialog extends StatefulHookConsumerWidget {
   const EditItemDialog({Key? key, required this.item}) : super(key: key);
 
   final Item item;
 
   @override
-  State<EditItemDialog> createState() => _EditItemDialogState();
+  ConsumerState<EditItemDialog> createState() => _EditItemDialogState();
 }
 
-class _EditItemDialogState extends State<EditItemDialog> {
+class _EditItemDialogState extends ConsumerState<EditItemDialog> {
   late final TextEditingController nameTextInputController;
   late final TextEditingController amountInputController;
 
@@ -61,8 +61,10 @@ class _EditItemDialogState extends State<EditItemDialog> {
               widget.item.iconName = InputToItemParser.findMatchingIconForName(
                   nameTextInputController.text);
               widget.item.modified = DateTime.now().millisecondsSinceEpoch;
-              Storage().saveItems(
-                  context.read<AppState>().currentShoppingList!, [widget.item]);
+              ref
+                  .read(AppStateNotifier
+                      .appStateProvider.notifier)
+                  .updateItem(widget.item);
               Navigator.pop(context);
             })
       ],
