@@ -24,6 +24,7 @@ class _AnimatedItemContainerState extends State<AnimatedItemContainer>
 
   @override
   void initState() {
+    super.initState();
     _bounceThenDisappearAnimation = BounceThenDisappearAnimation(
         onValueChanged: () => setState(() {}), tickProvider: this);
     _bounceThenDisappearAnimation.onCompleted =
@@ -41,13 +42,13 @@ class _AnimatedItemContainerState extends State<AnimatedItemContainer>
       });
       _bounceThenDisappearAnimation.stop();
     };
-    super.initState();
   }
 
   @override
   void dispose() {
-    _bounceThenDisappearAnimation.dispose();
     super.dispose();
+    widget.animationController.cancelAnimation = (){};
+    _bounceThenDisappearAnimation.dispose();
   }
 
   @override

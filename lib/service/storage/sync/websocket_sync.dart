@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/golist_client.dart';
@@ -23,51 +22,54 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync> {
   bool connected = false;
   int retries = 0;
 
-  Future<void> listenForChanges() async {
-    ShoppingList? currentShoppingList = ref
-        .read(AppStateNotifier.appStateProvider)
-        .currentShoppingList;
+  Future<void> listenForChanges(String shoppingListId) async {
     if (retries < 3 &&
-        currentShoppingList != null &&
-        (subscribedToShoppingListWithId != currentShoppingList.id ||
-            !connected)) {
-      retries = subscribedToShoppingListWithId == currentShoppingList.id
-          ? retries + 1
-          : 0;
+        (subscribedToShoppingListWithId != shoppingListId || !connected)) {
+      retries =
+          subscribedToShoppingListWithId == shoppingListId ? retries + 1 : 0;
       if (connected) await websocketChannel?.sink.close();
-      setState(() {
-        subscribedToShoppingListWithId = currentShoppingList.id;
-        connected = true;
-      });
+      subscribedToShoppingListWithId = shoppingListId;
+      connected = true;
       print("connecting to ws");
-      websocketChannel =
-          await GoListClient().listenForChanges(currentShoppingList.id);
+      websocketChannel = await GoListClient().listenForChanges(shoppingListId);
       websocketChannel?.stream.listen((data) {
-        print("updating shoppinglist from websocket: ${jsonDecode(data)}");
+        print("updating shoppinglist from websocket: $data");
         ref.read(AppStateNotifier.appStateProvider.notifier).updateShoppingList(
             ShoppingList.fromJson(jsonDecode(data)),
             updateRemoteStorage: false);
+      }, onError: (e) {
+        print("ws closed with error: $e");
+        retries++;
+        listenForChanges(shoppingListId);
       },
-          onError: print,
           onDone: () => setState(() {
                 websocketChannel = null;
-                print("ws closed");
+                print("ws closed: done");
                 connected = false;
               }));
     }
+  }
+
+  void disconnect() {
+    if (connected) websocketChannel?.sink.close();
+    websocketChannel = null;
+    connected = false;
+    retries = 0;
   }
 
   @override
   void dispose() {
     print("dispose sync widget");
     super.dispose();
-    if (connected) websocketChannel?.sink.close();
-    websocketChannel = null;
   }
 
   @override
   Widget build(BuildContext context) {
-    listenForChanges();
+    ShoppingList? currentShoppingList =
+        ref.watch(AppStateNotifier.appStateProvider).currentShoppingList;
+    if (currentShoppingList != null) {
+      listenForChanges(currentShoppingList.id);
+    }
     return widget.child;
   }
 }

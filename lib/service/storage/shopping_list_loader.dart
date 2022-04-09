@@ -24,18 +24,11 @@ class _ShoppingListLoaderState extends ConsumerState<ShoppingListLoader> {
     GetStorage.init().then(
         (_) => Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
               appStateNotifier.setShoppingLists(shoppingListsFromStorage);
-            }, onDone: () {
-              print(
-                  "before init: ${appStateNotifier.currentShoppingList?.items.length}");
-              appStateNotifier.initializeWithEmptyList();
-              print(
-                  "after init: ${appStateNotifier.currentShoppingList?.items.length}");
-            }));
+            }, onDone: appStateNotifier.initializeWithEmptyList));
   }
 
   @override
   Widget build(BuildContext context) {
-    //return WebsocketSync(child: widget.child);
-    return widget.child;
+    return WebsocketSync(child: widget.child);
   }
 }

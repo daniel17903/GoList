@@ -25,15 +25,22 @@ class AppStateNotifier extends StateNotifier<AppState> {
   AppStateNotifier(AppState appState) : super(appState);
 
   void updateItem(Item updatedItem) {
-    ShoppingList shoppingListContainingItem = currentShoppingList!;
-    ShoppingList updatedShoppingList = ShoppingList(
-        id: shoppingListContainingItem.id,
-        name: shoppingListContainingItem.name,
-        items: [
-          for (final item in shoppingListContainingItem.items)
-            if (item.id == updatedItem.id) updatedItem.copyWith() else item
-        ]);
-    updateShoppingList(updatedShoppingList, updateStorage: false);
+    ShoppingList shoppingListWithUpdatedItem =
+        currentShoppingList!.copyWith(items: [
+      for (final item in currentShoppingList!.items)
+        if (item.id == updatedItem.id) updatedItem.copyWith() else item
+    ]);
+
+    state = state.copyWith(shoppingLists: [
+      for (final shoppingList in state.shoppingLists)
+        if (shoppingList.id == shoppingListWithUpdatedItem.id)
+          shoppingListWithUpdatedItem
+        else
+          shoppingList
+    ]);
+    Storage().saveItems(
+        shoppingListWithUpdatedItem, shoppingListWithUpdatedItem.items,
+        updateRemoteStorage: true);
   }
 
   void updateShoppingList(ShoppingList updatedShoppingList,
@@ -65,7 +72,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
         items: shoppingListContainingItem.items
             .map((item) => item.id == itemToRemove.id ? deletedItem : item)
             .toList());
-    updateShoppingList(updatedShoppingList, updateStorage: false);
+    updateShoppingList(updatedShoppingList, updateStorage: true);
   }
 
   void deleteCurrentShoppingList() {
@@ -91,7 +98,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
     ShoppingList shoppingListContainingItem = currentShoppingList!;
     ShoppingList updatedShoppingList = shoppingListContainingItem
         .copyWith(items: [...shoppingListContainingItem.items, ...items]);
-    updateShoppingList(updatedShoppingList, updateStorage: false);
+    updateShoppingList(updatedShoppingList, updateStorage: true);
   }
 
   void addShoppingList(ShoppingList shoppingList) {
@@ -104,10 +111,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   void setShoppingLists(List<ShoppingList> shoppingLists,
       {bool updateRemoteStorage = false}) {
-
     print("set ${shoppingLists.length} new shoppinglists");
-    if(shoppingLists.isNotEmpty){
-
+    if (shoppingLists.isNotEmpty) {
       print("first new list has ${shoppingLists[0].items.length} items");
     }
     state = AppState(
@@ -131,7 +136,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
                 .entries
                 .map((entry) => Item(name: entry.value, iconName: entry.key))
                 .toList())
-      ]);
+      ], updateRemoteStorage: true);
       print(
           "added ${currentShoppingList?.items.length} items to list ${currentShoppingList?.id}");
       // TODO sort

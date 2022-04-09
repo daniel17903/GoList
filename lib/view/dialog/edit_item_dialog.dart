@@ -56,15 +56,13 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
         PlatformDialogAction(
             child: const Text('Speichern'),
             onPressed: () {
-              widget.item.name = nameTextInputController.text;
-              widget.item.amount = amountInputController.text;
-              widget.item.iconName = InputToItemParser.findMatchingIconForName(
-                  nameTextInputController.text);
-              widget.item.modified = DateTime.now().millisecondsSinceEpoch;
-              ref
-                  .read(AppStateNotifier
-                      .appStateProvider.notifier)
-                  .updateItem(widget.item);
+              ref.read(AppStateNotifier.appStateProvider.notifier).updateItem(
+                  widget.item.copyWith(
+                      name: nameTextInputController.text,
+                      amount: amountInputController.text,
+                      iconName: InputToItemParser.findMatchingIconForName(
+                          nameTextInputController.text),
+                      modified: DateTime.now().millisecondsSinceEpoch));
               Navigator.pop(context);
             })
       ],
