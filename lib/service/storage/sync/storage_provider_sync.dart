@@ -10,39 +10,39 @@ class StorageProviderSync {
   }
 
   static Future<List<ShoppingList>> syncStorageProviders(
-      StorageProvider storageProvider1,
-      List<ShoppingList> shoppingLists1,
-      StorageProvider storageProvider2,
-      List<ShoppingList> shoppingLists2) async {
-    Diff<ShoppingList, Item> diff = Diff.diff(shoppingLists1, shoppingLists2);
+      StorageProvider localStorageProvider,
+      List<ShoppingList> shoppingListsFromLocal,
+      StorageProvider remoteStorageProvider,
+      List<ShoppingList> shoppingListsFromRemote) async {
+    Diff<ShoppingList, Item> diff = Diff.diff(shoppingListsFromLocal, shoppingListsFromRemote);
 
     // same ShoppingLists from both Storage Providers
     if (diff.isEmpty()) {
-      return shoppingLists1;
+      return shoppingListsFromLocal;
     }
 
     // sync ShoppingLists
     await Future.wait([
       ...diff.elementsToUpdateIn1
-          .map((el) async => await storageProvider1.saveList(el)),
+          .map((el) async => await localStorageProvider.saveList(el)),
       ...diff.elementsToUpdateIn2
-          .map((el) async => await storageProvider2.saveList(el))
+          .map((el) async => await remoteStorageProvider.saveList(el))
     ]);
 
     // sync Items
     await Future.wait([
       ...diff.subElementDiffs.keys.map((shoppingListId) async {
-        await storageProvider1.saveItems(
-            _shoppingListById(shoppingLists2, shoppingListId)!,
+        await localStorageProvider.saveItems(
+            _shoppingListById(shoppingListsFromRemote, shoppingListId)!,
             diff.subElementDiffs[shoppingListId]!.elementsToUpdateIn1);
       }),
       ...diff.subElementDiffs.keys.map((shoppingListId) async {
-        await storageProvider2.saveItems(
-            _shoppingListById(shoppingLists1, shoppingListId)!,
+        await remoteStorageProvider.saveItems(
+            _shoppingListById(shoppingListsFromLocal, shoppingListId)!,
             diff.subElementDiffs[shoppingListId]!.elementsToUpdateIn2);
       })
     ]);
 
-    return await storageProvider1.loadShoppingLists();
+    return await localStorageProvider.loadShoppingLists();
   }
 }

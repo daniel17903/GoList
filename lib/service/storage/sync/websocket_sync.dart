@@ -19,17 +19,22 @@ class WebsocketSync extends StatefulHookConsumerWidget {
 class _WebsocketSyncState extends ConsumerState<WebsocketSync> {
   WebSocketChannel? websocketChannel;
   String? subscribedToShoppingListWithId;
-  bool connected = false;
   int retries = 0;
 
   Future<void> listenForChanges(String shoppingListId) async {
     if (retries < 3 &&
-        (subscribedToShoppingListWithId != shoppingListId || !connected)) {
+        (subscribedToShoppingListWithId != shoppingListId ||
+            !ref.read(AppStateNotifier.connectedProvider))) {
       retries =
           subscribedToShoppingListWithId == shoppingListId ? retries + 1 : 0;
-      if (connected) await websocketChannel?.sink.close();
+      if (ref.read(AppStateNotifier.connectedProvider))
+        await websocketChannel?.sink.close();
       subscribedToShoppingListWithId = shoppingListId;
-      connected = true;
+      Future.delayed(
+          Duration.zero,
+          () => ref
+              .read(AppStateNotifier.appStateProvider.notifier)
+              .setConnected(true));
       print("connecting to ws");
       websocketChannel = await GoListClient().listenForChanges(shoppingListId);
       websocketChannel?.stream.listen((data) {
@@ -45,21 +50,25 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync> {
           onDone: () => setState(() {
                 websocketChannel = null;
                 print("ws closed: done");
-                connected = false;
+                ref
+                    .read(AppStateNotifier.appStateProvider.notifier)
+                    .setConnected(false);
               }));
     }
   }
 
   void disconnect() {
-    if (connected) websocketChannel?.sink.close();
+    if (ref.read(AppStateNotifier.connectedProvider))
+      websocketChannel?.sink.close();
     websocketChannel = null;
-    connected = false;
+    ref.read(AppStateNotifier.appStateProvider.notifier).setConnected(false);
     retries = 0;
   }
 
   @override
   void dispose() {
     print("dispose sync widget");
+    disconnect();
     super.dispose();
   }
 

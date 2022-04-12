@@ -18,7 +18,8 @@ class DialogUtils {
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
-        pageBuilder: (context, animation1, animation2) => Dialog(child: child));
+        pageBuilder: (context, animation1, animation2) =>
+            SafeArea(child: Dialog(child: child)));
   }
 
   static void showSmallAlertDialog(

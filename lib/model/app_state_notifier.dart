@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:go_list/model/item.dart';
@@ -5,6 +6,7 @@ import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/input_to_item_parser.dart';
 import 'package:go_list/service/storage/storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'app_state.dart';
 
@@ -13,16 +15,26 @@ class AppStateNotifier extends StateNotifier<AppState> {
       StateNotifierProvider<AppStateNotifier, AppState>(
           (_) => AppStateNotifier(AppState()));
 
-  /**static final appStateUnDeletedShoppingListsProvider =
-      StateNotifierProvider<AppStateNotifier, AppState>((ref) {
-      final appState = ref.watch(appStateProvider);
+  static final currentShoppingListNameProvider = Provider<String>((ref) {
+    return ref.watch(appStateProvider
+        .select((appState) => appState.currentShoppingList?.name ?? ""));
+  });
 
-      return AppStateNotifier(AppState(
-      shoppingLists: appState.shoppingLists.where((e) => !e.deleted).toList(),
-      selectedList: appState.selectedList));
-      });*/
+  static final currentItemsProvider = Provider<List<Item>>((ref) {
+    return ref.watch(appStateProvider.select((appState) =>
+        appState.currentShoppingList?.items.where((i) => !i.deleted).toList() ??
+        []));
+  });
+
+  static final connectedProvider = Provider<bool>((ref) {
+    return ref.watch(appStateProvider.select((appState) => appState.connected));
+  });
 
   AppStateNotifier(AppState appState) : super(appState);
+
+  void setConnected(bool connected) {
+    state = state.copyWith(connected: connected);
+  }
 
   void updateItem(Item updatedItem) {
     ShoppingList shoppingListWithUpdatedItem =
@@ -76,13 +88,19 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 
   void deleteCurrentShoppingList() {
-    ShoppingList shoppingListToRemove = currentShoppingList!;
+    ShoppingList shoppingListToRemove =
+        currentShoppingList!.copyWith(deleted: true);
     state = AppState(
-        shoppingLists: state.shoppingLists
-            .where((e) => e.id != shoppingListToRemove.id)
-            .toList(),
-        selectedList:
-            min(state.selectedList, max(state.shoppingLists.length - 2, 0)));
+        shoppingLists: [
+          for (ShoppingList shoppingList in state.shoppingLists)
+            if (shoppingList.id == shoppingListToRemove.id)
+              shoppingListToRemove
+            else
+              shoppingList
+        ],
+        selectedList: min(state.selectedList,
+            max(state.notDeletedShoppingLists.length - 2, 0)));
+    Storage().saveList(shoppingListToRemove, updateRemoteStorage: true);
     initializeWithEmptyList();
   }
 
@@ -104,23 +122,27 @@ class AppStateNotifier extends StateNotifier<AppState> {
   void addShoppingList(ShoppingList shoppingList) {
     state = AppState(
         shoppingLists: [...state.shoppingLists, shoppingList],
-        selectedList:
-            state.shoppingLists.isEmpty ? 0 : state.shoppingLists.length - 1);
+        selectedList: state.notDeletedShoppingLists.isEmpty
+            ? 0
+            : state.notDeletedShoppingLists.length - 1);
     Storage().saveList(shoppingList);
   }
 
   void setShoppingLists(List<ShoppingList> shoppingLists,
-      {bool updateRemoteStorage = false}) {
+      {bool updateRemoteStorage = false}) async {
     print("set ${shoppingLists.length} new shoppinglists");
     if (shoppingLists.isNotEmpty) {
       print("first new list has ${shoppingLists[0].items.length} items");
     }
     state = AppState(
         shoppingLists: shoppingLists,
-        selectedList: min(state.selectedList,
-            state.shoppingLists.isEmpty ? 0 : shoppingLists.length - 1));
+        selectedList: min(
+            state.selectedList,
+            state.notDeletedShoppingLists.isEmpty
+                ? 0
+                : shoppingLists.where((sl) => !sl.deleted).length - 1));
     for (ShoppingList shoppingList in shoppingLists) {
-      Storage()
+      await Storage()
           .saveList(shoppingList, updateRemoteStorage: updateRemoteStorage)
           .then((_) => Storage().saveItems(shoppingList, shoppingList.items,
               updateRemoteStorage: updateRemoteStorage));
@@ -128,19 +150,31 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 
   void initializeWithEmptyList() {
-    if (state.shoppingLists.isEmpty) {
-      setShoppingLists([
-        ShoppingList(
-            name: "Einkaufsliste",
-            items: InputToItemParser.sampleNamesWithIcon()
-                .entries
-                .map((entry) => Item(name: entry.value, iconName: entry.key))
-                .toList())
-      ], updateRemoteStorage: true);
+    if (state.shoppingLists.where((sl) => !sl.deleted).isEmpty) {
+      ShoppingList newList = ShoppingList(
+          name: "Einkaufsliste",
+          items: InputToItemParser.sampleNamesWithIcon()
+              .entries
+              .map((entry) => Item(name: entry.value, iconName: entry.key))
+              .toList());
+      setShoppingLists([...state.shoppingLists, newList],
+          updateRemoteStorage: true);
       print(
           "added ${currentShoppingList?.items.length} items to list ${currentShoppingList?.id}");
       // TODO sort
     }
+  }
+
+  Future<void> loadAllFromStorage() {
+    Completer completer = Completer();
+    GetStorage.init().then(
+        (_) => Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
+              setShoppingLists(shoppingListsFromStorage);
+            }, onDone: () {
+              completer.complete();
+              initializeWithEmptyList();
+            }));
+    return completer.future;
   }
 
   ShoppingList? get currentShoppingList => state.currentShoppingList;

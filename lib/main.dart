@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
-import 'package:go_list/service/storage/shopping_list_loader.dart';
+import 'package:go_list/service/storage/sync/websocket_sync.dart';
 import 'package:go_list/style/themed_app.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -29,7 +29,7 @@ class Logger extends ProviderObserver {
     if (newValue != null && newValue is AppState) {
       print(
           "Logger: ${newValue.shoppingLists.length} ${newValue.currentShoppingList?.items.length}");
-    }else{
+    } else {
       print(newValue);
     }
   }
@@ -89,6 +89,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return ProviderScope(
         observers: [Logger()],
-        child: ThemedApp(child: ShoppingListLoader(child: ShoppingListPage())));
+        child: ThemedApp(child: WebsocketSync(child: ShoppingListPage())));
   }
 }

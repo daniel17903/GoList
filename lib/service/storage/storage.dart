@@ -23,6 +23,9 @@ class Storage {
     StreamController<List<ShoppingList>> streamController = StreamController();
     List<ShoppingList> shoppingListsFromLocal =
         localStorageProvider.loadShoppingLists();
+    shoppingListsFromLocal.forEach((element) {
+      print("loaded sl from ls: ${element.id} ${element.items.length}");
+    });
     streamController.add(shoppingListsFromLocal);
     remoteStorageProvider
         .loadShoppingLists()
@@ -41,12 +44,17 @@ class Storage {
 
   Future<void> saveItems(ShoppingList shoppingList, List<Item> items,
       {bool updateRemoteStorage = true}) async {
-    await Future.wait([localStorageProvider, if (updateRemoteStorage) remoteStorageProvider]
-        .map((sp) async => await sp.saveItems(shoppingList, [...items])));
+    print(
+        "saving items ${items.map((e) => e.name)} for list ${shoppingList.id}");
+    await Future.wait([
+      localStorageProvider,
+      if (updateRemoteStorage) remoteStorageProvider
+    ].map((sp) async => await sp.saveItems(shoppingList, [...items])));
   }
 
   Future<void> saveList(ShoppingList shoppingList,
       {bool updateRemoteStorage = true}) async {
+    print("saving list ${shoppingList.id} as deleted: ${shoppingList.deleted}");
     await Future.wait([
       localStorageProvider,
       if (updateRemoteStorage) remoteStorageProvider

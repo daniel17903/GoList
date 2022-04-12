@@ -17,13 +17,18 @@ class RemoteStorageProvider extends StorageProvider {
       final response = await goListClient.sendRequest(
           endpoint: "/api/shoppinglists", httpMethod: HttpMethod.get);
 
-      return jsonDecode(utf8.decode(response.bodyBytes))
+      List<ShoppingList> shoppingLists = jsonDecode(utf8.decode(response.bodyBytes))
           .map<ShoppingList>((element) {
         if (element is ShoppingList) {
           return element;
         }
         return ShoppingList.fromJson(element);
       }).toList();
+
+      for(ShoppingList shoppingList in shoppingLists){
+        print("loaded sl from remote: ${shoppingList.id} ${shoppingList.items.length}");
+      }
+      return shoppingLists;
     } catch (e) {
       print("failed to load shopping lists from server: $e");
       rethrow;

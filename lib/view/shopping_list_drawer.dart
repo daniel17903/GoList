@@ -29,8 +29,11 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    AppStateNotifier appStateNotifier =
-        ref.watch(AppStateNotifier.appStateProvider.notifier);
+    List<ShoppingList> shoppingLists = ref
+        .watch(AppStateNotifier.appStateProvider.notifier)
+        .shoppingLists
+        .where((sl) => !sl.deleted)
+        .toList();
     return Drawer(
         //backgroundColor: Theme.of(context).backgroundColor,
         child: ListView(
@@ -57,13 +60,15 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
               ListView.builder(
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  itemCount: appStateNotifier.shoppingLists.length,
+                  itemCount: shoppingLists.length,
                   itemBuilder: (BuildContext context, int index) => ListTile(
                         leading: const Icon(Icons.list),
-                        title: Text(appStateNotifier.shoppingLists[index].name),
+                        title: Text(shoppingLists[index].name),
                         onTap: () {
                           Navigator.pop(context);
-                          appStateNotifier.selectList(index);
+                          ref
+                              .read(AppStateNotifier.appStateProvider.notifier)
+                              .selectList(index);
                         },
                       )),
             ]),
@@ -91,7 +96,9 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
                         Navigator.pop(context);
                         ShoppingList newShoppingList =
                             ShoppingList(name: newListNameInputController.text);
-                        appStateNotifier.addShoppingList(newShoppingList);
+                        ref
+                            .read(AppStateNotifier.appStateProvider.notifier)
+                            .addShoppingList(newShoppingList);
                       },
                       child: const Text('Speichern'),
                     ),

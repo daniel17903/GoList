@@ -10,12 +10,14 @@ class LocalStorageProvider implements StorageProvider {
   @override
   List<ShoppingList> loadShoppingLists() {
     if (getStorage.hasData("shoppingLists")) {
-      return getStorage.read("shoppingLists").map<ShoppingList>((element) {
+      List<ShoppingList> shoppingLists = getStorage.read("shoppingLists").map<
+          ShoppingList>((element) {
         if (element is ShoppingList) {
           return element;
         }
         return ShoppingList.fromJson(element);
       }).toList();
+      return shoppingLists;
     }
     return [];
   }
@@ -28,7 +30,7 @@ class LocalStorageProvider implements StorageProvider {
   void saveItems(ShoppingList shoppingList, List<Item> items) {
     List<ShoppingList> shoppingLists = loadShoppingLists();
     ShoppingList shoppingListToUpdate =
-        _shoppingListById(shoppingLists, shoppingList.id)!;
+    _shoppingListById(shoppingLists, shoppingList.id)!;
 
     // update all items that already existed
     for (int i = 0; i < shoppingListToUpdate.items.length; i++) {
@@ -52,7 +54,7 @@ class LocalStorageProvider implements StorageProvider {
   void saveList(ShoppingList updatedShoppingList) {
     List<ShoppingList> shoppingLists = loadShoppingLists();
     ShoppingList? shoppingListToUpdate =
-        _shoppingListById(shoppingLists, updatedShoppingList.id);
+    _shoppingListById(shoppingLists, updatedShoppingList.id);
     if (shoppingListToUpdate == null) {
       shoppingLists.add(updatedShoppingList);
     } else {
