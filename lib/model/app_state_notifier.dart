@@ -110,6 +110,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   void selectList(int index) {
     state = state.copyWith(selectedList: index);
+    Storage().saveSelectedListIndex(index);
   }
 
   void addItems(List<Item> items) {
@@ -120,27 +121,25 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 
   void addShoppingList(ShoppingList shoppingList) {
+    int newSelectedList = state.notDeletedShoppingLists.isEmpty
+        ? 0
+        : state.notDeletedShoppingLists.length;
+
     state = AppState(
         shoppingLists: [...state.shoppingLists, shoppingList],
-        selectedList: state.notDeletedShoppingLists.isEmpty
-            ? 0
-            : state.notDeletedShoppingLists.length - 1);
+        selectedList: newSelectedList);
     Storage().saveList(shoppingList);
+    Storage().saveSelectedListIndex(newSelectedList);
   }
 
   void setShoppingLists(List<ShoppingList> shoppingLists,
-      {bool updateRemoteStorage = false}) async {
-    print("set ${shoppingLists.length} new shoppinglists");
-    if (shoppingLists.isNotEmpty) {
-      print("first new list has ${shoppingLists[0].items.length} items");
-    }
-    state = AppState(
-        shoppingLists: shoppingLists,
-        selectedList: min(
-            state.selectedList,
-            state.notDeletedShoppingLists.isEmpty
-                ? 0
-                : shoppingLists.where((sl) => !sl.deleted).length - 1));
+      {bool updateRemoteStorage = false, int? selectedListIndex}) async {
+    int notDeletedListsCount = shoppingLists.where((sl) => !sl.deleted).length;
+    int newSelectedList = min(selectedListIndex ?? state.selectedList,
+        max(0, notDeletedListsCount - 1));
+    state =
+        AppState(shoppingLists: shoppingLists, selectedList: newSelectedList);
+    Storage().saveSelectedListIndex(newSelectedList);
     for (ShoppingList shoppingList in shoppingLists) {
       await Storage()
           .saveList(shoppingList, updateRemoteStorage: updateRemoteStorage)
@@ -169,7 +168,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
     Completer completer = Completer();
     GetStorage.init().then(
         (_) => Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
-              setShoppingLists(shoppingListsFromStorage);
+              setShoppingLists(shoppingListsFromStorage,
+                  selectedListIndex: Storage().loadSelectedListIndex());
             }, onDone: () {
               completer.complete();
               initializeWithEmptyList();

@@ -69,4 +69,15 @@ class LocalStorageProvider implements StorageProvider {
     getStorage.write("shoppingLists",
         shoppingLists.map((shoppingList) => shoppingList.toJson()).toList());
   }
+
+  void saveSelectedListIndex(int index){
+    getStorage.write("selectedList", index);
+  }
+
+  int loadSelectedListIndex(){
+    if(getStorage.hasData("selectedList")){
+      return getStorage.read("selectedList");
+    }
+    return 0;
+  }
 }
