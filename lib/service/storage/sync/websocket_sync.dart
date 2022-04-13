@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/golist_client.dart';
@@ -16,7 +17,8 @@ class WebsocketSync extends StatefulHookConsumerWidget {
   ConsumerState<WebsocketSync> createState() => _WebsocketSyncState();
 }
 
-class _WebsocketSyncState extends ConsumerState<WebsocketSync> {
+class _WebsocketSyncState extends ConsumerState<WebsocketSync>
+    with WidgetsBindingObserver {
   WebSocketChannel? websocketChannel;
   String? subscribedToShoppingListWithId;
   int retries = 0;
@@ -63,6 +65,23 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync> {
     websocketChannel = null;
     ref.read(AppStateNotifier.appStateProvider.notifier).setConnected(false);
     retries = 0;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    print(state.name);
+    if (state == AppLifecycleState.resumed) {
+      print("resuming");
+      retries = 0;
+      if (ref.read(AppStateNotifier.appStateProvider).currentShoppingList !=
+          null) {
+        listenForChanges(ref
+            .read(AppStateNotifier.appStateProvider)
+            .currentShoppingList!
+            .id);
+      }
+    }
   }
 
   @override

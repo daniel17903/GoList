@@ -151,11 +151,12 @@ class AppStateNotifier extends StateNotifier<AppState> {
   void initializeWithEmptyList() {
     if (state.shoppingLists.where((sl) => !sl.deleted).isEmpty) {
       ShoppingList newList = ShoppingList(
-          name: "Einkaufsliste",
-          items: InputToItemParser.sampleNamesWithIcon()
-              .entries
-              .map((entry) => Item(name: entry.value, iconName: entry.key))
-              .toList());
+        name: "Einkaufsliste",
+        /**items: InputToItemParser.sampleNamesWithIcon()
+            .entries
+            .map((entry) => Item(name: entry.value, iconName: entry.key))
+            .toList()*/
+      );
       setShoppingLists([...state.shoppingLists, newList],
           updateRemoteStorage: true);
       print(

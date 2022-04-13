@@ -18,16 +18,11 @@ class _RefreshableScrollViewState extends State<RefreshableScrollView> {
 
   void _onRefresh() async {
     try {
-      print("refreshing");
       await widget.onRefresh!();
       _refreshController.refreshCompleted();
     } catch (e) {
       _refreshController.refreshFailed();
     }
-  }
-
-  void _onLoad() async {
-
   }
 
   @override
@@ -41,7 +36,6 @@ class _RefreshableScrollViewState extends State<RefreshableScrollView> {
         controller: _refreshController,
         header: const MaterialClassicHeader(),
         onRefresh: _onRefresh,
-        onLoading: _onLoad,
         child: scrollViewContainingChild);
   }
 }

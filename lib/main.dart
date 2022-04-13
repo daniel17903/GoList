@@ -18,23 +18,6 @@ void main() {
   runApp(const MyApp());
 }
 
-class Logger extends ProviderObserver {
-  @override
-  void didUpdateProvider(
-    ProviderBase provider,
-    Object? previousValue,
-    Object? newValue,
-    ProviderContainer container,
-  ) {
-    if (newValue != null && newValue is AppState) {
-      print(
-          "Logger: ${newValue.shoppingLists.length} ${newValue.currentShoppingList?.items.length}");
-    } else {
-      print(newValue);
-    }
-  }
-}
-
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -88,7 +71,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ProviderScope(
-        observers: [Logger()],
         child: ThemedApp(child: WebsocketSync(child: ShoppingListPage())));
   }
 }

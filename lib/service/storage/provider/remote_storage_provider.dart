@@ -25,9 +25,6 @@ class RemoteStorageProvider extends StorageProvider {
         return ShoppingList.fromJson(element);
       }).toList();
 
-      for(ShoppingList shoppingList in shoppingLists){
-        print("loaded sl from remote: ${shoppingList.id} ${shoppingList.items.length}");
-      }
       return shoppingLists;
     } catch (e) {
       print("failed to load shopping lists from server: $e");
