@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
@@ -29,11 +28,8 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    List<ShoppingList> shoppingLists = ref
-        .watch(AppStateNotifier.appStateProvider.notifier)
-        .shoppingLists
-        .where((sl) => !sl.deleted)
-        .toList();
+    List<ShoppingList> shoppingLists =
+        ref.watch(AppStateNotifier.notDeletedShoppingListsProvider);
     return Drawer(
         //backgroundColor: Theme.of(context).backgroundColor,
         child: ListView(
