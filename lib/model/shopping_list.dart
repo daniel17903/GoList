@@ -7,15 +7,18 @@ import 'item.dart';
 class ShoppingList extends GoListModel {
   late final String name;
   late final List<Item> items;
+  late final int deviceCount;
 
   ShoppingList(
       {required this.name,
       List<Item>? items,
       bool? deleted,
       int? modified,
-      String? id})
+      String? id,
+      int? deviceCount})
       : super(modified: modified, deleted: deleted, id: id) {
     this.items = items ?? [];
+    this.deviceCount = deviceCount ?? 1;
   }
 
   ShoppingList.fromJson(Map<String, dynamic> json)
@@ -26,6 +29,7 @@ class ShoppingList extends GoListModel {
     name = json['name'];
     items =
         json["items"].map<Item>((element) => Item.fromJson(element)).toList();
+    deviceCount = json.containsKey("device_count") ? json["device_count"] : 1;
   }
 
   @override
@@ -34,7 +38,8 @@ class ShoppingList extends GoListModel {
         'name': name,
         'items': items.map((item) => item.toJson()).toList(),
         'deleted': deleted,
-        'modified': modified
+        'modified': modified,
+        'device_count': deviceCount
       };
 
   ShoppingList copyWith(
@@ -42,12 +47,14 @@ class ShoppingList extends GoListModel {
       List<Item>? items,
       bool? deleted,
       int? modified,
-      String? id}) {
+      String? id,
+      int? deviceCount}) {
     return ShoppingList(
         name: name ?? this.name,
         items: items ?? this.items,
         deleted: deleted ?? this.deleted,
         modified: modified ?? DateTime.now().millisecondsSinceEpoch,
-        id: id ?? this.id);
+        id: id ?? this.id,
+        deviceCount: deviceCount ?? this.deviceCount);
   }
 }

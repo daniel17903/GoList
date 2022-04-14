@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/item.dart';
+import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:go_list/view/dialog/edit_item_dialog.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
@@ -11,6 +12,10 @@ class ShoppingListWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final ShoppingList? currentShoppingList =
+        ref.watch(AppStateNotifier.appStateProvider).currentShoppingList;
+    final int otherDevicesCount =
+        currentShoppingList != null ? currentShoppingList.deviceCount - 1 : 0;
     final List<Item> items = ref.watch(AppStateNotifier.currentItemsProvider);
     final String name =
         ref.watch(AppStateNotifier.currentShoppingListNameProvider);
@@ -25,8 +30,23 @@ class ShoppingListWidget extends HookConsumerWidget {
           children: [
             Text(name,
                 style: const TextStyle(color: Colors.white, fontSize: 22)),
-            connected ? const Icon(Icons.circle, color: Colors.white) : const Icon(Icons.circle_outlined, color: Colors.white)
+            connected
+                ? const Icon(Icons.circle, color: Colors.white)
+                : const Icon(Icons.circle_outlined, color: Colors.white)
           ],
+        ),
+      ),
+      footer: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Text(
+              otherDevicesCount != 0
+                  ? "Mit $otherDevicesCount anderen Geräten geteilt"
+                  : "",
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontStyle: FontStyle.italic)),
         ),
       ),
       onPullForRefresh: ref

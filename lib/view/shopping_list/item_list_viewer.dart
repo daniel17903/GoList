@@ -12,7 +12,8 @@ class ItemListViewer extends StatelessWidget {
       this.delayItemTap = false,
       this.onItemTappedLong,
       this.header,
-      this.onPullForRefresh})
+      this.onPullForRefresh,
+      this.footer})
       : super(key: key);
 
   final List<Item> items;
@@ -21,6 +22,7 @@ class ItemListViewer extends StatelessWidget {
   final Future<void> Function()? onPullForRefresh;
   final bool delayItemTap;
   final Widget? header;
+  final Widget? footer;
 
   final double horizontalPadding = 6;
   final double spacing = 6;
@@ -54,8 +56,7 @@ class ItemListViewer extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (header != null)
-                      header!,
+                    if (header != null) header!,
                     Wrap(
                         spacing: spacing,
                         // gap between adjacent chips
@@ -71,6 +72,7 @@ class ItemListViewer extends StatelessWidget {
                             delayItemTap: delayItemTap,
                           );
                         }).toList()),
+                    if (footer != null) footer!
                   ],
                 ))));
   }
