@@ -93,9 +93,9 @@ class AppStateNotifier extends StateNotifier<AppState> {
     updateShoppingList(updatedShoppingList, updateStorage: true);
   }
 
-  void deleteCurrentShoppingList() {
+  void deleteShoppingList(String id) {
     ShoppingList shoppingListToRemove =
-        currentShoppingList!.copyWith(deleted: true);
+        shoppingLists.where((sl) => sl.id == id).first.copyWith(deleted: true);
     state = AppState(
         shoppingLists: [
           for (ShoppingList shoppingList in state.shoppingLists)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
@@ -24,6 +25,27 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
   void dispose() {
     newListNameInputController.dispose();
     super.dispose();
+  }
+
+  void _showAlertDialog({required Function onConfirmed}) {
+    showPlatformDialog(
+        context: context,
+        builder: (BuildContext context) => PlatformAlertDialog(
+              title: const Text('Soll diese Liste wirklich gelöscht werden?'),
+              actions: <Widget>[
+                PlatformDialogAction(
+                  child: const Text('Abbrechen'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                PlatformDialogAction(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onConfirmed();
+                  },
+                )
+              ],
+            ));
   }
 
   @override
@@ -66,6 +88,15 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
                               .read(AppStateNotifier.appStateProvider.notifier)
                               .selectList(index);
                         },
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => _showAlertDialog(onConfirmed: () {
+                            ref
+                                .read(
+                                    AppStateNotifier.appStateProvider.notifier)
+                                .deleteShoppingList(shoppingLists[index].id);
+                          }),
+                        ),
                       )),
             ]),
         ListTile(

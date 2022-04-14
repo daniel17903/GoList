@@ -33,27 +33,6 @@ class _EditListDialogState extends ConsumerState<EditListDialog> {
     super.dispose();
   }
 
-  void _showAlertDialog({required Function onConfirmed}) {
-    showPlatformDialog(
-        context: context,
-        builder: (BuildContext context) => PlatformAlertDialog(
-              title: const Text('Soll diese Liste wirklich gelöscht werden?'),
-              actions: <Widget>[
-                PlatformDialogAction(
-                  child: const Text('Abbrechen'),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                PlatformDialogAction(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    onConfirmed();
-                  },
-                )
-              ],
-            ));
-  }
-
   @override
   Widget build(BuildContext context) {
     AppStateNotifier appStateNotifier =
@@ -64,19 +43,7 @@ class _EditListDialogState extends ConsumerState<EditListDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           GoListPlatformTextFormField(
-              controller: nameTextInputController, labelText: "Name"),
-          Padding(
-            padding: const EdgeInsets.only(top: 14, bottom: 0),
-            child: PlatformTextButton(
-              onPressed: () => _showAlertDialog(onConfirmed: () {
-                Navigator.pop(context);
-                print("removing ${appStateNotifier.currentShoppingList!.id}");
-                appStateNotifier.deleteCurrentShoppingList();
-              }),
-              child: const Text("Liste löschen",
-                  style: TextStyle(color: Colors.red)),
-            ),
-          )
+              controller: nameTextInputController, labelText: "Name")
         ],
       ),
       actions: <Widget>[
