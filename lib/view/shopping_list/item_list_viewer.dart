@@ -65,7 +65,7 @@ class ItemListViewer extends StatelessWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: items.map((Item item) {
                           return ShoppingListItem(
-                            key: ObjectKey(item),
+                            key: UniqueKey(),
                             item: item,
                             onItemTapped: onItemTapped,
                             onItemTappedLong: onItemTappedLong ?? (_) {},

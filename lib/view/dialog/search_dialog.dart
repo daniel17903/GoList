@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/service/input_to_item_parser.dart';
@@ -29,23 +28,24 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
 
   @override
   void initState() {
-    AppState appState = ref.read<AppState>(
-        AppStateNotifier.appStateProvider);
-    print(
-        "SearchDialog: list ${appState.currentShoppingList!.id} with ${appState.currentShoppingList?.items.length} items");
+    AppState appState = ref.read<AppState>(AppStateNotifier.appStateProvider);
     setState(() {
-      recentlyUsedItemsSorted = [...appState.currentShoppingList!.items];
-      recentlyUsedItemsSorted.retainWhere((i) => i.deleted == true);
+      recentlyUsedItemsSorted = [...appState.currentShoppingList!.items]
+          .where((e) => e.deleted)
+          .toList();
       sortItems();
 
       // remove items with same name
-      Set<String> itemNames = {};
+      Set<String> addedLowerCaseItemNames = {};
       for (int i = 0; i < recentlyUsedItemsSorted.length; i++) {
-        if (itemNames.contains(recentlyUsedItemsSorted[i].name.toLowerCase())) {
+        if (addedLowerCaseItemNames
+            .contains(recentlyUsedItemsSorted[i].name.toLowerCase().trim())) {
           recentlyUsedItemsSorted.removeAt(i);
           i--;
+        } else {
+          addedLowerCaseItemNames
+              .add(recentlyUsedItemsSorted[i].name.toLowerCase().trim());
         }
-        itemNames.add(recentlyUsedItemsSorted[i].name);
       }
     });
 
@@ -53,14 +53,9 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
   }
 
   void addNewItemToList(Item? item, AppStateNotifier appStateNotifier) {
-    print(
-        "SearchDialog: list ${appStateNotifier.currentShoppingList!.id} with ${appStateNotifier.currentShoppingList?.items.length} items");
     if (item != null) {
       item = item.copyWith(deleted: false);
-      ref
-          .read(
-              AppStateNotifier.appStateProvider.notifier)
-          .addItem(item);
+      ref.read(AppStateNotifier.appStateProvider.notifier).addItem(item);
       Navigator.pop(context);
     }
   }
@@ -88,8 +83,8 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
 
   @override
   Widget build(BuildContext context) {
-    AppStateNotifier appStateNotifier = ref.watch(
-        AppStateNotifier.appStateProvider.notifier);
+    AppStateNotifier appStateNotifier =
+        ref.watch(AppStateNotifier.appStateProvider.notifier);
     return Material(
       child: Column(children: [
         Container(

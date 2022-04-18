@@ -1,16 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_list/view/shopping_list_item/bounce_then_disappear_animation.dart';
 import 'package:go_list/view/shopping_list_item/item_animation_controller.dart';
-import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
 class AnimatedItemContainer extends StatefulWidget {
   const AnimatedItemContainer(
       {Key? key, required this.child, required this.animationController})
       : super(key: key);
 
-  final Widget Function(double) child;
+  final Widget child;
   final ItemAnimationController animationController;
 
   @override
@@ -47,7 +44,7 @@ class _AnimatedItemContainerState extends State<AnimatedItemContainer>
   @override
   void dispose() {
     super.dispose();
-    widget.animationController.cancelAnimation = (){};
+    widget.animationController.cancelAnimation = () {};
     _bounceThenDisappearAnimation.dispose();
   }
 
@@ -66,9 +63,7 @@ class _AnimatedItemContainerState extends State<AnimatedItemContainer>
               color: animationIsRunning
                   ? Colors.grey
                   : Theme.of(context).cardColor),
-          child: widget.child(min(_bounceThenDisappearAnimation.bounceValue,
-                  _bounceThenDisappearAnimation.disappearValue) /
-              itemBoxSize),
+          child: widget.child,
         ));
   }
 }

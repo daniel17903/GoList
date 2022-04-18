@@ -52,7 +52,7 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
       onLongTap: () => widget.onItemTappedLong(widget.item),
       child: AnimatedItemContainer(
         animationController: animationController,
-        child: (scaleFactor) => Column(children: [
+        child: Column(children: [
           Expanded(
               flex: 3,
               child: Padding(
@@ -64,25 +64,25 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
               child: Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Center(
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: widget.item.name,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16 * scaleFactor,
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          text: widget.item.name,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                          children: <TextSpan>[
+                            if (widget.item.amount != null &&
+                                widget.item.amount!.isNotEmpty)
+                              TextSpan(
+                                  text: "\n" + widget.item.amount!,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  )),
+                          ],
                         ),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: widget.item.amount != null &&
-                                      widget.item.amount!.isNotEmpty
-                                  ? "\n" + widget.item.amount!
-                                  : "",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 13 * scaleFactor,
-                              )),
-                        ],
                       ),
                     ),
                   )))
