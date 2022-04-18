@@ -24,9 +24,9 @@ class Diff<T extends GoListModel, S extends GoListModel> {
       T? elementFromSp2 = _elementById(elementsFromSp2, elementId);
 
       if (elementFromSp1 == null) {
-        elementsToUpdateIn1.add(elementFromSp2!);
+        if (!elementFromSp2!.deleted) elementsToUpdateIn1.add(elementFromSp2);
       } else if (elementFromSp2 == null) {
-        elementsToUpdateIn2.add(elementFromSp1);
+        if (!elementFromSp1.deleted) elementsToUpdateIn2.add(elementFromSp1);
       } else if (!elementFromSp1.isEqualTo(elementFromSp2)) {
         if (elementFromSp1.modified > elementFromSp2.modified) {
           elementsToUpdateIn2.add(elementFromSp1);
