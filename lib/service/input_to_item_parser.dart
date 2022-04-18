@@ -78,6 +78,7 @@ class InputToItemParser {
   }
 
   static String? parseAmount(String input) {
+    input = input.replaceAll(RegExp("typ +[0-9]+", caseSensitive: false), "");
     Iterable<String?> amount = RegExp(
             "(^| +)([0-9]+((.|,)[0-9])? ?(liter|ml|l|g|kg|kilo|gramm|kilogramm|becher|glas|bund|scheiben|packung(en)?|gläser|glaeser|stueck(e)?|stück(e)?|dose(n)?|flasche(n)?|kiste(n)?|beutel(n)?|tuete(n)?|tüte(n)?|becher)?)( +|\$)",
             caseSensitive: false)

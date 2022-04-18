@@ -17,6 +17,8 @@ void main() {
       "kuchen 2": "2",
       "2.5 liter wasser": "2.5 liter",
       "2,5 liter wasser": "2,5 liter",
+      "mehl typ 630": null,
+      "mehl Typ 630": null
     };
     inputsToExpected.forEach((input, expected) {
       test("$input -> $expected", () {
