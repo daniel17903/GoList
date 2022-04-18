@@ -26,13 +26,15 @@ class Storage {
     streamController.add(shoppingListsFromLocal);
     remoteStorageProvider
         .loadShoppingLists()
-        .then((shoppingListsFromRemote) =>
-            StorageProviderSync.syncStorageProviders(
-                    localStorageProvider,
-                    shoppingListsFromLocal,
-                    remoteStorageProvider,
-                    shoppingListsFromRemote)
-                .then(streamController.add))
+        .then((shoppingListsFromRemote) {
+          shoppingListsFromLocal = localStorageProvider.loadShoppingLists();
+          return StorageProviderSync.syncStorageProviders(
+                  localStorageProvider,
+                  shoppingListsFromLocal,
+                  remoteStorageProvider,
+                  shoppingListsFromRemote)
+              .then(streamController.add);
+        })
         .catchError((_) => print("failed to load shoppinglists from remote"))
         .whenComplete(streamController.close);
 
