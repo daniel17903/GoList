@@ -106,6 +106,7 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
                   borderSide: BorderSide(color: Colors.white)),
             ),
             onSubmitted: (_) => addNewItemToList(newItem, appStateNotifier),
+            textInputAction: TextInputAction.done,
             onChanged: (text) {
               _debounced(() {
                 setState(() {
