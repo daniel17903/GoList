@@ -20,7 +20,7 @@ class GoListClient {
       required HttpMethod httpMethod,
       Object? body}) async {
     Map<String, String> headers = {
-      "api-key": "secure",
+      "api-key": "aJIakfQ8skIHRT1586Xl8jF8L9FkpC3f",
       "user-id": await deviceId()
     };
     String? jsonBody;
