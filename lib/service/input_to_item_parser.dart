@@ -90,7 +90,7 @@ class InputToItemParser {
 
   static String findMatchingIconForName(String name) {
     name = name.toLowerCase();
-    var matchingIconName = "box"; // TODO default icon
+    var matchingIconName = "default";
     var matchingWordLength = 0;
     for (var iconName in _namesMatchingForIcon.keys) {
       String? matchingWordForIconName = _namesMatchingForIcon[iconName]!
