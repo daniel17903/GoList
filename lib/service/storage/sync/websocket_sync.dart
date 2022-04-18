@@ -23,22 +23,26 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
   String? subscribedToShoppingListWithId;
   int retries = 0;
 
-  Future<void> listenForChanges(String shoppingListId) async {
+  Future<void> listenForChanges(ShoppingList? currentShoppingList) async {
+    if (currentShoppingList == null) return;
     if (retries < 3 &&
-        (subscribedToShoppingListWithId != shoppingListId ||
+        (subscribedToShoppingListWithId != currentShoppingList.id ||
             !ref.read(AppStateNotifier.connectedProvider))) {
-      retries =
-          subscribedToShoppingListWithId == shoppingListId ? retries + 1 : 0;
-      if (ref.read(AppStateNotifier.connectedProvider))
+      retries = subscribedToShoppingListWithId == currentShoppingList.id
+          ? retries + 1
+          : 0;
+      if (ref.read(AppStateNotifier.connectedProvider)) {
         await websocketChannel?.sink.close();
-      subscribedToShoppingListWithId = shoppingListId;
+      }
+      subscribedToShoppingListWithId = currentShoppingList.id;
       Future.delayed(
           Duration.zero,
           () => ref
               .read(AppStateNotifier.appStateProvider.notifier)
               .setConnected(true));
       print("connecting to ws");
-      websocketChannel = await GoListClient().listenForChanges(shoppingListId);
+      websocketChannel =
+          await GoListClient().listenForChanges(currentShoppingList.id);
       websocketChannel?.stream.listen((data) {
         print("updating shoppinglist from websocket: $data");
         ref.read(AppStateNotifier.appStateProvider.notifier).updateShoppingList(
@@ -47,7 +51,7 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
       }, onError: (e) {
         print("ws closed with error: $e");
         retries++;
-        listenForChanges(shoppingListId);
+        listenForChanges(currentShoppingList);
       },
           onDone: () => setState(() {
                 websocketChannel = null;
@@ -60,8 +64,9 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
   }
 
   void disconnect() {
-    if (ref.read(AppStateNotifier.connectedProvider))
+    if (ref.read(AppStateNotifier.connectedProvider)) {
       websocketChannel?.sink.close();
+    }
     websocketChannel = null;
     ref.read(AppStateNotifier.appStateProvider.notifier).setConnected(false);
     retries = 0;
@@ -70,23 +75,24 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    print(state.name);
     if (state == AppLifecycleState.resumed) {
       print("resuming");
       retries = 0;
-      if (ref.read(AppStateNotifier.appStateProvider).currentShoppingList !=
-          null) {
-        listenForChanges(ref
-            .read(AppStateNotifier.appStateProvider)
-            .currentShoppingList!
-            .id);
-      }
+      listenForChanges(
+          ref.read(AppStateNotifier.appStateProvider).currentShoppingList);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
   void dispose() {
     print("dispose sync widget");
+    WidgetsBinding.instance!.removeObserver(this);
     disconnect();
     super.dispose();
   }
@@ -95,9 +101,7 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
   Widget build(BuildContext context) {
     ShoppingList? currentShoppingList =
         ref.watch(AppStateNotifier.appStateProvider).currentShoppingList;
-    if (currentShoppingList != null) {
-      listenForChanges(currentShoppingList.id);
-    }
+    listenForChanges(currentShoppingList);
     return widget.child;
   }
 }
