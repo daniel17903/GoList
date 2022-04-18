@@ -46,7 +46,7 @@ class Storage {
     await Future.wait([
       localStorageProvider,
       if (updateRemoteStorage) remoteStorageProvider
-    ].map((sp) async => await sp.saveItems(shoppingList, [...items])));
+    ].map((sp) async => await sp.saveItems(shoppingList, items)));
   }
 
   Future<void> saveList(ShoppingList shoppingList,

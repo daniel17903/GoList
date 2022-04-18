@@ -11,6 +11,8 @@ import 'package:get_storage/get_storage.dart';
 import 'app_state.dart';
 
 class AppStateNotifier extends StateNotifier<AppState> {
+  Future<void>? loadingFuture;
+
   static final appStateProvider =
       StateNotifierProvider<AppStateNotifier, AppState>(
           (_) => AppStateNotifier(AppState()));
@@ -158,30 +160,28 @@ class AppStateNotifier extends StateNotifier<AppState> {
     if (state.shoppingLists.where((sl) => !sl.deleted).isEmpty) {
       ShoppingList newList = ShoppingList(
         name: "Einkaufsliste",
-        /**items: InputToItemParser.sampleNamesWithIcon()
-            .entries
-            .map((entry) => Item(name: entry.value, iconName: entry.key))
-            .toList()*/
       );
       setShoppingLists([...state.shoppingLists, newList],
           updateRemoteStorage: true);
-      print(
-          "added ${currentShoppingList?.items.length} items to list ${currentShoppingList?.id}");
       // TODO sort
     }
   }
 
   Future<void> loadAllFromStorage() {
-    Completer completer = Completer();
-    GetStorage.init().then(
-        (_) => Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
-              setShoppingLists(shoppingListsFromStorage,
-                  selectedListIndex: Storage().loadSelectedListIndex());
-            }, onDone: () {
-              completer.complete();
-              initializeWithEmptyList();
-            }));
-    return completer.future;
+    if (loadingFuture == null) {
+      Completer completer = Completer();
+      loadingFuture = completer.future;
+      GetStorage.init().then((_) =>
+          Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
+            setShoppingLists(shoppingListsFromStorage,
+                selectedListIndex: Storage().loadSelectedListIndex());
+          }, onDone: () {
+            completer.complete();
+            initializeWithEmptyList();
+            loadingFuture = null;
+          }));
+    }
+    return loadingFuture!;
   }
 
   ShoppingList? get currentShoppingList => state.currentShoppingList;

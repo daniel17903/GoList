@@ -28,6 +28,7 @@ class LocalStorageProvider implements StorageProvider {
 
   @override
   void saveItems(ShoppingList shoppingList, List<Item> items) {
+    items = [...items];
     List<ShoppingList> shoppingLists = loadShoppingLists();
     ShoppingList shoppingListToUpdate =
     _shoppingListById(shoppingLists, shoppingList.id)!;
