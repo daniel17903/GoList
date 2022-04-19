@@ -22,6 +22,7 @@ class ShoppingListWidget extends HookConsumerWidget {
     final bool connected = ref.watch(AppStateNotifier.connectedProvider);
 
     return ItemListViewer(
+      darkBackground: false,
       items: items,
       header: Padding(
         padding: const EdgeInsets.only(bottom: 12.0, top: 5),

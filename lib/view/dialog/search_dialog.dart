@@ -125,6 +125,7 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
         ),
         Expanded(
           child: ItemListViewer(
+              darkBackground: true,
               onItemTapped: (item) =>
                   addNewItemToList(item.copyWith(), appStateNotifier),
               items: [

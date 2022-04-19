@@ -10,11 +10,11 @@ class ThemedApp extends StatelessWidget {
 
   final materialTheme = ThemeData(
       backgroundColor: GoListColors.darkBlue,
-      cardColor: Colors.cyan.shade800,
+      cardColor: Color(0xff34a1db),
       bottomAppBarTheme: const BottomAppBarTheme(
-          shape: CircularNotchedRectangle(), color: Colors.teal),
+          shape: CircularNotchedRectangle(), color: Color(0xff005382)),
       colorScheme: const ColorScheme(
-          secondary: Colors.teal,
+          secondary: Color(0xff005382),
           // fab color
           brightness: Brightness.light,
           primary: Colors.cyan,

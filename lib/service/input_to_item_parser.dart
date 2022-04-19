@@ -16,7 +16,8 @@ Map<String, List<String>> _namesMatchingForIcon = {
     "sprite",
     "apfelschorle"
   ],
-  'box': ["box", "salz", "mehl"],
+  'box': ["box", "salz"],
+  'flour': ["mehl"],
   'bread': ["brot", "brötchen", "laugenstange"],
   'can': ["bohnen", "dose"],
   'carrot': ["karotte", "pastinake", "rübe", "ruebe"],
@@ -44,6 +45,7 @@ Map<String, List<String>> _namesMatchingForIcon = {
     "heidelbeeren",
     "blaubeeren"
   ],
+  "strawberry": ["erdbeeren"],
   "block": ["tofu", "butter", "margarine", "fett"],
   "burger": ["burger"],
   "herbs": ["kräuter", "petersilie", "basilikum", "koriander", "dill"],
