@@ -74,6 +74,8 @@ class BounceThenDisappearAnimation {
 
   void stop() {
     _bounceAnimationFinishedTimer?.cancel();
+    _bounceAnimationController.stop();
+    _disappearAnimationController.stop();
     _bounceAnimationController.reset();
     _disappearAnimationController.reset();
   }

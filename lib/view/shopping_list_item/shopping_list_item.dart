@@ -28,7 +28,6 @@ class ShoppingListItem extends StatefulWidget {
 
 class _ShoppingListItemState extends State<ShoppingListItem> {
   late final ItemAnimationController animationController;
-  bool hasBeenTapped = false;
 
   @override
   void initState() {
@@ -48,7 +47,7 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
           widget.onItemTapped(widget.item);
         }
       },
-      onReTap: animationController.cancelAnimation,
+      onReTap: () => animationController.cancelAnimation!(),
       onLongTap: () => widget.onItemTappedLong(widget.item),
       child: AnimatedItemContainer(
         animationController: animationController,
