@@ -14,7 +14,9 @@ Map<String, List<String>> _namesMatchingForIcon = {
     "limo",
     "limonade",
     "sprite",
-    "apfelschorle"
+    "apfelschorle",
+    "öl",
+    "oel"
   ],
   'box': ["box", "salz"],
   'flour': ["mehl"],
