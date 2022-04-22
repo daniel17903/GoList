@@ -1,13 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_list/view/shopping_list_item/bounce_then_disappear_animation.dart';
 import 'package:go_list/view/shopping_list_item/item_animation_controller.dart';
+import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
 class AnimatedItemContainer extends StatefulWidget {
   const AnimatedItemContainer(
       {Key? key, required this.child, required this.animationController})
       : super(key: key);
 
-  final Widget child;
+  final Widget Function(double) child;
   final ItemAnimationController animationController;
 
   @override
@@ -18,14 +21,20 @@ class _AnimatedItemContainerState extends State<AnimatedItemContainer>
     with TickerProviderStateMixin {
   late BounceThenDisappearAnimation _bounceThenDisappearAnimation;
   bool animationIsRunning = false;
+  bool disappearing = false;
 
   @override
   void initState() {
     super.initState();
     _bounceThenDisappearAnimation = BounceThenDisappearAnimation(
-        onValueChanged: () => setState(() {}), tickProvider: this);
-    _bounceThenDisappearAnimation.onCompleted =
-        () => widget.animationController.onAnimationCompleted!();
+        onCompleted: () => widget.animationController.onAnimationCompleted!(),
+        onDisappearAnimationStart: () {
+          setState(() {
+            disappearing = true;
+          });
+        },
+        onValueChanged: () => setState(() {}),
+        tickProvider: this);
 
     widget.animationController.startAnimation = () {
       setState(() {
@@ -34,18 +43,19 @@ class _AnimatedItemContainerState extends State<AnimatedItemContainer>
       _bounceThenDisappearAnimation.start();
     };
     widget.animationController.cancelAnimation = () {
+      _bounceThenDisappearAnimation.stop();
       setState(() {
         animationIsRunning = false;
+        disappearing = false;
       });
-      _bounceThenDisappearAnimation.stop();
     };
   }
 
   @override
   void dispose() {
-    super.dispose();
     widget.animationController.cancelAnimation = () {};
     _bounceThenDisappearAnimation.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,7 +73,11 @@ class _AnimatedItemContainerState extends State<AnimatedItemContainer>
               color: animationIsRunning
                   ? Colors.grey
                   : Theme.of(context).cardColor),
-          child: widget.child,
+          child: disappearing
+              ? null  // prevent overflow error
+              : widget.child(min(_bounceThenDisappearAnimation.bounceValue,
+                      _bounceThenDisappearAnimation.disappearValue) /
+                  itemBoxSize),
         ));
   }
 }

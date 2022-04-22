@@ -14,12 +14,13 @@ class ItemListViewer extends StatelessWidget {
       this.header,
       this.onPullForRefresh,
       this.footer,
-      required this.darkBackground})
+      required this.darkBackground, this.onItemAnimationEnd})
       : super(key: key);
 
   final List<Item> items;
   final void Function(Item) onItemTapped;
   final void Function(Item)? onItemTappedLong;
+  final void Function(Item)? onItemAnimationEnd;
   final Future<void> Function()? onPullForRefresh;
   final bool delayItemTap;
   final Widget? header;
@@ -80,7 +81,6 @@ class ItemListViewer extends StatelessWidget {
                     if (header != null) header!,
                     Wrap(
                         spacing: spacing,
-                        // gap between adjacent chips
                         runSpacing: spacing,
                         direction: Axis.horizontal,
                         crossAxisAlignment: WrapCrossAlignment.center,
@@ -91,6 +91,7 @@ class ItemListViewer extends StatelessWidget {
                             onItemTapped: onItemTapped,
                             onItemTappedLong: onItemTappedLong ?? (_) {},
                             delayItemTap: delayItemTap,
+                            onItemAnimationEnd: onItemAnimationEnd,
                           );
                         }).toList()),
                     if (footer != null) footer!

@@ -15,12 +15,14 @@ class ShoppingListItem extends StatefulWidget {
       required this.item,
       required this.onItemTapped,
       required this.delayItemTap,
-      required this.onItemTappedLong})
+      required this.onItemTappedLong,
+      this.onItemAnimationEnd})
       : super(key: key);
 
   final Item item;
   final Function(Item) onItemTapped;
   final void Function(Item) onItemTappedLong;
+  final void Function(Item)? onItemAnimationEnd;
   final bool delayItemTap;
 
   @override
@@ -41,33 +43,37 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
     return TapDetector(
       onTap: () {
         if (widget.delayItemTap) {
+          print("tapped1");
           animationController.startAnimation!();
           animationController.onAnimationCompleted =
-              () => widget.onItemTapped(widget.item);
-        } else {
-          widget.onItemTapped(widget.item);
+              () => widget.onItemAnimationEnd!(widget.item);
         }
+        widget.onItemTapped(widget.item);
       },
       onReTap: () => animationController.cancelAnimation!(),
       onLongTap: () => widget.onItemTappedLong(widget.item),
       child: AnimatedItemContainer(
         animationController: animationController,
-        child: Column(children: [
+        child: (scaleFactor) => Column(children: [
           Expanded(
               flex: 6,
               child: Padding(
-                padding: const EdgeInsets.only(left: 2.0, top: 2.0, right: 2.0, bottom: 6.0),
+                padding: const EdgeInsets.only(
+                    left: 2.0, top: 2.0, right: 2.0, bottom: 6.0),
                 child: GoListIcons.icon(widget.item.iconName),
               )),
           AutoSizeText(widget.item.name,
               maxLines: 2,
               maxFontSize: 16,
               minFontSize: 13,
+              textScaleFactor: scaleFactor,
+              textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(color: Colors.white)),
           if (widget.item.amount != null && widget.item.amount!.isNotEmpty)
             Text(widget.item.amount!,
                 maxLines: 1,
+                textScaleFactor: scaleFactor,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 13,

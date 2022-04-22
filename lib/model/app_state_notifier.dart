@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/service/input_to_item_parser.dart';
 import 'package:go_list/service/storage/storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:get_storage/get_storage.dart';
 
 import 'app_state.dart';
 
@@ -84,14 +83,17 @@ class AppStateNotifier extends StateNotifier<AppState> {
     }
   }
 
-  void deleteItem(Item itemToRemove) {
-    Item deletedItem = itemToRemove.copyWith(deleted: true);
-
+  void deleteItems(List<Item> itemsToDelete) {
     ShoppingList shoppingListContainingItem = currentShoppingList!;
     ShoppingList updatedShoppingList = shoppingListContainingItem.copyWith(
-        items: shoppingListContainingItem.items
-            .map((item) => item.id == itemToRemove.id ? deletedItem : item)
-            .toList());
+        items: shoppingListContainingItem.items.map((item) {
+      int indexOfItemToDelete = itemsToDelete
+          .indexWhere((itemToDelete) => itemToDelete.id == item.id);
+      if (indexOfItemToDelete != -1) {
+        return itemsToDelete[indexOfItemToDelete].copyWith(deleted: true);
+      }
+      return item;
+    }).toList());
     updateShoppingList(updatedShoppingList, updateStorage: true);
   }
 

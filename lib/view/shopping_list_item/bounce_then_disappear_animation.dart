@@ -10,9 +10,10 @@ class BounceThenDisappearAnimation {
   late AnimationController _bounceAnimationController;
 
   final Function() onValueChanged;
-  Function()? onCompleted;
+  final Function() onCompleted;
+  final Function() onDisappearAnimationStart;
 
-  Timer? _bounceAnimationFinishedTimer;
+  Timer? bounceAnimationFinishedTimer;
   double bounceValue = itemBoxSize.toDouble();
   double disappearValue = itemBoxSize.toDouble();
 
@@ -20,7 +21,10 @@ class BounceThenDisappearAnimation {
   static const int disappearDurationMs = 300;
 
   BounceThenDisappearAnimation(
-      {required tickProvider, required this.onValueChanged}) {
+      {required this.onCompleted,
+      required tickProvider,
+      required this.onValueChanged,
+      required this.onDisappearAnimationStart}) {
     _bounceAnimationController = AnimationController(
         vsync: tickProvider, duration: const Duration(milliseconds: 300));
     _disappearAnimationController = AnimationController(
@@ -37,11 +41,6 @@ class BounceThenDisappearAnimation {
       ..addListener(() {
         bounceValue = _bounceAnimation.value;
         onValueChanged();
-      })
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _disappearAnimationController.forward();
-        }
       });
 
     _disappearAnimation = Tween(
@@ -56,24 +55,27 @@ class BounceThenDisappearAnimation {
         onValueChanged();
       })
       ..addStatusListener((status) {
-        if (status == AnimationStatus.completed && onCompleted != null) {
-          onCompleted!();
+        if (status == AnimationStatus.completed) {
+          onCompleted();
         }
       });
   }
 
+  void _stopBounceAnimationAndStartDisappearAnimation() {
+    _bounceAnimationController.reset();
+    _disappearAnimationController.forward();
+    onDisappearAnimationStart();
+  }
+
   void start() {
     _bounceAnimationController.repeat(reverse: true);
-    _bounceAnimationFinishedTimer =
-        Timer(const Duration(milliseconds: bounceDurationMs), () {
-      bounceValue = itemBoxSize.toDouble();
-      _bounceAnimationController.reset();
-      _disappearAnimationController.forward();
-    });
+    bounceAnimationFinishedTimer = Timer(
+        const Duration(milliseconds: bounceDurationMs),
+        _stopBounceAnimationAndStartDisappearAnimation);
   }
 
   void stop() {
-    _bounceAnimationFinishedTimer?.cancel();
+    bounceAnimationFinishedTimer?.cancel();
     _bounceAnimationController.stop();
     _disappearAnimationController.stop();
     _bounceAnimationController.reset();
@@ -81,6 +83,7 @@ class BounceThenDisappearAnimation {
   }
 
   void dispose() {
+    bounceAnimationFinishedTimer?.cancel();
     _bounceAnimationController.dispose();
     _disappearAnimationController.dispose();
   }
