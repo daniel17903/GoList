@@ -75,7 +75,7 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
           }
           return 0;
         } else {
-          return item1.modified.compareTo(item2.modified);
+          return item2.modified.compareTo(item1.modified);
         }
       });
     }
@@ -131,7 +131,7 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
               items: [
                 if (newItem != null) newItem!,
                 ...recentlyUsedItemsSorted
-              ]),
+              ].sublist(0, 20)),
         )
       ]),
     );
