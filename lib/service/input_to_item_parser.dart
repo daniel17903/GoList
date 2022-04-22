@@ -16,9 +16,14 @@ Map<String, List<String>> _namesMatchingForIcon = {
     "sprite",
     "apfelschorle",
     "öl",
-    "oel"
+    "oel",
+    "essig",
+    "sojasoße",
+    "sojasosse",
+    "soja sosse",
+    "soja soße"
   ],
-  'box': ["box", "salz"],
+  'box': ["box"],
   'flour': ["mehl"],
   'bread': ["brot", "brötchen", "laugenstange"],
   'can': ["bohnen", "dose"],
@@ -31,7 +36,6 @@ Map<String, List<String>> _namesMatchingForIcon = {
   'round_fruit': ["tomate", "orange", "mandarine", "mango"],
   "dead_cow": ["fleisch", "hackfleisch", "wurst", "steak", "würste"],
   "cookie": ["keks", "kekse", "süssigkeiten"],
-  "small_glas": ["salz", "pfeffer", "gewürz", "pulver"],
   "pepper": ["paprika"],
   "onion": ["zwiebel", "zwiebeln"],
   "pear": ["birne", "birnen"],
@@ -63,7 +67,19 @@ Map<String, List<String>> _namesMatchingForIcon = {
   ],
   "pasta": ["nudeln", "spaghetti", "pasta"],
   "lemon": ["zitrone"],
-  "potatos": ["kartoffel"]
+  "potatos": ["kartoffel"],
+  "garlic": ["knoblauch"],
+  "spice": [
+    "salz",
+    "pfeffer",
+    "gewürz",
+    "gewuerz",
+    "curry",
+    "kurkuma",
+    "zimt",
+    "kümmel",
+    "kuemmel"
+  ]
 }.map((iconName, matchingProductNames) {
   matchingProductNames.sort((a, b) => b.length - a.length);
   return MapEntry(iconName, matchingProductNames);

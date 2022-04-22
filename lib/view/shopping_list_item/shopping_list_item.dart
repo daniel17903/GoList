@@ -43,7 +43,6 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
     return TapDetector(
       onTap: () {
         if (widget.delayItemTap) {
-          print("tapped1");
           animationController.startAnimation!();
           animationController.onAnimationCompleted =
               () => widget.onItemAnimationEnd!(widget.item);
