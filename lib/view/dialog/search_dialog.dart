@@ -128,10 +128,9 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
               darkBackground: true,
               onItemTapped: (item) =>
                   addNewItemToList(item.copyWith(), appStateNotifier),
-              items: [
-                if (newItem != null) newItem!,
-                ...recentlyUsedItemsSorted
-              ].sublist(0, 20)),
+              items: [if (newItem != null) newItem!, ...recentlyUsedItemsSorted]
+                  .take(20)
+                  .toList()),
         )
       ]),
     );
