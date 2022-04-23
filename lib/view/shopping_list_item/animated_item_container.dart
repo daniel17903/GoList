@@ -67,7 +67,6 @@ class _AnimatedItemContainerState extends State<AnimatedItemContainer>
         child: Container(
           width: _bounceThenDisappearAnimation.bounceValue,
           height: _bounceThenDisappearAnimation.bounceValue,
-          padding: const EdgeInsets.all(6.0),
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               color: animationIsRunning
