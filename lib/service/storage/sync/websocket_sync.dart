@@ -42,7 +42,7 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
               .setConnected(true));
       print("connecting to ws");
       websocketChannel =
-          await GoListClient().listenForChanges(currentShoppingList.id);
+          GoListClient().listenForChanges(currentShoppingList.id);
       websocketChannel?.stream.listen((data) {
         print("updating shoppinglist from websocket: $data");
         ref.read(AppStateNotifier.appStateProvider.notifier).updateShoppingList(

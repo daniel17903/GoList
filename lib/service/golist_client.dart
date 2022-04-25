@@ -48,12 +48,10 @@ class GoListClient {
     }
   }
 
-  Future<WebSocketChannel> listenForChanges(String shoppingListId) async {
-    WebSocketChannel webSocketChannel = WebSocketChannel.connect(
-        Uri.parse(
-            "${BackendUrl.websocketUrl()}/api/shoppinglist/${shoppingListId}/listen"));
-    await deviceId().then(webSocketChannel.sink.add);
-    print("sent deviceId ${await deviceId()}");
+  WebSocketChannel listenForChanges(String shoppingListId) {
+    WebSocketChannel webSocketChannel = WebSocketChannel.connect(Uri.parse(
+        "${BackendUrl.websocketUrl()}/api/shoppinglist/${shoppingListId}/listen"));
+    webSocketChannel.sink.add(deviceId());
     return webSocketChannel;
   }
 }
