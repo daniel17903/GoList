@@ -38,14 +38,14 @@ class GoListClient {
         case HttpMethod.post:
           response = await client.post(uri, body: jsonBody, headers: headers);
       }
-      if ((response.statusCode ~/ 100) != 2) {
-        throw Exception(
-            "Request to '$endpoint' failed, response code was ${response.statusCode}");
-      }
-      return response;
     } catch (_) {
       throw Exception("$httpMethod request to '$endpoint' failed");
     }
+    if ((response.statusCode ~/ 100) != 2) {
+      throw Exception(
+          "Request to '$endpoint' failed, response code was ${response.statusCode}");
+    }
+    return response;
   }
 
   WebSocketChannel listenForChanges(String shoppingListId) {

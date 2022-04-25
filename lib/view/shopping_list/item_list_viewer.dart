@@ -4,6 +4,9 @@ import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
 import '../../model/item.dart';
 
+const double horizontalPadding = 6;
+const double spacing = 6;
+
 class ItemListViewer extends StatelessWidget {
   const ItemListViewer(
       {Key? key,
@@ -14,7 +17,10 @@ class ItemListViewer extends StatelessWidget {
       this.header,
       this.onPullForRefresh,
       this.footer,
-      required this.darkBackground, this.onItemAnimationEnd})
+      required this.darkBackground,
+      this.onItemAnimationEnd,
+      required this.itemColor,
+      required this.parentWidth})
       : super(key: key);
 
   final List<Item> items;
@@ -26,11 +32,28 @@ class ItemListViewer extends StatelessWidget {
   final Widget? header;
   final Widget? footer;
   final bool darkBackground;
+  final Color itemColor;
+  final double parentWidth;
 
-  final double horizontalPadding = 6;
-  final double spacing = 6;
+  double _calcItemBoxScaleFactor(double parentWidth) {
+    double minSize = 90;
+
+    double widthForItems(int itemCount, double itemSize) {
+      return itemCount * itemSize +
+          (itemCount - 1) * spacing +
+          2 * horizontalPadding;
+    }
+
+    double size = defaultSize;
+    while (widthForItems(3, size) > parentWidth && size > minSize) {
+      size--;
+    }
+
+    return size / defaultSize;
+  }
 
   double _calcPerfectWidth(BuildContext context) {
+    double itemBoxSize = _calcItemBoxScaleFactor(parentWidth) * defaultSize;
     double listWidth =
         MediaQuery.of(context).size.width - 2 * horizontalPadding;
     int itemsPerRow = listWidth ~/ itemBoxSize;
@@ -49,28 +72,23 @@ class ItemListViewer extends StatelessWidget {
         decoration: darkBackground
             ? null
             : const BoxDecoration(
-                gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                // 10% of the width, so there are ten blinds.
+                gradient: RadialGradient(
+                radius: 2.0,
+                center: Alignment(0, 0.9), // behind the fab
                 colors: <Color>[
-                  Color(0xff005382),
-                  Color(0xfff6f294),
-                  Color(0xffd8e8af),
+                  Color(0xffe4b2d2),
                   Color(0xffbde5ee),
-                  Color(0xffe4b2d2)
+                  Color(0xffd8e8af),
+                  Color(0xfff6f294),
+                  Color(0xff005382),
                 ],
-                stops: [0, 0.2, 0.3, 0.65, 1.0],
-                // red to yellow
-                tileMode:
-                    TileMode.clamp, // repeats the gradient over the canvas
               )),
         constraints: const BoxConstraints.expand(),
         child: RefreshableScrollView(
             onRefresh: onPullForRefresh,
             child: Container(
                 width: _calcPerfectWidth(context),
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                     left: horizontalPadding,
                     right: horizontalPadding,
                     top: 6,
@@ -86,6 +104,9 @@ class ItemListViewer extends StatelessWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: items.map((Item item) {
                           return ShoppingListItem(
+                            initialScaleFactor:
+                                _calcItemBoxScaleFactor(parentWidth),
+                            color: itemColor,
                             key: UniqueKey(),
                             item: item,
                             onItemTapped: onItemTapped,

@@ -71,34 +71,41 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
             ),
           ),
         ),
-        ExpansionTile(
-            title: const Text('Meine Listen'),
-            initiallyExpanded: true,
-            children: [
-              ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  itemCount: shoppingLists.length,
-                  itemBuilder: (BuildContext context, int index) => ListTile(
-                        leading: const Icon(Icons.list),
-                        title: Text(shoppingLists[index].name),
-                        onTap: () {
-                          Navigator.pop(context);
-                          ref
-                              .read(AppStateNotifier.appStateProvider.notifier)
-                              .selectList(index);
-                        },
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () => _showAlertDialog(onConfirmed: () {
-                            ref
-                                .read(
-                                    AppStateNotifier.appStateProvider.notifier)
-                                .deleteShoppingList(shoppingLists[index].id);
-                          }),
-                        ),
-                      )),
-            ]),
+        Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+                title: const Text('Meine Listen'),
+                initiallyExpanded: true,
+                maintainState: true,
+                children: [
+                  ListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      itemCount: shoppingLists.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          ListTile(
+                            leading: const Icon(Icons.list),
+                            title: Text(shoppingLists[index].name),
+                            onTap: () {
+                              Navigator.pop(context);
+                              ref
+                                  .read(AppStateNotifier
+                                      .appStateProvider.notifier)
+                                  .selectList(index);
+                            },
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () =>
+                                  _showAlertDialog(onConfirmed: () {
+                                ref
+                                    .read(AppStateNotifier
+                                        .appStateProvider.notifier)
+                                    .deleteShoppingList(
+                                        shoppingLists[index].id);
+                              }),
+                            ),
+                          )),
+                ])),
         ListTile(
           leading: const Icon(Icons.add),
           title: const Text("Neue Liste erstellen"),

@@ -17,10 +17,11 @@ class ShoppingListPage extends StatelessWidget {
       child: Scaffold(
           key: _scaffoldKey,
           extendBody: true,
+          resizeToAvoidBottomInset: false,  // prevents resizing when opening keyboard
           bottomNavigationBar: GoListBottomNavigationBar(
               onMenuButtonTapped: () =>
                   _scaffoldKey.currentState?.openDrawer()),
-          body: ShoppingListWidget(),
+          body: const ShoppingListWidget(),
           drawer: const ShoppingListDrawer(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,

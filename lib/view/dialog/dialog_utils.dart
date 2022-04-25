@@ -6,20 +6,19 @@ class DialogUtils {
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.5),
         transitionBuilder: (context, a1, a2, widget) {
-          return Transform.scale(
-            scale: a1.value,
-            child: Opacity(
-              opacity: a1.value,
-              child: widget,
-            ),
+          return SlideTransition(
+            position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0))
+                .animate(a1),
+            child: widget,
           );
         },
-        transitionDuration: const Duration(milliseconds: 200),
+        transitionDuration: const Duration(milliseconds: 300),
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
-        pageBuilder: (context, animation1, animation2) =>
-            SafeArea(child: Dialog(child: child)));
+        pageBuilder: (context, animation1, animation2) => SafeArea(
+              child: Dialog(child: child),
+            ));
   }
 
   static void showSmallAlertDialog(

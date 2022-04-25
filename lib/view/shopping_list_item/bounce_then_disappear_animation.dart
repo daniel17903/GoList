@@ -14,8 +14,7 @@ class BounceThenDisappearAnimation {
   final Function() onDisappearAnimationStart;
 
   Timer? bounceAnimationFinishedTimer;
-  double bounceValue = itemBoxSize.toDouble();
-  double disappearValue = itemBoxSize.toDouble();
+  double value = 1.0;
 
   static const int bounceDurationMs = 2700;
   static const int disappearDurationMs = 300;
@@ -32,26 +31,26 @@ class BounceThenDisappearAnimation {
         duration: const Duration(milliseconds: disappearDurationMs));
 
     _bounceAnimation = Tween(
-      begin: itemBoxSize.toDouble(),
-      end: 105.0,
+      begin: 1.0,
+      end: 0.85,
     ).animate(CurvedAnimation(
       parent: _bounceAnimationController,
       curve: Curves.easeInOutSine,
     ))
       ..addListener(() {
-        bounceValue = _bounceAnimation.value;
+        value = _bounceAnimation.value;
         onValueChanged();
       });
 
     _disappearAnimation = Tween(
-      begin: itemBoxSize.toDouble(),
+      begin: 1.0,
       end: 0.0,
     ).animate(CurvedAnimation(
       parent: _disappearAnimationController,
       curve: Curves.easeOut,
     ))
       ..addListener(() {
-        disappearValue = _disappearAnimation.value;
+        value = _disappearAnimation.value;
         onValueChanged();
       })
       ..addStatusListener((status) {

@@ -1,17 +1,20 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_list/view/shopping_list_item/bounce_then_disappear_animation.dart';
 import 'package:go_list/view/shopping_list_item/item_animation_controller.dart';
-import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
 class AnimatedItemContainer extends StatefulWidget {
   const AnimatedItemContainer(
-      {Key? key, required this.child, required this.animationController})
+      {Key? key,
+      required this.child,
+      required this.animationController,
+      required this.color,
+      required this.initialSize})
       : super(key: key);
 
   final Widget Function(double) child;
   final ItemAnimationController animationController;
+  final Color color;
+  final double initialSize;
 
   @override
   State<AnimatedItemContainer> createState() => _AnimatedItemContainerState();
@@ -60,23 +63,22 @@ class _AnimatedItemContainerState extends State<AnimatedItemContainer>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: _bounceThenDisappearAnimation.disappearValue,
-        height: _bounceThenDisappearAnimation.disappearValue,
-        alignment: Alignment.center,
+    return SizedBox(
+      width: (disappearing ? _bounceThenDisappearAnimation.value : 1) *
+          widget.initialSize.toDouble(),
+      height: widget.initialSize.toDouble(),
+      child: Center(
         child: Container(
-          width: _bounceThenDisappearAnimation.bounceValue,
-          height: _bounceThenDisappearAnimation.bounceValue,
+          width: widget.initialSize * _bounceThenDisappearAnimation.value,
+          height: widget.initialSize * _bounceThenDisappearAnimation.value,
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
-              color: animationIsRunning
-                  ? Colors.grey
-                  : Theme.of(context).cardColor),
+              color: widget.color),
           child: disappearing
-              ? null  // prevent overflow error
-              : widget.child(min(_bounceThenDisappearAnimation.bounceValue,
-                      _bounceThenDisappearAnimation.disappearValue) /
-                  itemBoxSize),
-        ));
+              ? null // prevent overflow error
+              : widget.child(_bounceThenDisappearAnimation.value),
+        ),
+      ),
+    );
   }
 }

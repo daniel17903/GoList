@@ -10,14 +10,13 @@ class ThemedApp extends StatelessWidget {
 
   final materialTheme = ThemeData(
       backgroundColor: GoListColors.darkBlue,
-      cardColor: Color(0xff34a1db),
+      cardColor: const Color(0x94024461),
       bottomAppBarTheme: const BottomAppBarTheme(
           shape: CircularNotchedRectangle(), color: Color(0xff005382)),
       colorScheme: const ColorScheme(
           secondary: Color(0xff005382),
-          // fab color
           brightness: Brightness.light,
-          primary: Colors.cyan,
+          primary: Color(0xffff8888),
           onPrimary: Colors.white,
           onSecondary: Colors.white,
           background: Colors.blue,
@@ -41,7 +40,7 @@ class ThemedApp extends StatelessWidget {
               DefaultWidgetsLocalizations.delegate,
               DefaultCupertinoLocalizations.delegate,
             ],
-            title: 'Flutter Platform Widgets',
+            title: 'GoList',
             home: child,
             material: (_, __) => MaterialAppData(
               theme: materialTheme,

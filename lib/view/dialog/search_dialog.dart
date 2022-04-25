@@ -125,6 +125,8 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
         ),
         Expanded(
           child: ItemListViewer(
+              parentWidth: MediaQuery.of(context).size.width - 80.0,
+              itemColor: const Color(0x63d5feb5),
               darkBackground: true,
               onItemTapped: (item) =>
                   addNewItemToList(item.copyWith(), appStateNotifier),

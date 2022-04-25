@@ -35,6 +35,8 @@ class ShoppingListWidget extends HookConsumerWidget {
     }
 
     return ItemListViewer(
+      itemColor: Theme.of(context).cardColor,
+      parentWidth: MediaQuery.of(context).size.width,
       darkBackground: false,
       items: items,
       header: Padding(
@@ -50,19 +52,26 @@ class ShoppingListWidget extends HookConsumerWidget {
           ],
         ),
       ),
-      footer: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: Text(
-              otherDevicesCount != 0
-                  ? "Mit $otherDevicesCount anderen Geräten geteilt"
-                  : "",
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontStyle: FontStyle.italic)),
-        ),
-      ),
+      footer: otherDevicesCount != 0
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22.0),
+                    color: const Color(0x50000000),
+                  ),
+                  padding: const EdgeInsets.only(
+                      left: 8.0, right: 8.0, top: 2.0, bottom: 2.0),
+                  child: Text("Mit $otherDevicesCount anderen Geräten geteilt",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontStyle: FontStyle.italic)),
+                ),
+              ),
+            )
+          : null,
       onPullForRefresh: ref
           .read(AppStateNotifier.appStateProvider.notifier)
           .loadAllFromStorage,
