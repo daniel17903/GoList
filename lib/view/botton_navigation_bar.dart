@@ -9,9 +9,6 @@ import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'dialog/dialog_utils.dart';
-import 'dialog/edit_list_dialog.dart';
-
 class GoListBottomNavigationBar extends HookConsumerWidget {
   const GoListBottomNavigationBar({Key? key, required this.onMenuButtonTapped})
       : super(key: key);
@@ -19,6 +16,7 @@ class GoListBottomNavigationBar extends HookConsumerWidget {
   final void Function() onMenuButtonTapped;
 
   void onShareList(BuildContext context, AppState appState) {
+    final Size size = MediaQuery.of(context).size;
     String currentShoppingListId = appState.currentShoppingList!.id;
     GoListClient()
         .sendRequest(
@@ -26,7 +24,11 @@ class GoListBottomNavigationBar extends HookConsumerWidget {
             httpMethod: HttpMethod.post)
         .then((response) => jsonDecode(utf8.decode(response.bodyBytes)))
         .then((responseJson) => responseJson["token"])
-        .then((token) => Share.share("${BackendUrl.httpUrl()}?token=$token"))
+        .then(
+          (token) => Share.share("${BackendUrl.httpUrl()}?token=$token",
+              sharePositionOrigin:
+                  Rect.fromLTWH(0, 0, size.width, size.height / 2)),
+        )
         .catchError((_) => ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Teilen fehlgeschlagen :("))));
   }
@@ -43,7 +45,7 @@ class GoListBottomNavigationBar extends HookConsumerWidget {
       IconButton(
           onPressed: () =>
               onShareList(context, ref.read(AppStateNotifier.appStateProvider)),
-          icon: Icon(Icons.share),
+          icon: const Icon(Icons.share),
           color: Colors.white)
     ]));
   }
