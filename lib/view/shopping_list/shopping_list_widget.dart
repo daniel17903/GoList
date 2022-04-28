@@ -4,6 +4,7 @@ import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:go_list/view/dialog/edit_item_dialog.dart';
+import 'package:go_list/view/dialog/edit_list_dialog.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -19,7 +20,6 @@ class ShoppingListWidget extends HookConsumerWidget {
     final List<Item> items = ref.watch(AppStateNotifier.currentItemsProvider);
     final String name =
         ref.watch(AppStateNotifier.currentShoppingListNameProvider);
-    final bool connected = ref.watch(AppStateNotifier.connectedProvider);
 
     final List<Item> itemDeleteQueue = [];
     int runningItemAnimationsCounter = 0;
@@ -39,18 +39,17 @@ class ShoppingListWidget extends HookConsumerWidget {
       parentWidth: MediaQuery.of(context).size.width,
       darkBackground: false,
       items: items,
-      header: Padding(
-        padding: const EdgeInsets.only(bottom: 12.0, top: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(name,
-                style: const TextStyle(color: Colors.white, fontSize: 22)),
-            connected
-                ? const Icon(Icons.circle, color: Colors.white)
-                : const Icon(Icons.circle_outlined, color: Colors.white)
-          ],
-        ),
+      header: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(name, style: const TextStyle(color: Colors.white, fontSize: 22)),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            color: Colors.white,
+            onPressed: () => DialogUtils.showSmallAlertDialog(
+                context: context, content: const EditListDialog()),
+          )
+        ],
       ),
       footer: otherDevicesCount != 0
           ? Center(

@@ -33,15 +33,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
         appState.shoppingLists.where((i) => !i.deleted).toList()));
   });
 
-  static final connectedProvider = Provider<bool>((ref) {
-    return ref.watch(appStateProvider.select((appState) => appState.connected));
-  });
-
   AppStateNotifier(AppState appState) : super(appState);
-
-  void setConnected(bool connected) {
-    state = state.copyWith(connected: connected);
-  }
 
   void updateItem(Item updatedItem) {
     ShoppingList shoppingListWithUpdatedItem =

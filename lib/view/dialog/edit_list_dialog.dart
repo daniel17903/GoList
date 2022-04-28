@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/shopping_list.dart';

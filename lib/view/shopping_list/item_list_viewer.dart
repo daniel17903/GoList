@@ -73,8 +73,8 @@ class ItemListViewer extends StatelessWidget {
             ? null
             : const BoxDecoration(
                 gradient: RadialGradient(
-                radius: 2.0,
-                center: Alignment(0, 0.9), // behind the fab
+                radius: 2.0,  // 2.0 = screen height
+                center: Alignment.bottomCenter, // behind the fab
                 colors: <Color>[
                   Color(0xffe4b2d2),
                   Color(0xffbde5ee),

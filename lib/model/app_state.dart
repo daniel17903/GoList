@@ -5,13 +5,10 @@ import 'package:go_list/model/shopping_list.dart';
 class AppState {
   late final List<ShoppingList> shoppingLists;
   late final int selectedList;
-  late final bool connected;
 
-  AppState(
-      {List<ShoppingList>? shoppingLists, int? selectedList, bool? connected}) {
+  AppState({List<ShoppingList>? shoppingLists, int? selectedList}) {
     this.shoppingLists = shoppingLists ?? [];
     this.selectedList = selectedList ?? 0;
-    this.connected = connected ?? false;
   }
 
   ShoppingList? get currentShoppingList =>
@@ -22,11 +19,9 @@ class AppState {
   List<ShoppingList> get notDeletedShoppingLists =>
       shoppingLists.where((sl) => !sl.deleted).toList();
 
-  AppState copyWith(
-      {List<ShoppingList>? shoppingLists, int? selectedList, bool? connected}) {
+  AppState copyWith({List<ShoppingList>? shoppingLists, int? selectedList}) {
     return AppState(
         shoppingLists: shoppingLists ?? [...this.shoppingLists],
-        selectedList: selectedList ?? this.selectedList,
-        connected: connected ?? this.connected);
+        selectedList: selectedList ?? this.selectedList);
   }
 }

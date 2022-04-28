@@ -21,26 +21,22 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
     with WidgetsBindingObserver {
   WebSocketChannel? websocketChannel;
   String? subscribedToShoppingListWithId;
+  bool connected = false;
   int retries = 0;
 
   Future<void> listenForChanges(ShoppingList? currentShoppingList) async {
     if (currentShoppingList == null) return;
     if (retries < 3 &&
         (subscribedToShoppingListWithId != currentShoppingList.id ||
-            !ref.read(AppStateNotifier.connectedProvider))) {
+            !connected)) {
       retries = subscribedToShoppingListWithId == currentShoppingList.id
           ? retries + 1
           : 0;
-      if (ref.read(AppStateNotifier.connectedProvider)) {
+      if (connected) {
         await websocketChannel?.sink.close();
       }
       subscribedToShoppingListWithId = currentShoppingList.id;
-      Future.delayed(
-          Duration.zero,
-          () => ref
-              .read(AppStateNotifier.appStateProvider.notifier)
-              .setConnected(true));
-      print("connecting to ws");
+      connected = true;
       websocketChannel =
           GoListClient().listenForChanges(currentShoppingList.id);
       websocketChannel?.stream.listen((data) {
@@ -52,23 +48,20 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
         print("ws closed with error: $e");
         retries++;
         listenForChanges(currentShoppingList);
-      },
-          onDone: () => setState(() {
-                websocketChannel = null;
-                print("ws closed: done");
-                ref
-                    .read(AppStateNotifier.appStateProvider.notifier)
-                    .setConnected(false);
-              }));
+      }, onDone: () {
+        websocketChannel = null;
+        print("ws closed: done");
+        connected = false;
+      });
     }
   }
 
   void disconnect() {
-    if (ref.read(AppStateNotifier.connectedProvider)) {
+    if (connected) {
       websocketChannel?.sink.close();
     }
     websocketChannel = null;
-    ref.read(AppStateNotifier.appStateProvider.notifier).setConnected(false);
+    connected = false;
     retries = 0;
   }
 

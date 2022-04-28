@@ -51,7 +51,7 @@ class GoListClient {
   WebSocketChannel listenForChanges(String shoppingListId) {
     WebSocketChannel webSocketChannel = WebSocketChannel.connect(Uri.parse(
         "${BackendUrl.websocketUrl()}/api/shoppinglist/${shoppingListId}/listen"));
-    webSocketChannel.sink.add(deviceId());
+    deviceId().then(webSocketChannel.sink.add);
     return webSocketChannel;
   }
 }

@@ -13,8 +13,13 @@ class RefreshableScrollView extends StatefulWidget {
 }
 
 class _RefreshableScrollViewState extends State<RefreshableScrollView> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
+  late final RefreshController _refreshController;
+
+  @override
+  void initState() {
+    _refreshController = RefreshController(initialRefresh: true);
+    super.initState();
+  }
 
   void _onRefresh() async {
     try {

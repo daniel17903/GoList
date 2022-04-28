@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/service/backend_url.dart';
@@ -19,54 +18,33 @@ class GoListBottomNavigationBar extends HookConsumerWidget {
 
   final void Function() onMenuButtonTapped;
 
-  void handleClick(BuildContext context, String value, AppState appState) {
-    switch (value) {
-      case 'Bearbeiten':
-        DialogUtils.showSmallAlertDialog(
-            context: context, content: EditListDialog());
-        break;
-      case 'Teilen':
-        String currentShoppingListId = appState.currentShoppingList!.id;
-        GoListClient()
-            .sendRequest(
-                endpoint: "/api/shoppinglist/$currentShoppingListId/token",
-                httpMethod: HttpMethod.post)
-            .then((response) => jsonDecode(utf8.decode(response.bodyBytes)))
-            .then((responseJson) => responseJson["token"])
-            .then(
-                (token) => Share.share("${BackendUrl.httpUrl()}?token=$token"))
-            .catchError((_) => ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Teilen fehlgeschlagen :("))));
-        break;
-    }
+  void onShareList(BuildContext context, AppState appState) {
+    String currentShoppingListId = appState.currentShoppingList!.id;
+    GoListClient()
+        .sendRequest(
+            endpoint: "/api/shoppinglist/$currentShoppingListId/token",
+            httpMethod: HttpMethod.post)
+        .then((response) => jsonDecode(utf8.decode(response.bodyBytes)))
+        .then((responseJson) => responseJson["token"])
+        .then((token) => Share.share("${BackendUrl.httpUrl()}?token=$token"))
+        .catchError((_) => ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Teilen fehlgeschlagen :("))));
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    AppState appState =
-        ref.watch(AppStateNotifier.appStateProvider);
     return BottomAppBar(
-      child: Row(children: <Widget>[
-        IconButton(
-            color: Colors.white,
-            tooltip: 'Open navigation menu',
-            icon: const Icon(Icons.menu),
-            onPressed: onMenuButtonTapped),
-        const Spacer(),
-        PopupMenuButton<String>(
-          onSelected: (value) => handleClick(context, value, appState),
+        child: Row(children: <Widget>[
+      IconButton(
           color: Colors.white,
-          icon: const Icon(Icons.more_vert_rounded, color: Colors.white),
-          itemBuilder: (BuildContext context) {
-            return {'Bearbeiten', 'Teilen'}.map((String choice) {
-              return PopupMenuItem<String>(
-                value: choice,
-                child: Text(choice),
-              );
-            }).toList();
-          },
-        ),
-      ]),
-    );
+          icon: const Icon(Icons.menu),
+          onPressed: onMenuButtonTapped),
+      const Spacer(),
+      IconButton(
+          onPressed: () =>
+              onShareList(context, ref.read(AppStateNotifier.appStateProvider)),
+          icon: Icon(Icons.share),
+          color: Colors.white)
+    ]));
   }
 }
