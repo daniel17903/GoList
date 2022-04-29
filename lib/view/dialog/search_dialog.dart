@@ -6,6 +6,7 @@ import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/service/input_to_item_parser.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../model/item.dart';
 
@@ -128,8 +129,8 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
               parentWidth: MediaQuery.of(context).size.width - 80.0,
               itemColor: const Color(0x63d5feb5),
               darkBackground: true,
-              onItemTapped: (item) =>
-                  addNewItemToList(item.copyWith(), appStateNotifier),
+              onItemTapped: (item) => addNewItemToList(
+                  item.copyWith(id: const Uuid().v4()), appStateNotifier),
               items: [if (newItem != null) newItem!, ...recentlyUsedItemsSorted]
                   .take(20)
                   .toList()),

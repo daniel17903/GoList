@@ -49,8 +49,22 @@ class AppStateNotifier extends StateNotifier<AppState> {
         else
           shoppingList
     ]);
-    Storage().saveItems(
-        shoppingListWithUpdatedItem, shoppingListWithUpdatedItem.items,
+
+    // only store last 20 deleted items
+    List<Item> itemsToDelete =
+        shoppingListWithUpdatedItem.items.where((e) => e.deleted).toList()
+          ..sort((item1, item2) => item2.modified.compareTo(item1.modified))
+          ..skip(20);
+
+    bool shouldBeRetained(Item item) {
+      for (Item itemToDelete in itemsToDelete) {
+        if (itemToDelete.id == item.id) return false;
+      }
+      return true;
+    }
+
+    Storage().saveItems(shoppingListWithUpdatedItem,
+        shoppingListWithUpdatedItem.items.where(shouldBeRetained).toList(),
         updateRemoteStorage: true);
   }
 

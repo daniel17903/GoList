@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:go_list/model/golist_model.dart';
+import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 
 class Diff<T extends GoListModel, S extends GoListModel> {
@@ -24,9 +25,13 @@ class Diff<T extends GoListModel, S extends GoListModel> {
       T? elementFromSp2 = _elementById(elementsFromSp2, elementId);
 
       if (elementFromSp1 == null) {
-        if (!elementFromSp2!.deleted) elementsToUpdateIn1.add(elementFromSp2);
+        if (!elementFromSp2!.deleted || elementsFromSp2 is Item) {
+          elementsToUpdateIn1.add(elementFromSp2);
+        }
       } else if (elementFromSp2 == null) {
-        if (!elementFromSp1.deleted) elementsToUpdateIn2.add(elementFromSp1);
+        if (!elementFromSp1.deleted || elementsFromSp1 is Item) {
+          elementsToUpdateIn2.add(elementFromSp1);
+        }
       } else if (!elementFromSp1.isEqualTo(elementFromSp2)) {
         if (elementFromSp1.modified > elementFromSp2.modified) {
           elementsToUpdateIn2.add(elementFromSp1);
