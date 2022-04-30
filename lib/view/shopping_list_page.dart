@@ -13,23 +13,21 @@ class ShoppingListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          key: _scaffoldKey,
-          extendBody: true,
-          resizeToAvoidBottomInset: false,  // prevents resizing when opening keyboard
-          bottomNavigationBar: GoListBottomNavigationBar(
-              onMenuButtonTapped: () =>
-                  _scaffoldKey.currentState?.openDrawer()),
-          body: const ShoppingListWidget(),
-          drawer: const ShoppingListDrawer(),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: FloatingActionButton(
-              tooltip: "Neuer Eintrag",
-              onPressed: () => DialogUtils.showLargeAnimatedDialog(
-                  context: context, child: const SearchDialog()),
-              child: const Icon(Icons.add))),
-    );
+    return Scaffold(
+        backgroundColor: Colors.transparent,
+        key: _scaffoldKey,
+        extendBody: true,
+        resizeToAvoidBottomInset: false,
+        // prevents resizing when opening keyboard
+        bottomNavigationBar: GoListBottomNavigationBar(
+            onMenuButtonTapped: () => _scaffoldKey.currentState?.openDrawer()),
+        body: const SafeArea(child: ShoppingListWidget()),
+        drawer: const ShoppingListDrawer(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: FloatingActionButton(
+            tooltip: "Neuer Eintrag",
+            onPressed: () => DialogUtils.showLargeAnimatedDialog(
+                context: context, child: const SearchDialog()),
+            child: const Icon(Icons.add)));
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_list/view/shopping_list/refreshable_scroll_view.dart';
 import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
@@ -69,29 +67,8 @@ class ItemListViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size screen = MediaQuery.of(context).size;
-    double availableHeight = screen.height -
-        AppBar().preferredSize.height -
-        MediaQuery.of(context).padding.top -
-        MediaQuery.of(context).padding.bottom;
-    double radiusUnit = min(availableHeight, screen.width);
-
     return Container(
         color: darkBackground ? Theme.of(context).backgroundColor : null,
-        decoration: darkBackground
-            ? null
-            : BoxDecoration(
-                gradient: RadialGradient(
-                radius: availableHeight / radiusUnit, // 2.0 = screen height
-                center: Alignment.bottomCenter, // behind the fab
-                colors: const <Color>[
-                  Color(0xffe4b2d2),
-                  Color(0xffbde5ee),
-                  Color(0xffd8e8af),
-                  Color(0xfff6f294),
-                  Color(0xff005382),
-                ],
-              )),
         constraints: const BoxConstraints.expand(),
         child: RefreshableScrollView(
             onRefresh: onPullForRefresh,

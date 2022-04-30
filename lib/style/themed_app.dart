@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -28,6 +31,8 @@ class ThemedApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = window.physicalSize / window.devicePixelRatio;
+    double radiusUnit = min(screenSize.height, screenSize.width);
     return Theme(
       data: materialTheme,
       child: PlatformProvider(
@@ -41,7 +46,20 @@ class ThemedApp extends StatelessWidget {
               DefaultCupertinoLocalizations.delegate,
             ],
             title: 'GoList',
-            home: child,
+            home: Container(
+                decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                  radius: screenSize.height / radiusUnit, // 2.0 = screen height
+                  center: Alignment.bottomCenter, // behind the fab
+                  colors: const <Color>[
+                    Color(0xffe4b2d2),
+                    Color(0xffbde5ee),
+                    Color(0xffd8e8af),
+                    Color(0xfff6f294),
+                    Color(0xff005382),
+                  ],
+                )),
+                child: child),
             material: (_, __) => MaterialAppData(
               theme: materialTheme,
             ),
