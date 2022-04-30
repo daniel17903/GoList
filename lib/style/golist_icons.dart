@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 class GoListIcons {
   static Widget icon(String name) {
-    return Image.asset(
-      "assets/$name.png",
-      color: Colors.white,
-      fit: BoxFit.contain,
-    );
+    try {
+      return Image.asset(
+        "assets/$name.png",
+        color: Colors.white,
+        fit: BoxFit.contain,
+      );
+    } catch (_) {
+      return icon("default");
+    }
   }
 }
