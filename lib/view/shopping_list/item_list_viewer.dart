@@ -18,7 +18,6 @@ class ItemListViewer extends StatelessWidget {
       this.onPullForRefresh,
       this.footer,
       required this.darkBackground,
-      this.onItemAnimationEnd,
       required this.itemColor,
       required this.parentWidth})
       : super(key: key);
@@ -26,7 +25,6 @@ class ItemListViewer extends StatelessWidget {
   final List<Item> items;
   final void Function(Item) onItemTapped;
   final void Function(Item)? onItemTappedLong;
-  final void Function(Item)? onItemAnimationEnd;
   final Future<void> Function()? onPullForRefresh;
   final bool delayItemTap;
   final Widget? header;
@@ -98,7 +96,6 @@ class ItemListViewer extends StatelessWidget {
                             onItemTapped: onItemTapped,
                             onItemTappedLong: onItemTappedLong ?? (_) {},
                             delayItemTap: delayItemTap,
-                            onItemAnimationEnd: onItemAnimationEnd,
                           );
                         }).toList()),
                     if (footer != null) footer!

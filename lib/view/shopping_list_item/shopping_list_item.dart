@@ -16,7 +16,6 @@ class ShoppingListItem extends StatefulWidget {
       required this.onItemTapped,
       required this.delayItemTap,
       required this.onItemTappedLong,
-      this.onItemAnimationEnd,
       required this.color,
       required this.initialScaleFactor})
       : super(key: key);
@@ -24,7 +23,6 @@ class ShoppingListItem extends StatefulWidget {
   final Item item;
   final Function(Item) onItemTapped;
   final void Function(Item) onItemTappedLong;
-  final void Function(Item)? onItemAnimationEnd;
   final bool delayItemTap;
   final Color color;
   final double initialScaleFactor;
@@ -49,20 +47,20 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
         if (widget.delayItemTap) {
           animationController.startAnimation!();
           animationController.onAnimationCompleted =
-              () => widget.onItemAnimationEnd!(widget.item);
+              () => widget.onItemTapped(widget.item);
+        } else {
+          widget.onItemTapped(widget.item);
         }
-        widget.onItemTapped(widget.item);
       },
-      onReTap: () => animationController.cancelAnimation!(),
       onLongTap: () => widget.onItemTappedLong(widget.item),
       child: AnimatedItemContainer(
         initialSize: defaultSize * widget.initialScaleFactor,
         color: widget.color,
         animationController: animationController,
-        child: (scaleFactor) => CustomMultiChildLayout(
+        child: CustomMultiChildLayout(
             delegate: ItemLayoutDelegate(
                 containerSize:
-                    defaultSize * widget.initialScaleFactor * scaleFactor),
+                    defaultSize * widget.initialScaleFactor),
             children: [
               LayoutId(
                 id: ItemLayoutChild.icon,
@@ -72,7 +70,7 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
                 id: ItemLayoutChild.name,
                 child: Text(widget.item.name,
                     maxLines: 2,
-                    textScaleFactor: widget.initialScaleFactor * scaleFactor,
+                    textScaleFactor: widget.initialScaleFactor,
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(color: Colors.white, fontSize: 14)),
@@ -82,7 +80,7 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
                   id: ItemLayoutChild.amount,
                   child: Text(widget.item.amount!,
                       maxLines: 1,
-                      textScaleFactor: widget.initialScaleFactor * scaleFactor,
+                      textScaleFactor: widget.initialScaleFactor,
                       textAlign: TextAlign.center,
                       style:
                           const TextStyle(color: Colors.white, fontSize: 12)),

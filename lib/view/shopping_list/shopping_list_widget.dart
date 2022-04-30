@@ -21,19 +21,6 @@ class ShoppingListWidget extends HookConsumerWidget {
     final String name =
         ref.watch(AppStateNotifier.currentShoppingListNameProvider);
 
-    final List<Item> itemDeleteQueue = [];
-    int runningItemAnimationsCounter = 0;
-
-    void _deleteItemIfLastAnimationEnded(Item item) {
-      itemDeleteQueue.add(item);
-      if (runningItemAnimationsCounter == 0) {
-        ref
-            .read(AppStateNotifier.appStateProvider.notifier)
-            .deleteItems(itemDeleteQueue);
-        itemDeleteQueue.clear();
-      }
-    }
-
     return ItemListViewer(
       itemColor: Theme.of(context).cardColor,
       parentWidth: MediaQuery.of(context).size.width,
@@ -75,11 +62,9 @@ class ShoppingListWidget extends HookConsumerWidget {
           .read(AppStateNotifier.appStateProvider.notifier)
           .loadAllFromStorage,
       onItemTapped: (tappedItem) {
-        runningItemAnimationsCounter++;
-      },
-      onItemAnimationEnd: (itemWithEndedAnimation) {
-        runningItemAnimationsCounter--;
-        _deleteItemIfLastAnimationEnded(itemWithEndedAnimation);
+        ref
+            .read(AppStateNotifier.appStateProvider.notifier)
+            .deleteItems([tappedItem]);
       },
       onItemTappedLong: (item) => DialogUtils.showSmallAlertDialog(
           context: context, content: EditItemDialog(item: item)),
