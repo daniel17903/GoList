@@ -70,8 +70,11 @@ class ItemListViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
-    double radiusShouldBe = screen.height;
-    double radiusUnit = min(screen.height, screen.width);
+    double availableHeight = screen.height -
+        AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.top -
+        MediaQuery.of(context).padding.bottom;
+    double radiusUnit = min(availableHeight, screen.width);
 
     return Container(
         color: darkBackground ? Theme.of(context).backgroundColor : null,
@@ -79,7 +82,7 @@ class ItemListViewer extends StatelessWidget {
             ? null
             : BoxDecoration(
                 gradient: RadialGradient(
-                radius: radiusShouldBe / radiusUnit, // 2.0 = screen height
+                radius: availableHeight / radiusUnit, // 2.0 = screen height
                 center: Alignment.bottomCenter, // behind the fab
                 colors: const <Color>[
                   Color(0xffe4b2d2),
