@@ -41,7 +41,7 @@ Map<String, List<String>> _namesMatchingForIcon = {
   "pear": ["birne", "birnen"],
   "cabbage": ["kohl", "wirsing"],
   "eggplant": ["aubergine"],
-  "salad": ["salat"],
+  "salad": ["salat", "rucola"],
   "chocolate": ["schokolade"],
   "ice": ["eis", "magnum"],
   "berries": [
@@ -52,7 +52,7 @@ Map<String, List<String>> _namesMatchingForIcon = {
     "blaubeeren"
   ],
   "strawberry": ["erdbeeren"],
-  "block": ["tofu", "butter", "margarine", "fett"],
+  "block": ["tofu", "butter", "margarine"],
   "burger": ["burger"],
   "herbs": ["kräuter", "petersilie", "basilikum", "koriander", "dill"],
   "pizza_cake": ["pizza", "kuchen", "torte", "flammkuchen"],
@@ -79,7 +79,8 @@ Map<String, List<String>> _namesMatchingForIcon = {
     "zimt",
     "kümmel",
     "kuemmel"
-  ]
+  ],
+  "rice": ["reis"]
 }.map((iconName, matchingProductNames) {
   matchingProductNames.sort((a, b) => b.length - a.length);
   return MapEntry(iconName, matchingProductNames);
