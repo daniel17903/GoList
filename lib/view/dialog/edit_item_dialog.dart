@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_list/model/app_state_notifier.dart';
-import 'package:go_list/service/input_to_item_parser.dart';
+import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -60,8 +59,9 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
                   widget.item.copyWith(
                       name: nameTextInputController.text,
                       amount: amountInputController.text,
-                      iconName: InputToItemParser.findMatchingIconForName(
-                          nameTextInputController.text),
+                      iconName: InputToItemParser.findMappingForName(
+                              nameTextInputController.text)
+                          .assetFileName,
                       modified: DateTime.now().millisecondsSinceEpoch));
               Navigator.pop(context);
             })

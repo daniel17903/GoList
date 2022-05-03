@@ -171,7 +171,6 @@ class AppStateNotifier extends StateNotifier<AppState> {
       );
       setShoppingLists([...state.shoppingLists, newList],
           updateRemoteStorage: true);
-      // TODO sort
     }
   }
 

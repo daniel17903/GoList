@@ -1,4 +1,4 @@
-import 'package:go_list/service/input_to_item_parser.dart';
+import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -27,7 +27,9 @@ void main() {
     });
   });
 
-  test("Should find correct icon", (){
-    expect(InputToItemParser.findMatchingIconForName("apfelschorle"), "bottle");
+  test("Should find correct icon", () {
+    expect(InputToItemParser.findMappingForName("apfelschorle").assetFileName,
+        "bottle");
+    expect(InputToItemParser.findMappingForName("reis").assetFileName, "rice");
   });
 }

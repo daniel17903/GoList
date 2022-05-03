@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_list/service/items/icon_mappings.dart';
 
 class GoListIcons {
   static Widget icon(String name) {
@@ -9,7 +10,7 @@ class GoListIcons {
         fit: BoxFit.contain,
       );
     } catch (_) {
-      return icon("default");
+      return icon(defaultIconAsset);
     }
   }
 }

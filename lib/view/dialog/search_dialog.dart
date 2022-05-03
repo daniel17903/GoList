@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/model/app_state_notifier.dart';
-import 'package:go_list/service/input_to_item_parser.dart';
+import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:uuid/uuid.dart';

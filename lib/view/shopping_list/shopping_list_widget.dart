@@ -25,7 +25,7 @@ class ShoppingListWidget extends HookConsumerWidget {
       itemColor: Theme.of(context).cardColor,
       parentWidth: MediaQuery.of(context).size.width,
       darkBackground: false,
-      items: items,
+      items: items..sort(),
       header: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
