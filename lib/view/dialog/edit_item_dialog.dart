@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/app_state_notifier.dart';
+import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -55,13 +56,14 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
         PlatformDialogAction(
             child: const Text('Speichern'),
             onPressed: () {
+              IconMapping iconMapping = InputToItemParser.findMappingForName(
+                  nameTextInputController.text);
               ref.read(AppStateNotifier.appStateProvider.notifier).updateItem(
                   widget.item.copyWith(
                       name: nameTextInputController.text,
                       amount: amountInputController.text,
-                      iconName: InputToItemParser.findMappingForName(
-                              nameTextInputController.text)
-                          .assetFileName,
+                      iconName: iconMapping.assetFileName,
+                      category: iconMapping.category,
                       modified: DateTime.now().millisecondsSinceEpoch));
               Navigator.pop(context);
             })
