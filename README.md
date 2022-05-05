@@ -2,7 +2,7 @@
 
 ## Build for iOS
 
-    flutter build ios --release --dart-define BACKEND=<backend-url>
+    flutter build ios --release --dart-define API_KEY=<api-key>
 
 ## Build for Android
 
