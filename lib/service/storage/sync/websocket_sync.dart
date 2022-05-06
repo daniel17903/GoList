@@ -25,7 +25,9 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
   int retries = 0;
 
   Future<void> listenForChanges(ShoppingList? currentShoppingList) async {
-    if (currentShoppingList == null) return;
+    if (currentShoppingList == null || currentShoppingList.deviceCount == 1) {
+      return;
+    }
     if (retries < 3 &&
         (subscribedToShoppingListWithId != currentShoppingList.id ||
             !connected)) {
