@@ -38,6 +38,7 @@ class ThemedApp extends StatelessWidget {
         builder: (context) {
           //PlatformProvider.of(context)?.changeToCupertinoPlatform();
           return PlatformApp(
+            debugShowCheckedModeBanner: false,
             localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
               DefaultMaterialLocalizations.delegate,
               DefaultWidgetsLocalizations.delegate,
