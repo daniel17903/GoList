@@ -247,5 +247,24 @@ final List<IconMapping> iconMappings = [
   IconMapping(
       assetFileName: "rhubarb",
       matchingNames: ["rhabarber"],
-      category: Category.fruitsVegetables)
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "tetrapack",
+      matchingNames: [
+        "milch",
+        "saft",
+        "haferdrink",
+        "hafer drink",
+        "soja drink",
+        "sojadrink",
+        "mandeldrink",
+        "mandel drink",
+        "reisdrink",
+        "reis drink"
+      ],
+      category: Category.milkCheese),
+  IconMapping(
+      assetFileName: "egg",
+      matchingNames: ["eier"],
+      category: Category.milkCheese)
 ];
