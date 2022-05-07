@@ -4,7 +4,6 @@ import 'package:go_list/service/items/icon_mapping.dart';
 const String defaultIconAsset = "default";
 const Category defaultCategory = Category.other;
 
-
 final List<IconMapping> iconMappings = [
   IconMapping(
       assetFileName: "apple",
@@ -34,7 +33,9 @@ final List<IconMapping> iconMappings = [
         "sojasoße",
         "sojasosse",
         "soja sosse",
-        "soja soße"
+        "soja soße",
+        "pils",
+        "hefeweizen"
       ],
       category: Category.beverages),
   IconMapping(
@@ -230,5 +231,21 @@ final List<IconMapping> iconMappings = [
         "toilettenpapier",
         "toiletten papier"
       ],
-      category: Category.household)
+      category: Category.household),
+  IconMapping(
+      assetFileName: "baking_paper",
+      matchingNames: ["backpapier", "back papier", "frischhaltefolie"],
+      category: Category.household),
+  IconMapping(
+      assetFileName: "mushroom",
+      matchingNames: ["pilz", "champignon"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "papaya",
+      matchingNames: ["papaya"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "rhubarb",
+      matchingNames: ["rhabarber"],
+      category: Category.fruitsVegetables)
 ];
