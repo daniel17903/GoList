@@ -22,7 +22,6 @@ final List<IconMapping> iconMappings = [
         "wein",
         "cola",
         "fanta",
-        "eistee",
         "limo",
         "limonade",
         "sprite",
@@ -74,6 +73,7 @@ final List<IconMapping> iconMappings = [
         "becher",
         "yoghurt",
         "quark",
+        "quark",
         "saure sahne",
         "schlagsahne"
       ],
@@ -96,7 +96,16 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "dead_cow",
-      matchingNames: ["fleisch", "hackfleisch", "wurst", "steak", "würste"],
+      matchingNames: [
+        "fleisch",
+        "hackfleisch",
+        "wurst",
+        "steak",
+        "würste",
+        "schinken",
+        "bacon",
+        "speck"
+      ],
       category: Category.meatFish),
   IconMapping(
       assetFileName: "cookie",
@@ -260,11 +269,24 @@ final List<IconMapping> iconMappings = [
         "mandeldrink",
         "mandel drink",
         "reisdrink",
-        "reis drink"
+        "reis drink",
+        "eistee"
       ],
       category: Category.milkCheese),
   IconMapping(
       assetFileName: "egg",
       matchingNames: ["eier"],
-      category: Category.milkCheese)
+      category: Category.milkCheese),
+  IconMapping(
+      assetFileName: "coffee_beans",
+      matchingNames: ["kaffee", "espresso"],
+      category: Category.beverages),
+  IconMapping(
+      assetFileName: "tea",
+      matchingNames: ["tee"],
+      category: Category.beverages),
+  IconMapping(
+      assetFileName: "sugar",
+      matchingNames: ["zucker"],
+      category: Category.spicesCanned)
 ];

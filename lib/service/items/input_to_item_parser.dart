@@ -5,6 +5,7 @@ import '../../model/item.dart';
 
 class InputToItemParser {
   static Item parseInput(String input) {
+    input = input.trim();
     String? amount = parseAmount(input);
     String name = input;
     if (amount != null) {
