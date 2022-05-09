@@ -65,7 +65,7 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "corn",
-      matchingNames: ["samen", "körner"],
+      matchingNames: ["samen", "körner", "linsen"],
       category: Category.cereals),
   IconMapping(
       assetFileName: "cup",
@@ -96,15 +96,45 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "dead_cow",
+      matchingNames: ["fleisch", "hackfleisch", "steak", "rinder"],
+      category: Category.meatFish),
+  IconMapping(
+      assetFileName: "dead_pig",
       matchingNames: [
-        "fleisch",
-        "hackfleisch",
         "wurst",
-        "steak",
-        "würste",
         "schinken",
+        "speck",
         "bacon",
-        "speck"
+        "wurst",
+        "würstchen",
+        "würste",
+        "fleischkäs",
+        "leberkäs",
+        "salami",
+        "lyoner",
+        "wiener",
+        "aufschnitt",
+        "schweine"
+      ],
+      category: Category.meatFish),
+  IconMapping(
+      assetFileName: "dead_chicken",
+      matchingNames: ["hühnchen", "pute", "chicken", "hühner"],
+      category: Category.meatFish),
+  IconMapping(
+      assetFileName: "fish",
+      matchingNames: [
+        "fisch",
+        "lachs",
+        "forelle",
+        "barsch",
+        "hecht",
+        "dorade",
+        "hering",
+        "kabeljau",
+        "dorsch",
+        "karpfen",
+        "fischstäbchen"
       ],
       category: Category.meatFish),
   IconMapping(
@@ -288,5 +318,26 @@ final List<IconMapping> iconMappings = [
   IconMapping(
       assetFileName: "sugar",
       matchingNames: ["zucker"],
-      category: Category.spicesCanned)
+      category: Category.spicesCanned),
+  IconMapping(
+      assetFileName: "cheese",
+      matchingNames: [
+        "käse",
+        "kaese",
+        "mozarella",
+        "parmesan",
+        "gauda",
+        "edamer",
+        "feta",
+        "emmentaler",
+        "cheddar",
+        "brie",
+        "camembert",
+        "appenzeller",
+        "halloumi",
+        "manchego",
+        "tilsiter",
+        "ricotta"
+      ],
+      category: Category.milkCheese)
 ];
