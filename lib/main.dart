@@ -43,6 +43,16 @@ class _MyAppState extends ConsumerState<MyApp> {
       try {
         GoListClient goListClient = GoListClient();
 
+        // if app was opened with link lists have not been loaded yet
+        await ref
+            .read(AppStateNotifier.appStateProvider.notifier)
+            .loadAllFromStorage();
+
+        List<String> listIdsBeforeJoin = ref
+            .read(AppStateNotifier.notDeletedShoppingListsProvider)
+            .map((e) => e.id)
+            .toList();
+
         // join the list
         await goListClient.sendRequest(
             endpoint: "/api/joinwithtoken/${uri.queryParameters["token"]}",
@@ -53,10 +63,18 @@ class _MyAppState extends ConsumerState<MyApp> {
             .read(AppStateNotifier.appStateProvider.notifier)
             .loadAllFromStorage();
 
-        // select the new list
-        ref.read(AppStateNotifier.appStateProvider.notifier).selectList(
-            ref.read(AppStateNotifier.notDeletedShoppingListsProvider).length -
-                1);
+        int indexOfNewList = ref
+            .read(AppStateNotifier.notDeletedShoppingListsProvider)
+            .indexWhere(
+                (shoppingList) => !listIdsBeforeJoin.contains(shoppingList.id));
+
+        if (indexOfNewList == -1) {
+          throw Exception("Liste konnte nicht geladen werden");
+        }
+
+        ref
+            .read(AppStateNotifier.appStateProvider.notifier)
+            .selectList(indexOfNewList);
       } catch (e) {
         print(e);
         ScaffoldMessenger.of(context).showSnackBar(

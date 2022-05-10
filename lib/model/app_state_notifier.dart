@@ -29,8 +29,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   static final notDeletedShoppingListsProvider =
       Provider<List<ShoppingList>>((ref) {
-    return ref.watch(appStateProvider.select((appState) =>
-        appState.shoppingLists.where((i) => !i.deleted).toList()));
+    return ref.watch(appStateProvider
+        .select((appState) => appState.notDeletedShoppingLists));
   });
 
   AppStateNotifier(AppState appState) : super(appState);
