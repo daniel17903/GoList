@@ -72,10 +72,12 @@ final List<IconMapping> iconMappings = [
       matchingNames: [
         "becher",
         "yoghurt",
+        "joghurt",
         "quark",
         "quark",
         "saure sahne",
-        "schlagsahne"
+        "schlagsahne",
+        "sahne"
       ],
       category: Category.milkCheese),
   IconMapping(
