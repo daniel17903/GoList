@@ -341,5 +341,17 @@ final List<IconMapping> iconMappings = [
         "tilsiter",
         "ricotta"
       ],
-      category: Category.milkCheese)
+      category: Category.milkCheese),
+  IconMapping(
+      assetFileName: "asparagus",
+      matchingNames: ["spargel"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "gnocchi",
+      matchingNames: ["gnocchi"],
+      category: Category.cereals),
+  IconMapping(
+      assetFileName: "pumpkin",
+      matchingNames: ["kürbis", "kuerbis", "hokkaido"],
+      category: Category.fruitsVegetables)
 ];
