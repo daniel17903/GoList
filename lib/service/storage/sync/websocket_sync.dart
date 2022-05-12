@@ -82,13 +82,13 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     print("dispose sync widget");
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     disconnect();
     super.dispose();
   }
