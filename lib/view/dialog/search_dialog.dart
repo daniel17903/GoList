@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/model/app_state_notifier.dart';
+import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -129,8 +130,17 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
               parentWidth: MediaQuery.of(context).size.width - 80.0,
               itemColor: const Color(0x63d5feb5),
               darkBackground: true,
-              onItemTapped: (item) => addNewItemToList(
-                  item.copyWith(id: const Uuid().v4()), appStateNotifier),
+              onItemTapped: (item) {
+                // parse icon name from history again in case mapping changed
+                IconMapping iconMapping =
+                    InputToItemParser.findMappingForName(item.name);
+                addNewItemToList(
+                    item.copyWith(
+                        id: const Uuid().v4(),
+                        iconName: iconMapping.assetFileName,
+                        category: iconMapping.category),
+                    appStateNotifier);
+              },
               items: [if (newItem != null) newItem!, ...recentlyUsedItemsSorted]
                   .take(20)
                   .toList()),
