@@ -43,7 +43,11 @@ dependencies:
   share_plus: ^4.0.3
   web_socket_channel: ^2.1.0
   hooks_riverpod: ^1.0.3
-  pull_to_refresh: ^2.0.0
+
+  # TODO remove git url when pr merged https://github.com/peng8350/flutter_pulltorefresh/pull/589
+  pull_to_refresh:
+    git:
+      url: https://github.com/miquelbeltran/flutter_pulltorefresh
 
 dev_dependencies:
   flutter_test:
