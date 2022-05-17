@@ -61,7 +61,14 @@ final List<IconMapping> iconMappings = [
       category: Category.spicesCanned),
   IconMapping(
       assetFileName: "carrot",
-      matchingNames: ["karotte", "pastinake", "rübe", "ruebe"],
+      matchingNames: [
+        "karotte",
+        "pastinake",
+        "rübe",
+        "ruebe",
+        "rettich",
+        "möhre"
+      ],
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "corn",
@@ -165,7 +172,14 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "salad",
-      matchingNames: ["salat", "rucola", "spinat"],
+      matchingNames: [
+        "salat",
+        "rucola",
+        "spinat",
+        "mangold",
+        "pak choi",
+        "pak choy"
+      ],
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "chocolate",
@@ -357,5 +371,9 @@ final List<IconMapping> iconMappings = [
   IconMapping(
       assetFileName: "beetroot",
       matchingNames: ["rote bete", "gelbe bete", "rote rübe", "gelbe rübe"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "radish",
+      matchingNames: ["radieschen", "radieserl"],
       category: Category.fruitsVegetables)
 ];
