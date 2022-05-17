@@ -353,5 +353,9 @@ final List<IconMapping> iconMappings = [
   IconMapping(
       assetFileName: "pumpkin",
       matchingNames: ["kürbis", "kuerbis", "hokkaido"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "beetroot",
+      matchingNames: ["rote bete", "gelbe bete", "rote rübe", "gelbe rübe"],
       category: Category.fruitsVegetables)
 ];
