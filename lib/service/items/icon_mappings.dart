@@ -18,6 +18,7 @@ final List<IconMapping> iconMappings = [
       matchingNames: [
         "flasche",
         "wasser",
+        "sprudel"
         "bier",
         "wein",
         "cola",
@@ -44,7 +45,9 @@ final List<IconMapping> iconMappings = [
         "spülmaschinen tabs",
         "spülmaschinen-tabs",
         "spülmaschinen salz",
-        "spülmaschinen-salz"
+        "spülmaschinen-salz",
+        "müsli",
+        "muesli"
       ],
       category: Category.household),
   IconMapping(
@@ -53,7 +56,7 @@ final List<IconMapping> iconMappings = [
       category: Category.cereals),
   IconMapping(
       assetFileName: "bread",
-      matchingNames: ["brot", "brötchen", "laugenstange", "brezel"],
+      matchingNames: ["brot", "brötchen", "laugenstange", "brezel", "semmel"],
       category: Category.bread),
   IconMapping(
       assetFileName: "can",
@@ -81,7 +84,6 @@ final List<IconMapping> iconMappings = [
         "yoghurt",
         "joghurt",
         "quark",
-        "quark",
         "saure sahne",
         "schlagsahne",
         "sahne"
@@ -89,7 +91,15 @@ final List<IconMapping> iconMappings = [
       category: Category.milkCheese),
   IconMapping(
       assetFileName: "glas",
-      matchingNames: ["glas", "marmelade", "gläser", "honig"],
+      matchingNames: [
+        "glas",
+        "marmelade",
+        "gläser",
+        "honig",
+        "aufstrich",
+        "sauerkraut",
+        "schattenmorellen"
+      ],
       category: Category.spicesCanned),
   IconMapping(
       assetFileName: "leek",
@@ -100,8 +110,19 @@ final List<IconMapping> iconMappings = [
       matchingNames: ["nuss", "nüsse"],
       category: Category.cereals),
   IconMapping(
+      assetFileName: "almonds",
+      matchingNames: ["mandel"],
+      category: Category.cereals),
+  IconMapping(
       assetFileName: "round_fruit",
-      matchingNames: ["tomate", "orange", "mandarine", "mango"],
+      matchingNames: [
+        "tomate",
+        "orange",
+        "mandarine",
+        "mango",
+        "nektarine",
+        "pfirsich"
+      ],
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "dead_cow",
@@ -114,7 +135,6 @@ final List<IconMapping> iconMappings = [
         "schinken",
         "speck",
         "bacon",
-        "wurst",
         "würstchen",
         "würste",
         "fleischkäs",
@@ -375,5 +395,47 @@ final List<IconMapping> iconMappings = [
   IconMapping(
       assetFileName: "radish",
       matchingNames: ["radieschen", "radieserl"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "cucumber",
+      matchingNames: ["gurke"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "dates",
+      matchingNames: ["dattel"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "lime",
+      matchingNames: ["limette"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "paper_bag",
+      matchingNames: ["tüte", "tuete"],
+      category: Category.household),
+  IconMapping(
+      assetFileName: "raisins",
+      matchingNames: ["rosine"],
+      category: Category.cereals),
+  IconMapping(
+      assetFileName: "round_fruit_small",
+      matchingNames: [
+        "pflaume",
+        "aprikose",
+        "zwetschge",
+        "mirabelle",
+        "marille"
+      ],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "seeds",
+      matchingNames: ["kerne"],
+      category: Category.cereals),
+  IconMapping(
+      assetFileName: "sponge",
+      matchingNames: ["schwamm", "schwämme", "schwaemme"],
+      category: Category.household),
+  IconMapping(
+      assetFileName: "zucchini",
+      matchingNames: ["zucchini", "zuchini"],
       category: Category.fruitsVegetables)
 ];
