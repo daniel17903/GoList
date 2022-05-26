@@ -31,5 +31,8 @@ void main() {
     expect(InputToItemParser.findMappingForName("apfelschorle").assetFileName,
         "bottle");
     expect(InputToItemParser.findMappingForName("reis").assetFileName, "rice");
+    expect(InputToItemParser.findMappingForName("apfelessig").assetFileName, "bottle");
+    expect(InputToItemParser.findMappingForName("apfelkuchen").assetFileName, "pizza_cake");
+    expect(InputToItemParser.findMappingForName("birneneis").assetFileName, "ice");
   });
 }

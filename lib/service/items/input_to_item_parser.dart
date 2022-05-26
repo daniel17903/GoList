@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/service/items/icon_mappings.dart';
 
 import '../../model/item.dart';
+import 'icon_mapping_match.dart';
 
 class InputToItemParser {
   static Item parseInput(String input) {
@@ -34,20 +36,12 @@ class InputToItemParser {
   }
 
   static IconMapping findMappingForName(String name) {
-    name = name.toLowerCase();
-    IconMapping? mappingForName;
-    int matchingWordLength = 0;
+    List<IconMappingMatch> iconMappingMatches =
+        iconMappings.map((e) => e.findMatches(name)).expand((e) => e).toList();
 
-    for (IconMapping iconMapping in iconMappings) {
-      String? matchingWordForIconName = iconMapping.longestMatchForName(name);
-      if (matchingWordForIconName != null &&
-          matchingWordForIconName.length > matchingWordLength) {
-        matchingWordLength = matchingWordForIconName.length;
-        mappingForName = iconMapping;
-      }
-    }
+    iconMappingMatches.sort();
 
-    return mappingForName ??
+    return iconMappingMatches.firstOrNull?.iconMapping ??
         IconMapping(
             assetFileName: defaultIconAsset,
             matchingNames: [],

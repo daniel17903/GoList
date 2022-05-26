@@ -1,26 +1,28 @@
 import 'package:go_list/service/items/category.dart';
+import 'package:go_list/service/items/icon_mapping_match.dart';
 
 class IconMapping {
   final String assetFileName;
-  late final List<String> matchingNames;
+  final List<String> matchingNames;
   final Category category;
 
   IconMapping(
       {required this.assetFileName,
-      required List<String> matchingNames,
-      required this.category}) {
-    matchingNames.sort((a, b) => b.length - a.length);
-    this.matchingNames = matchingNames;
-  }
+      required this.matchingNames,
+      required this.category});
 
-  String? longestMatchForName(String name) {
-    return matchingNames
+  List<IconMappingMatch> findMatches(String name) {
+    List<IconMappingMatch> matches = [];
+
+    matchingNames
         .where((matchingWord) => name.toLowerCase().contains(matchingWord))
-        .fold(
-            null,
-            (longestMatch, element) =>
-                longestMatch == null || element.length > longestMatch.length
-                    ? element
-                    : longestMatch);
+        .forEach((matchingWord) {
+      matches.add(IconMappingMatch(
+          matchLength: matchingWord.length,
+          endsWithMatchingName: name.toLowerCase().endsWith(matchingWord),
+          iconMapping: this));
+    });
+
+    return matches;
   }
 }
