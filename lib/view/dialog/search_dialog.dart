@@ -57,8 +57,8 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
   void addNewItemToList(Item? item, AppStateNotifier appStateNotifier) {
     if (item != null) {
       item = item.copyWith(deleted: false);
-      ref.read(AppStateNotifier.appStateProvider.notifier).addItem(item);
       Navigator.pop(context);
+      ref.read(AppStateNotifier.appStateProvider.notifier).addItem(item);
     }
   }
 

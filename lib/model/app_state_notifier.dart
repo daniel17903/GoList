@@ -70,9 +70,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 
   void deleteItems(List<Item> itemsToDelete) {
-    for (Item item in itemsToDelete) {
-      item.deleted = true;
-    }
+    itemsToDelete =
+        itemsToDelete.map((e) => e.copyWith(deleted: true)).toList();
     ShoppingList updatedShoppingList =
         currentShoppingList!.withItems(itemsToDelete);
     state = state.withShoppingList(updatedShoppingList: updatedShoppingList);
@@ -104,6 +103,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
     ShoppingList shoppingListContainingItem = currentShoppingList!;
     ShoppingList updatedShoppingList = shoppingListContainingItem
         .copyWith(items: [...shoppingListContainingItem.items, ...items]);
+    state = state.withShoppingList(updatedShoppingList: updatedShoppingList);
     Storage().saveItems(updatedShoppingList, updatedShoppingList.items,
         updateRemoteStorage: true);
   }
