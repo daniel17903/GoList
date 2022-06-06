@@ -44,8 +44,17 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
           GoListClient().listenForChanges(currentShoppingList.id);
       websocketChannel?.stream.listen((data) {
         print("updating shoppinglist from websocket: $data");
+
         Storage()
-            .updateWithListFromRemote(ShoppingList.fromJson(jsonDecode(data)));
+            .updateWithListFromRemote(ShoppingList.fromJson(jsonDecode(data)))
+            .then((updatedList) {
+          ref
+              .read(AppStateNotifier.appStateProvider.notifier)
+              .updateShoppingList(updatedList, updateRemoteStorage: false);
+          ref
+              .read(AppStateNotifier.appStateProvider.notifier)
+              .updateItems(updatedList.items, updateRemoteStorage: false);
+        });
       }, onError: (e) {
         print("ws closed with error: $e");
         retries++;

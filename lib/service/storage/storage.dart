@@ -48,16 +48,17 @@ class Storage {
     ].map((sp) async => await sp.saveList(shoppingList)));
   }
 
-  Future<void> updateWithListFromRemote(
-      ShoppingList shoppingListFromRemote) async {
-    await updateWithListsFromRemote([
+  Future<ShoppingList> updateWithListFromRemote(
+      ShoppingList shoppingListFromRemote) {
+    return updateWithListsFromRemote([
       for (ShoppingList shoppingList
           in localStorageProvider.loadShoppingLists())
         if (shoppingList.id == shoppingListFromRemote.id)
           shoppingListFromRemote
         else
           shoppingList
-    ]);
+    ]).then((updatedLists) =>
+        updatedLists.firstWhere((e) => e.id == shoppingListFromRemote.id));
   }
 
   Future<List<ShoppingList>> updateWithListsFromRemote(

@@ -35,9 +35,9 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   AppStateNotifier(AppState appState) : super(appState);
 
-  void updateItem(Item updatedItem) {
+  void updateItems(List<Item> updatedItems, {bool updateRemoteStorage = true}) {
     ShoppingList shoppingListWithUpdatedItem =
-        currentShoppingList!.withItems([updatedItem]);
+        currentShoppingList!.withItems(updatedItems);
 
     state = state.withShoppingList(
         updatedShoppingList: shoppingListWithUpdatedItem);
@@ -57,7 +57,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
     Storage().saveItems(shoppingListWithUpdatedItem,
         shoppingListWithUpdatedItem.items.where(shouldBeRetained).toList(),
-        updateRemoteStorage: true);
+        updateRemoteStorage: updateRemoteStorage);
   }
 
   void updateShoppingList(ShoppingList updatedShoppingList,
