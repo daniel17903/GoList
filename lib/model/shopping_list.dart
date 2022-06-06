@@ -57,4 +57,16 @@ class ShoppingList extends GoListModel {
         id: id ?? this.id,
         deviceCount: deviceCount ?? this.deviceCount);
   }
+
+  ShoppingList withItems(List<Item> updatedItems) {
+    return copyWith(items: [
+      for (final item in items)
+        if (updatedItems.any((e) => e.id == item.id))
+          updatedItems
+              .firstWhere((e) => e.id == item.id)
+              .copyWith(deleted: true)
+        else
+          item
+    ]);
+  }
 }

@@ -18,7 +18,7 @@ final List<IconMapping> iconMappings = [
       matchingNames: [
         "flasche",
         "wasser",
-        "sprudel"
+        "sprudel",
         "bier",
         "wein",
         "cola",

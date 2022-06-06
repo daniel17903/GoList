@@ -4,13 +4,13 @@ import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 
 class Diff<T extends GoListModel, S extends GoListModel> {
-  List<T> elementsToUpdateIn1 = [];
-  List<T> elementsToUpdateIn2 = [];
+  List<T> elementsToUpdateInLocalStorage = [];
+  List<T> elementsToUpdateInRemoteStorage = [];
   Map<String, Diff<S, void>> subElementDiffs = {};
 
   Diff(
-      {this.elementsToUpdateIn1 = const [],
-      this.elementsToUpdateIn2 = const []});
+      {this.elementsToUpdateInLocalStorage = const [],
+      this.elementsToUpdateInRemoteStorage = const []});
 
   T? _elementById(List<T> elements, String id) {
     return elements.firstWhereOrNull((sl) => sl.id == id);
@@ -26,17 +26,17 @@ class Diff<T extends GoListModel, S extends GoListModel> {
 
       if (elementFromSp1 == null) {
         if (!elementFromSp2!.deleted || elementsFromSp2 is Item) {
-          elementsToUpdateIn1.add(elementFromSp2);
+          elementsToUpdateInLocalStorage.add(elementFromSp2);
         }
       } else if (elementFromSp2 == null) {
         if (!elementFromSp1.deleted || elementsFromSp1 is Item) {
-          elementsToUpdateIn2.add(elementFromSp1);
+          elementsToUpdateInRemoteStorage.add(elementFromSp1);
         }
       } else if (!elementFromSp1.isEqualTo(elementFromSp2)) {
         if (elementFromSp1.modified > elementFromSp2.modified) {
-          elementsToUpdateIn2.add(elementFromSp1);
+          elementsToUpdateInRemoteStorage.add(elementFromSp1);
         } else {
-          elementsToUpdateIn1.add(elementFromSp2);
+          elementsToUpdateInLocalStorage.add(elementFromSp2);
         }
       }
 
@@ -48,7 +48,7 @@ class Diff<T extends GoListModel, S extends GoListModel> {
   }
 
   bool isEmpty() =>
-      elementsToUpdateIn1.isEmpty &&
-      elementsToUpdateIn2.isEmpty &&
+      elementsToUpdateInLocalStorage.isEmpty &&
+      elementsToUpdateInRemoteStorage.isEmpty &&
       subElementDiffs.isEmpty;
 }

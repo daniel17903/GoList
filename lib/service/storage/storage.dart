@@ -21,20 +21,11 @@ class Storage {
 
   Stream<List<ShoppingList>> loadShoppingLists() {
     StreamController<List<ShoppingList>> streamController = StreamController();
-    List<ShoppingList> shoppingListsFromLocal =
-        localStorageProvider.loadShoppingLists();
-    streamController.add(shoppingListsFromLocal);
+    streamController.add(localStorageProvider.loadShoppingLists());
     remoteStorageProvider
         .loadShoppingLists()
-        .then((shoppingListsFromRemote) {
-          shoppingListsFromLocal = localStorageProvider.loadShoppingLists();
-          return StorageProviderSync.syncStorageProviders(
-                  localStorageProvider,
-                  shoppingListsFromLocal,
-                  remoteStorageProvider,
-                  shoppingListsFromRemote)
-              .then(streamController.add);
-        })
+        .then(updateWithListsFromRemote)
+        .then(streamController.add)
         .catchError((_) => print("failed to load shoppinglists from remote"))
         .whenComplete(streamController.close);
 
@@ -55,6 +46,27 @@ class Storage {
       localStorageProvider,
       if (updateRemoteStorage) remoteStorageProvider
     ].map((sp) async => await sp.saveList(shoppingList)));
+  }
+
+  Future<void> updateWithListFromRemote(
+      ShoppingList shoppingListFromRemote) async {
+    await updateWithListsFromRemote([
+      for (ShoppingList shoppingList
+          in localStorageProvider.loadShoppingLists())
+        if (shoppingList.id == shoppingListFromRemote.id)
+          shoppingListFromRemote
+        else
+          shoppingList
+    ]);
+  }
+
+  Future<List<ShoppingList>> updateWithListsFromRemote(
+      List<ShoppingList> shoppingListsFromRemote) async {
+    return StorageProviderSync.syncStorageProviders(
+        localStorageProvider,
+        localStorageProvider.loadShoppingLists(),
+        remoteStorageProvider,
+        shoppingListsFromRemote);
   }
 
   void saveSelectedListIndex(int index) {
