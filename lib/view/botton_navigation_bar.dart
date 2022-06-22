@@ -25,11 +25,13 @@ class GoListBottomNavigationBar extends HookConsumerWidget {
         .then((response) => jsonDecode(utf8.decode(response.bodyBytes)))
         .then((responseJson) => responseJson["token"])
         .then(
-          (token) => Share.share("${BackendUrl.httpUrl()}/join?token=$token",
-              sharePositionOrigin:
-                  Rect.fromLTWH(0, 0, size.width, size.height / 2)),
-        )
-        .catchError((_) => ScaffoldMessenger.of(context).showSnackBar(
+      (token) {
+        Share.share("${BackendUrl.httpUrl()}/join?token=$token",
+            sharePositionOrigin:
+                Rect.fromLTWH(0, 0, size.width, size.height / 2));
+        print("${BackendUrl.httpUrl()}/join?token=$token");
+      },
+    ).catchError((_) => ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Teilen fehlgeschlagen :("))));
   }
 

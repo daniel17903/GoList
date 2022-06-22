@@ -35,20 +35,12 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   AppStateNotifier(AppState appState) : super(appState);
 
-  void updateItem(Item updatedItem) {
+  void updateItems(List<Item> updatedItems, {bool updateRemoteStorage = true}) {
     ShoppingList shoppingListWithUpdatedItem =
-        currentShoppingList!.copyWith(items: [
-      for (final item in currentShoppingList!.items)
-        if (item.id == updatedItem.id) updatedItem.copyWith() else item
-    ]);
+        currentShoppingList!.withItems(updatedItems);
 
-    state = state.copyWith(shoppingLists: [
-      for (final shoppingList in state.shoppingLists)
-        if (shoppingList.id == shoppingListWithUpdatedItem.id)
-          shoppingListWithUpdatedItem
-        else
-          shoppingList
-    ]);
+    state = state.withShoppingList(
+        updatedShoppingList: shoppingListWithUpdatedItem);
 
     // only store last 20 deleted items
     List<Item> itemsToDelete =
@@ -65,56 +57,34 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
     Storage().saveItems(shoppingListWithUpdatedItem,
         shoppingListWithUpdatedItem.items.where(shouldBeRetained).toList(),
-        updateRemoteStorage: true);
+        updateRemoteStorage: updateRemoteStorage);
   }
 
   void updateShoppingList(ShoppingList updatedShoppingList,
       {bool updateRemoteStorage = true, bool updateStorage = true}) {
-    ShoppingList updatedShoppingListCopy = updatedShoppingList.copyWith();
-    state = state.copyWith(shoppingLists: [
-      for (final shoppingList in state.shoppingLists)
-        if (shoppingList.id == updatedShoppingList.id)
-          // new Instance to update modified
-          updatedShoppingListCopy
-        else
-          shoppingList
-    ]);
+    state = state.withShoppingList(updatedShoppingList: updatedShoppingList);
     if (updateStorage) {
-      Storage()
-          .saveList(updatedShoppingListCopy,
-              updateRemoteStorage: updateRemoteStorage)
-          .then((_) => Storage().saveItems(
-              updatedShoppingListCopy, updatedShoppingListCopy.items,
-              updateRemoteStorage: updateRemoteStorage));
+      Storage().saveList(updatedShoppingList,
+          updateRemoteStorage: updateRemoteStorage);
     }
   }
 
   void deleteItems(List<Item> itemsToDelete) {
-    ShoppingList shoppingListContainingItem = currentShoppingList!;
-    ShoppingList updatedShoppingList = shoppingListContainingItem.copyWith(
-        items: shoppingListContainingItem.items.map((item) {
-      int indexOfItemToDelete = itemsToDelete
-          .indexWhere((itemToDelete) => itemToDelete.id == item.id);
-      if (indexOfItemToDelete != -1) {
-        return itemsToDelete[indexOfItemToDelete].copyWith(deleted: true);
-      }
-      return item;
-    }).toList());
-    updateShoppingList(updatedShoppingList, updateStorage: true);
+    itemsToDelete =
+        itemsToDelete.map((e) => e.copyWith(deleted: true)).toList();
+    ShoppingList updatedShoppingList =
+        currentShoppingList!.withItems(itemsToDelete);
+    state = state.withShoppingList(updatedShoppingList: updatedShoppingList);
+    Storage().saveItems(updatedShoppingList, updatedShoppingList.items,
+        updateRemoteStorage: true);
   }
 
   void deleteShoppingList(String id) {
     ShoppingList shoppingListToRemove =
         shoppingLists.where((sl) => sl.id == id).first.copyWith(deleted: true);
-    state = AppState(
-        shoppingLists: [
-          for (ShoppingList shoppingList in state.shoppingLists)
-            if (shoppingList.id == shoppingListToRemove.id)
-              shoppingListToRemove
-            else
-              shoppingList
-        ],
-        selectedList: min(state.selectedList,
+    state = state.withShoppingList(
+        updatedShoppingList: shoppingListToRemove,
+        updatedSelectedList: min(state.selectedList,
             max(state.notDeletedShoppingLists.length - 2, 0)));
     Storage().saveList(shoppingListToRemove, updateRemoteStorage: true);
     initializeWithEmptyList();
@@ -133,7 +103,9 @@ class AppStateNotifier extends StateNotifier<AppState> {
     ShoppingList shoppingListContainingItem = currentShoppingList!;
     ShoppingList updatedShoppingList = shoppingListContainingItem
         .copyWith(items: [...shoppingListContainingItem.items, ...items]);
-    updateShoppingList(updatedShoppingList, updateStorage: true);
+    state = state.withShoppingList(updatedShoppingList: updatedShoppingList);
+    Storage().saveItems(updatedShoppingList, updatedShoppingList.items,
+        updateRemoteStorage: true);
   }
 
   void addShoppingList(ShoppingList shoppingList) {
@@ -149,18 +121,21 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 
   void setShoppingLists(List<ShoppingList> shoppingLists,
-      {bool updateRemoteStorage = false, int? selectedListIndex}) async {
+      {bool updateStorage = false, int? selectedListIndex}) async {
     int notDeletedListsCount = shoppingLists.where((sl) => !sl.deleted).length;
     int newSelectedList = min(selectedListIndex ?? state.selectedList,
         max(0, notDeletedListsCount - 1));
     state =
         AppState(shoppingLists: shoppingLists, selectedList: newSelectedList);
-    Storage().saveSelectedListIndex(newSelectedList);
-    for (ShoppingList shoppingList in shoppingLists) {
-      await Storage()
-          .saveList(shoppingList, updateRemoteStorage: updateRemoteStorage)
-          .then((_) => Storage().saveItems(shoppingList, shoppingList.items,
-              updateRemoteStorage: updateRemoteStorage));
+
+    if(updateStorage) {
+      Storage().saveSelectedListIndex(newSelectedList);
+      for (ShoppingList shoppingList in shoppingLists) {
+        await Storage()
+            .saveList(shoppingList, updateRemoteStorage: true)
+            .then((_) => Storage().saveItems(shoppingList, shoppingList.items,
+                updateRemoteStorage: true));
+      }
     }
   }
 
@@ -170,7 +145,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
         name: "Einkaufsliste",
       );
       setShoppingLists([...state.shoppingLists, newList],
-          updateRemoteStorage: true);
+          updateStorage: true);
     }
   }
 

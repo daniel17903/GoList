@@ -17,8 +17,9 @@ class RemoteStorageProvider extends StorageProvider {
       final response = await goListClient.sendRequest(
           endpoint: "/api/shoppinglists", httpMethod: HttpMethod.get);
 
-      List<ShoppingList> shoppingLists = jsonDecode(utf8.decode(response.bodyBytes))
-          .map<ShoppingList>((element) {
+      List<ShoppingList> shoppingLists =
+          jsonDecode(utf8.decode(response.bodyBytes))
+              .map<ShoppingList>((element) {
         if (element is ShoppingList) {
           return element;
         }
@@ -50,7 +51,7 @@ class RemoteStorageProvider extends StorageProvider {
       await goListClient.sendRequest(
           endpoint: "/api/shoppinglist",
           httpMethod: HttpMethod.post,
-          body: shoppingList.toJson());
+          body: shoppingList.toJson()..remove("items"));
     } catch (e) {
       print("failed to save shopping list on server: $e");
     }

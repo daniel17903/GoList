@@ -58,13 +58,14 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
             onPressed: () {
               IconMapping iconMapping = InputToItemParser.findMappingForName(
                   nameTextInputController.text);
-              ref.read(AppStateNotifier.appStateProvider.notifier).updateItem(
-                  widget.item.copyWith(
-                      name: nameTextInputController.text,
-                      amount: amountInputController.text,
-                      iconName: iconMapping.assetFileName,
-                      category: iconMapping.category,
-                      modified: DateTime.now().millisecondsSinceEpoch));
+              ref.read(AppStateNotifier.appStateProvider.notifier).updateItems([
+                widget.item.copyWith(
+                    name: nameTextInputController.text,
+                    amount: amountInputController.text,
+                    iconName: iconMapping.assetFileName,
+                    category: iconMapping.category,
+                    modified: DateTime.now().millisecondsSinceEpoch)
+              ]);
               Navigator.pop(context);
             })
       ],

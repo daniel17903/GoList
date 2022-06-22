@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/golist_client.dart';
+import 'package:go_list/service/storage/storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -43,9 +44,17 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
           GoListClient().listenForChanges(currentShoppingList.id);
       websocketChannel?.stream.listen((data) {
         print("updating shoppinglist from websocket: $data");
-        ref.read(AppStateNotifier.appStateProvider.notifier).updateShoppingList(
-            ShoppingList.fromJson(jsonDecode(data)),
-            updateRemoteStorage: false);
+
+        Storage()
+            // update list and items in local storage
+            .syncWithListFromRemote(ShoppingList.fromJson(jsonDecode(data)))
+            .then((updatedList) {
+          // update list and items in state
+          ref
+              .read(AppStateNotifier.appStateProvider.notifier)
+              .updateShoppingList(updatedList,
+                  updateRemoteStorage: false, updateStorage: false);
+        });
       }, onError: (e) {
         print("ws closed with error: $e");
         retries++;

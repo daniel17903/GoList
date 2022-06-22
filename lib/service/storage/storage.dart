@@ -4,7 +4,6 @@ import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
-import 'package:go_list/service/storage/provider/storage_provider.dart';
 import 'package:go_list/service/storage/sync/storage_provider_sync.dart';
 
 class Storage {
@@ -21,20 +20,11 @@ class Storage {
 
   Stream<List<ShoppingList>> loadShoppingLists() {
     StreamController<List<ShoppingList>> streamController = StreamController();
-    List<ShoppingList> shoppingListsFromLocal =
-        localStorageProvider.loadShoppingLists();
-    streamController.add(shoppingListsFromLocal);
+    streamController.add(localStorageProvider.loadShoppingLists());
     remoteStorageProvider
         .loadShoppingLists()
-        .then((shoppingListsFromRemote) {
-          shoppingListsFromLocal = localStorageProvider.loadShoppingLists();
-          return StorageProviderSync.syncStorageProviders(
-                  localStorageProvider,
-                  shoppingListsFromLocal,
-                  remoteStorageProvider,
-                  shoppingListsFromRemote)
-              .then(streamController.add);
-        })
+        .then(updateWithListsFromRemote)
+        .then(streamController.add)
         .catchError((_) => print("failed to load shoppinglists from remote"))
         .whenComplete(streamController.close);
 
@@ -55,6 +45,29 @@ class Storage {
       localStorageProvider,
       if (updateRemoteStorage) remoteStorageProvider
     ].map((sp) async => await sp.saveList(shoppingList)));
+  }
+
+  Future<ShoppingList> syncWithListFromRemote(
+      ShoppingList shoppingListFromRemote) {
+    return updateWithListsFromRemote([
+      for (ShoppingList shoppingList
+          in localStorageProvider.loadShoppingLists())
+        if (shoppingList.id == shoppingListFromRemote.id)
+          shoppingListFromRemote
+        else
+          shoppingList
+    ]).then((updatedLists) =>
+        updatedLists.firstWhere((e) => e.id == shoppingListFromRemote.id));
+  }
+
+  Future<List<ShoppingList>> updateWithListsFromRemote(
+      List<ShoppingList> shoppingListsFromRemote) async {
+    return StorageProviderSync.syncStorageProviders(
+        localStorageProvider,
+        localStorageProvider.loadShoppingLists(),
+        remoteStorageProvider,
+        shoppingListsFromRemote,
+        updateRemoteStorage: false);
   }
 
   void saveSelectedListIndex(int index) {

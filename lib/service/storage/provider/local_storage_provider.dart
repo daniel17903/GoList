@@ -1,8 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
-import 'package:collection/collection.dart';
 
 class LocalStorageProvider implements StorageProvider {
   final getStorage = GetStorage();
@@ -10,8 +10,8 @@ class LocalStorageProvider implements StorageProvider {
   @override
   List<ShoppingList> loadShoppingLists() {
     if (getStorage.hasData("shoppingLists")) {
-      List<ShoppingList> shoppingLists = getStorage.read("shoppingLists").map<
-          ShoppingList>((element) {
+      List<ShoppingList> shoppingLists =
+          getStorage.read("shoppingLists").map<ShoppingList>((element) {
         if (element is ShoppingList) {
           return element;
         }
@@ -31,7 +31,7 @@ class LocalStorageProvider implements StorageProvider {
     items = [...items];
     List<ShoppingList> shoppingLists = loadShoppingLists();
     ShoppingList shoppingListToUpdate =
-    _shoppingListById(shoppingLists, shoppingList.id)!;
+        _shoppingListById(shoppingLists, shoppingList.id)!;
 
     // update all items that already existed
     for (int i = 0; i < shoppingListToUpdate.items.length; i++) {
@@ -55,7 +55,7 @@ class LocalStorageProvider implements StorageProvider {
   void saveList(ShoppingList updatedShoppingList) {
     List<ShoppingList> shoppingLists = loadShoppingLists();
     ShoppingList? shoppingListToUpdate =
-    _shoppingListById(shoppingLists, updatedShoppingList.id);
+        _shoppingListById(shoppingLists, updatedShoppingList.id);
     if (shoppingListToUpdate == null) {
       shoppingLists.add(updatedShoppingList);
     } else {
@@ -71,12 +71,12 @@ class LocalStorageProvider implements StorageProvider {
         shoppingLists.map((shoppingList) => shoppingList.toJson()).toList());
   }
 
-  void saveSelectedListIndex(int index){
+  void saveSelectedListIndex(int index) {
     getStorage.write("selectedList", index);
   }
 
-  int loadSelectedListIndex(){
-    if(getStorage.hasData("selectedList")){
+  int loadSelectedListIndex() {
+    if (getStorage.hasData("selectedList")) {
       return getStorage.read("selectedList");
     }
     return 0;

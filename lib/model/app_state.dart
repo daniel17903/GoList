@@ -24,4 +24,15 @@ class AppState {
         shoppingLists: shoppingLists ?? [...this.shoppingLists],
         selectedList: selectedList ?? this.selectedList);
   }
+
+  AppState withShoppingList(
+      {required ShoppingList updatedShoppingList, int? updatedSelectedList}) {
+    return copyWith(shoppingLists: [
+      for (ShoppingList shoppingList in shoppingLists)
+        if (shoppingList.id == updatedShoppingList.id)
+          updatedShoppingList
+        else
+          shoppingList
+    ], selectedList: updatedSelectedList ?? selectedList);
+  }
 }
