@@ -121,18 +121,21 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 
   void setShoppingLists(List<ShoppingList> shoppingLists,
-      {bool updateRemoteStorage = false, int? selectedListIndex}) async {
+      {bool updateStorage = false, int? selectedListIndex}) async {
     int notDeletedListsCount = shoppingLists.where((sl) => !sl.deleted).length;
     int newSelectedList = min(selectedListIndex ?? state.selectedList,
         max(0, notDeletedListsCount - 1));
     state =
         AppState(shoppingLists: shoppingLists, selectedList: newSelectedList);
-    Storage().saveSelectedListIndex(newSelectedList);
-    for (ShoppingList shoppingList in shoppingLists) {
-      await Storage()
-          .saveList(shoppingList, updateRemoteStorage: updateRemoteStorage)
-          .then((_) => Storage().saveItems(shoppingList, shoppingList.items,
-              updateRemoteStorage: updateRemoteStorage));
+
+    if(updateStorage) {
+      Storage().saveSelectedListIndex(newSelectedList);
+      for (ShoppingList shoppingList in shoppingLists) {
+        await Storage()
+            .saveList(shoppingList, updateRemoteStorage: true)
+            .then((_) => Storage().saveItems(shoppingList, shoppingList.items,
+                updateRemoteStorage: true));
+      }
     }
   }
 
@@ -142,7 +145,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
         name: "Einkaufsliste",
       );
       setShoppingLists([...state.shoppingLists, newList],
-          updateRemoteStorage: true);
+          updateStorage: true);
     }
   }
 

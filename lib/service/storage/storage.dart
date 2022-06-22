@@ -4,7 +4,6 @@ import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
-import 'package:go_list/service/storage/provider/storage_provider.dart';
 import 'package:go_list/service/storage/sync/storage_provider_sync.dart';
 
 class Storage {
@@ -48,7 +47,7 @@ class Storage {
     ].map((sp) async => await sp.saveList(shoppingList)));
   }
 
-  Future<ShoppingList> updateWithListFromRemote(
+  Future<ShoppingList> syncWithListFromRemote(
       ShoppingList shoppingListFromRemote) {
     return updateWithListsFromRemote([
       for (ShoppingList shoppingList
@@ -67,7 +66,8 @@ class Storage {
         localStorageProvider,
         localStorageProvider.loadShoppingLists(),
         remoteStorageProvider,
-        shoppingListsFromRemote);
+        shoppingListsFromRemote,
+        updateRemoteStorage: false);
   }
 
   void saveSelectedListIndex(int index) {

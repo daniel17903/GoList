@@ -13,7 +13,8 @@ class StorageProviderSync {
       StorageProvider localStorageProvider,
       List<ShoppingList> shoppingListsFromLocal,
       StorageProvider remoteStorageProvider,
-      List<ShoppingList> shoppingListsFromRemote) async {
+      List<ShoppingList> shoppingListsFromRemote,
+      {updateRemoteStorage: true}) async {
     Diff<ShoppingList, Item> diff =
         Diff.diff(shoppingListsFromLocal, shoppingListsFromRemote);
 
@@ -26,7 +27,7 @@ class StorageProviderSync {
     await Future.wait([
       ...diff.elementsToUpdateInLocalStorage
           .map((el) async => await localStorageProvider.saveList(el)),
-      ...diff.elementsToUpdateInRemoteStorage
+      if (updateRemoteStorage) ...diff.elementsToUpdateInRemoteStorage
           .map((el) async => await remoteStorageProvider.saveList(el))
     ]);
 
@@ -38,7 +39,8 @@ class StorageProviderSync {
             diff.subElementDiffs[shoppingListId]!
                 .elementsToUpdateInLocalStorage);
       }),
-      ...diff.subElementDiffs.keys.map((shoppingListId) async {
+      if(updateRemoteStorage) ...diff.subElementDiffs.keys.map((shoppingListId) async {
+        print("syncing items to remote storage");
         await remoteStorageProvider.saveItems(
             _shoppingListById(shoppingListsFromLocal, shoppingListId)!,
             diff.subElementDiffs[shoppingListId]!

@@ -46,14 +46,14 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
         print("updating shoppinglist from websocket: $data");
 
         Storage()
-            .updateWithListFromRemote(ShoppingList.fromJson(jsonDecode(data)))
+            // update list and items in local storage
+            .syncWithListFromRemote(ShoppingList.fromJson(jsonDecode(data)))
             .then((updatedList) {
+          // update list and items in state
           ref
               .read(AppStateNotifier.appStateProvider.notifier)
-              .updateShoppingList(updatedList, updateRemoteStorage: false);
-          ref
-              .read(AppStateNotifier.appStateProvider.notifier)
-              .updateItems(updatedList.items, updateRemoteStorage: false);
+              .updateShoppingList(updatedList,
+                  updateRemoteStorage: false, updateStorage: false);
         });
       }, onError: (e) {
         print("ws closed with error: $e");

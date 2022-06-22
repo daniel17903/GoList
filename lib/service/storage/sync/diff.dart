@@ -24,6 +24,7 @@ class Diff<T extends GoListModel, S extends GoListModel> {
       T? elementFromSp1 = _elementById(elementsFromSp1, elementId);
       T? elementFromSp2 = _elementById(elementsFromSp2, elementId);
 
+      // deleted items have to be synced in order to share deletion
       if (elementFromSp1 == null) {
         if (!elementFromSp2!.deleted || elementsFromSp2 is Item) {
           elementsToUpdateInLocalStorage.add(elementFromSp2);
