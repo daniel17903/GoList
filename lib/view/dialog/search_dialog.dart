@@ -34,6 +34,7 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
     setState(() {
       recentlyUsedItemsSorted = [...appState.currentShoppingList!.items]
           .where((e) => e.deleted)
+          .map((e) => e.copyWith(amount: null))
           .toList();
       sortItems();
 
