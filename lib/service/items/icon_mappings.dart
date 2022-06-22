@@ -187,6 +187,10 @@ final List<IconMapping> iconMappings = [
       matchingNames: ["kohl", "wirsing"],
       category: Category.fruitsVegetables),
   IconMapping(
+      assetFileName: "broccoli",
+      matchingNames: ["brokkoli", "broccoli", "brokoli"],
+      category: Category.fruitsVegetables),
+  IconMapping(
       assetFileName: "eggplant",
       matchingNames: ["aubergine"],
       category: Category.fruitsVegetables),
