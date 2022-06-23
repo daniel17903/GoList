@@ -7,7 +7,7 @@ const Category defaultCategory = Category.other;
 final List<IconMapping> iconMappings = [
   IconMapping(
       assetFileName: "apple",
-      matchingNames: ["apfel", "äpfel", "aepfel"],
+      matchingNames: ["apfel", "äpfel", "aepfel", "obst"],
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "banana",
@@ -70,7 +70,9 @@ final List<IconMapping> iconMappings = [
         "rübe",
         "ruebe",
         "rettich",
-        "möhre"
+        "möhre",
+        "gemüse",
+        "gemuese"
       ],
       category: Category.fruitsVegetables),
   IconMapping(

@@ -56,6 +56,7 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
         PlatformDialogAction(
             child: const Text('Speichern'),
             onPressed: () {
+              Navigator.pop(context);
               IconMapping iconMapping = InputToItemParser.findMappingForName(
                   nameTextInputController.text);
               ref.read(AppStateNotifier.appStateProvider.notifier).updateItems([
@@ -66,7 +67,6 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
                     category: iconMapping.category,
                     modified: DateTime.now().millisecondsSinceEpoch)
               ]);
-              Navigator.pop(context);
             })
       ],
     );

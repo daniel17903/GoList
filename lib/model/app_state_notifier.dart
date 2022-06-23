@@ -42,11 +42,11 @@ class AppStateNotifier extends StateNotifier<AppState> {
     state = state.withShoppingList(
         updatedShoppingList: shoppingListWithUpdatedItem);
 
-    // only store last 20 deleted items
+    // only store last 50 deleted items
     List<Item> itemsToDelete =
         shoppingListWithUpdatedItem.items.where((e) => e.deleted).toList()
           ..sort((item1, item2) => item2.modified.compareTo(item1.modified))
-          ..skip(20);
+          ..skip(50);
 
     bool shouldBeRetained(Item item) {
       for (Item itemToDelete in itemsToDelete) {

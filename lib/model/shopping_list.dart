@@ -64,7 +64,6 @@ class ShoppingList extends GoListModel {
         if (updatedItems.any((e) => e.id == item.id))
           updatedItems
               .firstWhere((e) => e.id == item.id)
-              .copyWith(deleted: true)
         else
           item
     ]);
