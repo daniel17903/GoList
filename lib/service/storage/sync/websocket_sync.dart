@@ -80,7 +80,9 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      ref.read(AppStateNotifier.appStateProvider.notifier).loadAllFromStorage();
+      ref
+          .read(AppStateNotifier.appStateProvider.notifier)
+          .loadAllFromStorage(context);
       print("resuming");
       retries = 0;
       listenForChanges(

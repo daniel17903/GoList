@@ -1,0 +1,26 @@
+{
+  "save": "Guardar",
+  "cancel": "Cancelar",
+  "edit_item": "Editar articulo",
+  "edit_list": "Editar lista",
+  "confirm_delete_list": "Realmente quieres eliminar esta lista?",
+  "my_lists": "Mis listas",
+  "create_new_list": "Crear nueva lista",
+  "default_name": "Lista de compras",
+  "shared_devices_info": "{count, plural, =1{Compartido con otro dispositivo} other{Compartido con otros {count} dispositivos}}",
+  "@shared_devices_info": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "name": "Nombre",
+  "amount": "cantidad",
+
+  "failed_to_load_list": "Error al cargar la lista",
+  "failed_to_share_list": "Error al compartir la lista",
+  "failed_to_open_list": "Error al abrir la lista"
+}

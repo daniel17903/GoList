@@ -1,0 +1,26 @@
+{
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit_item": "Edit Item",
+    "edit_list": "Edit List",
+    "confirm_delete_list": "Do you really want to delete this list?",
+    "my_lists": "My Lists",
+    "create_new_list": "Create New List",
+    "name": "Name",
+    "amount": "Amount",
+    "default_name": "Shopping List",
+    "shared_devices_info": "{count, plural, =1{Shared with 1 other device} other{Shared with {count} other devices}}",
+    "@shared_devices_info": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "3",
+                "format": "decimalPattern"
+            }
+        }
+    },
+
+    "failed_to_load_list": "Failed to load the list",
+    "failed_to_share_list": "Failed to share the list",
+    "failed_to_open_list": "Failed to open the list"
+}

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
@@ -46,7 +47,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         // if app was opened with link lists have not been loaded yet
         await ref
             .read(AppStateNotifier.appStateProvider.notifier)
-            .loadAllFromStorage();
+            .loadAllFromStorage(context);
 
         List<String> listIdsBeforeJoin = ref
             .read(AppStateNotifier.notDeletedShoppingListsProvider)
@@ -61,7 +62,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         // load the new list and sync with local storage
         await ref
             .read(AppStateNotifier.appStateProvider.notifier)
-            .loadAllFromStorage();
+            .loadAllFromStorage(context);
 
         int indexOfNewList = ref
             .read(AppStateNotifier.notDeletedShoppingListsProvider)
@@ -69,7 +70,7 @@ class _MyAppState extends ConsumerState<MyApp> {
                 (shoppingList) => !listIdsBeforeJoin.contains(shoppingList.id));
 
         if (indexOfNewList == -1) {
-          throw Exception("Liste konnte nicht geladen werden");
+          throw Exception(AppLocalizations.of(context)!.failed_to_load_list);
         }
 
         ref
@@ -78,7 +79,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       } catch (e) {
         print(e);
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Öffnen der Liste fehlgeschlagen :( $e")));
+            SnackBar(content: Text("${AppLocalizations.of(context)!.failed_to_open_list}: $e")));
       }
     }
   }

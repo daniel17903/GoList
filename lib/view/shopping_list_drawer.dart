@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/shopping_list.dart';
@@ -31,10 +32,10 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
     showPlatformDialog(
         context: context,
         builder: (BuildContext context) => PlatformAlertDialog(
-              title: const Text('Soll diese Liste wirklich gelöscht werden?'),
+              title: Text(AppLocalizations.of(context)!.confirm_delete_list),
               actions: <Widget>[
                 PlatformDialogAction(
-                  child: const Text('Abbrechen'),
+                  child: Text(AppLocalizations.of(context)!.cancel),
                   onPressed: () => Navigator.pop(context),
                 ),
                 PlatformDialogAction(
@@ -74,7 +75,7 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
         Theme(
             data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
-                title: const Text('Meine Listen'),
+                title: Text(AppLocalizations.of(context)!.my_lists),
                 initiallyExpanded: true,
                 maintainState: true,
                 children: [
@@ -101,28 +102,28 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
                                     .read(AppStateNotifier
                                         .appStateProvider.notifier)
                                     .deleteShoppingList(
-                                        shoppingLists[index].id);
+                                        shoppingLists[index].id, context);
                               }),
                             ),
                           )),
                 ])),
         ListTile(
           leading: const Icon(Icons.add),
-          title: const Text("Neue Liste erstellen"),
+          title: Text(AppLocalizations.of(context)!.create_new_list),
           onTap: () {
             DialogUtils.showSmallAlertDialog(
                 context: context,
                 content: AlertDialog(
-                  title: const Text('Neue Liste erstellen'),
+                  title: Text(AppLocalizations.of(context)!.create_new_list),
                   content: TextFormField(
                       controller: newListNameInputController,
-                      decoration: const InputDecoration(
-                        labelText: "Name",
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.name,
                       )),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Abbrechen'),
+                      child: Text(AppLocalizations.of(context)!.cancel),
                     ),
                     TextButton(
                       onPressed: () {
@@ -134,7 +135,7 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
                             .read(AppStateNotifier.appStateProvider.notifier)
                             .addShoppingList(newShoppingList);
                       },
-                      child: const Text('Speichern'),
+                      child: Text(AppLocalizations.of(context)!.save),
                     ),
                   ],
                 ));

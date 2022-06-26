@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/service/backend_url.dart';
@@ -31,8 +32,9 @@ class GoListBottomNavigationBar extends HookConsumerWidget {
                 Rect.fromLTWH(0, 0, size.width, size.height / 2));
         print("${BackendUrl.httpUrl()}/join?token=$token");
       },
-    ).catchError((_) => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Teilen fehlgeschlagen :("))));
+    ).catchError((_) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text(AppLocalizations.of(context)!.failed_to_share_list))));
   }
 
   @override

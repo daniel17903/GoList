@@ -1,0 +1,26 @@
+{
+  "save": "Speichern",
+  "cancel": "Abbrechen",
+  "edit_item": "Eintrag bearbeiten",
+  "edit_list": "Liste bearbeiten",
+  "confirm_delete_list": "Soll diese Liste wirklich gelöscht werden?",
+  "my_lists": "Meine Listen",
+  "create_new_list": "Neue Liste erstellen",
+  "default_name": "Einkaufsliste",
+  "shared_devices_info": "{count, plural, =1{Mit 1 anderen Gerät geteilt} other{Mit {count} anderen Geräten geteilt}}",
+  "@shared_devices_info": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "name": "Name",
+  "amount": "Menge",
+
+  "failed_to_load_list": "Laden der Liste fehlgeschlagen",
+  "failed_to_share_list": "Teilen der Liste fehlgeschlagen",
+  "failed_to_open_list": "Öffnen der Liste fehlgeschlagen"
+}

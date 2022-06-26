@@ -7,6 +7,7 @@ import 'package:go_list/view/dialog/edit_item_dialog.dart';
 import 'package:go_list/view/dialog/edit_list_dialog.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ShoppingListWidget extends HookConsumerWidget {
   const ShoppingListWidget({Key? key}) : super(key: key);
@@ -49,7 +50,9 @@ class ShoppingListWidget extends HookConsumerWidget {
                   ),
                   padding: const EdgeInsets.only(
                       left: 8.0, right: 8.0, top: 2.0, bottom: 2.0),
-                  child: Text("Mit $otherDevicesCount anderen Geräten geteilt",
+                  child: Text(
+                      AppLocalizations.of(context)!
+                          .shared_devices_info(otherDevicesCount),
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -58,9 +61,9 @@ class ShoppingListWidget extends HookConsumerWidget {
               ),
             )
           : null,
-      onPullForRefresh: ref
+      onPullForRefresh: () => ref
           .read(AppStateNotifier.appStateProvider.notifier)
-          .loadAllFromStorage,
+          .loadAllFromStorage(context),
       onItemTapped: (tappedItem) {
         ref
             .read(AppStateNotifier.appStateProvider.notifier)

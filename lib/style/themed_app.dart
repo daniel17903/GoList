@@ -1,10 +1,11 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/style/colors.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ThemedApp extends StatelessWidget {
   final Widget child;
@@ -39,11 +40,9 @@ class ThemedApp extends StatelessWidget {
           //PlatformProvider.of(context)?.changeToCupertinoPlatform();
           return PlatformApp(
             debugShowCheckedModeBanner: false,
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              DefaultMaterialLocalizations.delegate,
-              DefaultWidgetsLocalizations.delegate,
-              DefaultCupertinoLocalizations.delegate,
-            ],
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es', ''),
             title: 'GoList',
             home: child,
             material: (_, __) => MaterialAppData(

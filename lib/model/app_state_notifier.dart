@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/widgets.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'app_state.dart';
 
@@ -79,7 +81,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
         updateRemoteStorage: true);
   }
 
-  void deleteShoppingList(String id) {
+  void deleteShoppingList(String id, BuildContext context) {
     ShoppingList shoppingListToRemove =
         shoppingLists.where((sl) => sl.id == id).first.copyWith(deleted: true);
     state = state.withShoppingList(
@@ -87,7 +89,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
         updatedSelectedList: min(state.selectedList,
             max(state.notDeletedShoppingLists.length - 2, 0)));
     Storage().saveList(shoppingListToRemove, updateRemoteStorage: true);
-    initializeWithEmptyList();
+    initializeWithEmptyList(context);
   }
 
   void addItem(Item item) {
@@ -139,17 +141,17 @@ class AppStateNotifier extends StateNotifier<AppState> {
     }
   }
 
-  void initializeWithEmptyList() {
+  void initializeWithEmptyList(BuildContext context) {
     if (state.shoppingLists.where((sl) => !sl.deleted).isEmpty) {
       ShoppingList newList = ShoppingList(
-        name: "Einkaufsliste",
+        name: AppLocalizations.of(context)!.default_name,
       );
       setShoppingLists([...state.shoppingLists, newList],
           updateStorage: true);
     }
   }
 
-  Future<void> loadAllFromStorage() {
+  Future<void> loadAllFromStorage(BuildContext context) {
     if (loadingFuture == null) {
       Completer completer = Completer();
       loadingFuture = completer.future;
@@ -159,7 +161,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
                 selectedListIndex: Storage().loadSelectedListIndex());
           }, onDone: () {
             completer.complete();
-            initializeWithEmptyList();
+            initializeWithEmptyList(context);
             loadingFuture = null;
           }));
     }

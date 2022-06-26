@@ -5,6 +5,7 @@ import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../model/item.dart';
 
@@ -38,23 +39,23 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
   @override
   Widget build(BuildContext context) {
     return PlatformAlertDialog(
-      title: const Text('Eintrag bearbeiten'),
+      title: Text(AppLocalizations.of(context)!.edit_item),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           GoListPlatformTextFormField(
-              controller: nameTextInputController, labelText: "Name"),
+              controller: nameTextInputController, labelText: AppLocalizations.of(context)!.name),
           GoListPlatformTextFormField(
-              controller: amountInputController, labelText: "Menge")
+              controller: amountInputController, labelText: AppLocalizations.of(context)!.amount)
         ],
       ),
       actions: <Widget>[
         PlatformDialogAction(
-          child: const Text('Abbrechen'),
+          child: Text(AppLocalizations.of(context)!.cancel),
           onPressed: () => Navigator.pop(context),
         ),
         PlatformDialogAction(
-            child: const Text('Speichern'),
+            child: Text(AppLocalizations.of(context)!.save),
             onPressed: () {
               Navigator.pop(context);
               IconMapping iconMapping = InputToItemParser.findMappingForName(

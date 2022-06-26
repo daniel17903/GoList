@@ -44,7 +44,6 @@ class ShoppingListPage extends StatelessWidget {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: FloatingActionButton(
-                tooltip: "Neuer Eintrag",
                 onPressed: () => DialogUtils.showLargeAnimatedDialog(
                     context: context, child: const SearchDialog()),
                 child: const Icon(Icons.add))));
