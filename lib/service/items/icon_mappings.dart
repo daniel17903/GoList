@@ -100,7 +100,8 @@ final List<IconMapping> iconMappings = [
         "honig",
         "aufstrich",
         "sauerkraut",
-        "schattenmorellen"
+        "schattenmorellen",
+        "nutella"
       ],
       category: Category.spicesCanned),
   IconMapping(
@@ -434,7 +435,7 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "seeds",
-      matchingNames: ["kerne"],
+      matchingNames: ["kerne", "flocken"],
       category: Category.cereals),
   IconMapping(
       assetFileName: "sponge",
