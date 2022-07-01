@@ -44,7 +44,7 @@ class InputToItemParser {
     return iconMappingMatches.firstOrNull?.iconMapping ??
         IconMapping(
             assetFileName: defaultIconAsset,
-            matchingNames: [],
+            matchingNames: {},
             category: defaultCategory);
   }
 }
