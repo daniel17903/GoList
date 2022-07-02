@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/model/app_state_notifier.dart';
+import 'package:go_list/model/list_of.dart';
 import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
@@ -21,7 +22,7 @@ class SearchDialog extends StatefulHookConsumerWidget {
 class _SearchDialogState extends ConsumerState<SearchDialog> {
   Item? newItem;
   Timer? _debounce;
-  List<Item> recentlyUsedItemsSorted = [];
+  ListOf<Item> recentlyUsedItemsSorted = ListOf([]);
 
   void _debounced(Function function) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
@@ -32,10 +33,10 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
   void initState() {
     AppState appState = ref.read<AppState>(AppStateNotifier.appStateProvider);
     setState(() {
-      recentlyUsedItemsSorted = [...appState.currentShoppingList!.items]
-          .where((e) => e.deleted)
-          .map((e) => e.copyWith(amount: ""))
-          .toList();
+      recentlyUsedItemsSorted =
+          ListOf<Item>([...appState.currentShoppingList!.items])
+              .whereEntry((e) => e.deleted)
+              .mapEntries((e) => e.copyWith(amount: ""));
       sortItems();
 
       // remove items with same name
@@ -142,9 +143,10 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
                         category: iconMapping.category),
                     appStateNotifier);
               },
-              items: [if (newItem != null) newItem!, ...recentlyUsedItemsSorted]
-                  .take(20)
-                  .toList()),
+              items: ListOf([
+                if (newItem != null) newItem!,
+                ...recentlyUsedItemsSorted
+              ].take(20).toList())),
         )
       ]),
     );

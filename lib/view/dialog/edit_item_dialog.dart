@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/app_state_notifier.dart';
+import 'package:go_list/model/list_of.dart';
 import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
@@ -44,9 +45,11 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           GoListPlatformTextFormField(
-              controller: nameTextInputController, labelText: AppLocalizations.of(context)!.name),
+              controller: nameTextInputController,
+              labelText: AppLocalizations.of(context)!.name),
           GoListPlatformTextFormField(
-              controller: amountInputController, labelText: AppLocalizations.of(context)!.amount)
+              controller: amountInputController,
+              labelText: AppLocalizations.of(context)!.amount)
         ],
       ),
       actions: <Widget>[
@@ -60,14 +63,16 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
               Navigator.pop(context);
               IconMapping iconMapping = InputToItemParser.findMappingForName(
                   nameTextInputController.text);
-              ref.read(AppStateNotifier.appStateProvider.notifier).updateItems([
-                widget.item.copyWith(
-                    name: nameTextInputController.text,
-                    amount: amountInputController.text,
-                    iconName: iconMapping.assetFileName,
-                    category: iconMapping.category,
-                    modified: DateTime.now().millisecondsSinceEpoch)
-              ]);
+              ref
+                  .read(AppStateNotifier.appStateProvider.notifier)
+                  .updateItems(ListOf([
+                    widget.item.copyWith(
+                        name: nameTextInputController.text,
+                        amount: amountInputController.text,
+                        iconName: iconMapping.assetFileName,
+                        category: iconMapping.category,
+                        modified: DateTime.now().millisecondsSinceEpoch)
+                  ]));
             })
       ],
     );

@@ -83,7 +83,6 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
       ref
           .read(AppStateNotifier.appStateProvider.notifier)
           .loadAllFromStorage(context);
-      print("resuming");
       retries = 0;
       listenForChanges(
           ref.read(AppStateNotifier.appStateProvider).currentShoppingList);

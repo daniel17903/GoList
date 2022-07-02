@@ -1,6 +1,6 @@
-import 'package:collection/collection.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/item.dart';
+import 'package:go_list/model/list_of.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
 
@@ -8,67 +8,34 @@ class LocalStorageProvider implements StorageProvider {
   final getStorage = GetStorage();
 
   @override
-  List<ShoppingList> loadShoppingLists() {
+  ListOf<ShoppingList> loadShoppingLists() {
     if (getStorage.hasData("shoppingLists")) {
-      List<ShoppingList> shoppingLists =
-          getStorage.read("shoppingLists").map<ShoppingList>((element) {
+      ListOf<ShoppingList> shoppingLists =
+          ListOf(getStorage.read("shoppingLists").map<ShoppingList>((element) {
         if (element is ShoppingList) {
           return element;
         }
         return ShoppingList.fromJson(element);
-      }).toList();
+      }).toList());
       return shoppingLists;
     }
-    return [];
-  }
-
-  ShoppingList? _shoppingListById(List<ShoppingList> shoppingLists, String id) {
-    return shoppingLists.firstWhereOrNull((sl) => sl.id == id);
+    return ListOf([]);
   }
 
   @override
-  void saveItems(ShoppingList shoppingList, List<Item> items) {
-    items = [...items];
-    List<ShoppingList> shoppingLists = loadShoppingLists();
-    ShoppingList shoppingListToUpdate =
-        _shoppingListById(shoppingLists, shoppingList.id)!;
-
-    // update all items that already existed
-    for (int i = 0; i < shoppingListToUpdate.items.length; i++) {
-      for (int x = 0; x < items.length; x++) {
-        if (shoppingListToUpdate.items[i].id == items[x].id) {
-          shoppingListToUpdate.items[i] = items[x];
-          items.removeAt(x);
-          x--;
-        }
-      }
-    }
-
-    // insert all items that did not exist yet
-    shoppingListToUpdate.items.addAll(items);
-
+  void saveItems(ShoppingList shoppingListToUpdate, ListOf<Item> items) {
     getStorage.write(
-        "shoppingLists", shoppingLists.map((sl) => sl.toJson()).toList());
+        "shoppingLists",
+        loadShoppingLists()
+            .updateEntry(shoppingListToUpdate,
+                transform: (e) => e.withItems(items))
+            .toJson());
   }
 
   @override
   void saveList(ShoppingList updatedShoppingList) {
-    List<ShoppingList> shoppingLists = loadShoppingLists();
-    ShoppingList? shoppingListToUpdate =
-        _shoppingListById(shoppingLists, updatedShoppingList.id);
-    if (shoppingListToUpdate == null) {
-      shoppingLists.add(updatedShoppingList);
-    } else {
-      shoppingLists = [
-        for (ShoppingList shoppingList in shoppingLists)
-          if (updatedShoppingList.id == shoppingList.id)
-            updatedShoppingList
-          else
-            shoppingList
-      ];
-    }
     getStorage.write("shoppingLists",
-        shoppingLists.map((shoppingList) => shoppingList.toJson()).toList());
+        loadShoppingLists().updateEntry(updatedShoppingList).toJson());
   }
 
   void saveSelectedListIndex(int index) {

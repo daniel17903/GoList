@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/item.dart';
+import 'package:go_list/model/list_of.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:go_list/view/dialog/edit_item_dialog.dart';
@@ -18,7 +19,7 @@ class ShoppingListWidget extends HookConsumerWidget {
         ref.watch(AppStateNotifier.appStateProvider).currentShoppingList;
     final int otherDevicesCount =
         currentShoppingList != null ? currentShoppingList.deviceCount - 1 : 0;
-    final List<Item> items = ref.watch(AppStateNotifier.currentItemsProvider);
+    final ListOf<Item> items = ref.watch(AppStateNotifier.currentItemsProvider);
     final String name =
         ref.watch(AppStateNotifier.currentShoppingListNameProvider);
 
@@ -67,7 +68,7 @@ class ShoppingListWidget extends HookConsumerWidget {
       onItemTapped: (tappedItem) {
         ref
             .read(AppStateNotifier.appStateProvider.notifier)
-            .deleteItems([tappedItem]);
+            .deleteItems(ListOf([tappedItem]));
       },
       onItemTappedLong: (item) => DialogUtils.showSmallAlertDialog(
           context: context, content: EditItemDialog(item: item)),

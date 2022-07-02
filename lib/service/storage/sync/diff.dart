@@ -1,16 +1,20 @@
 import 'package:collection/collection.dart';
 import 'package:go_list/model/golist_model.dart';
 import 'package:go_list/model/item.dart';
+import 'package:go_list/model/list_of.dart';
 import 'package:go_list/model/shopping_list.dart';
 
 class Diff<T extends GoListModel, S extends GoListModel> {
-  List<T> elementsToUpdateInLocalStorage = [];
-  List<T> elementsToUpdateInRemoteStorage = [];
+  ListOf<T> elementsToUpdateInLocalStorage = ListOf([]);
+  ListOf<T> elementsToUpdateInRemoteStorage = ListOf([]);
   Map<String, Diff<S, void>> subElementDiffs = {};
 
-  Diff(
-      {this.elementsToUpdateInLocalStorage = const [],
-      this.elementsToUpdateInRemoteStorage = const []});
+  Diff({elementsToUpdateInLocalStorage, elementsToUpdateInRemoteStorage}) {
+    this.elementsToUpdateInLocalStorage =
+        elementsToUpdateInLocalStorage ?? ListOf([]);
+    this.elementsToUpdateInRemoteStorage =
+        elementsToUpdateInRemoteStorage ?? ListOf([]);
+  }
 
   T? _elementById(List<T> elements, String id) {
     return elements.firstWhereOrNull((sl) => sl.id == id);

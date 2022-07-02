@@ -42,7 +42,7 @@ class ThemedApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            locale: Locale('es', ''),
+            //locale: Locale('es', ''),
             title: 'GoList',
             home: child,
             material: (_, __) => MaterialAppData(
