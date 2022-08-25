@@ -444,5 +444,17 @@ final List<IconMapping> iconMappings = [
   IconMapping(
       assetFileName: "zucchini",
       matchingNames: ["zucchini", "zuchini"],
-      category: Category.fruitsVegetables)
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "avocado",
+      matchingNames: ["avocado"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "melon",
+      matchingNames: ["melone"],
+      category: Category.fruitsVegetables),
+  IconMapping(
+      assetFileName: "tampon",
+      matchingNames: ["tampon"],
+      category: Category.other)
 ];
