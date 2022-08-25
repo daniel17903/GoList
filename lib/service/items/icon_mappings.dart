@@ -47,7 +47,9 @@ final List<IconMapping> iconMappings = [
         "spülmaschinen salz",
         "spülmaschinen-salz",
         "müsli",
-        "muesli"
+        "muesli",
+        "tempos",
+        "taschentücher"
       ],
       category: Category.household),
   IconMapping(
@@ -101,7 +103,9 @@ final List<IconMapping> iconMappings = [
         "aufstrich",
         "sauerkraut",
         "schattenmorellen",
-        "nutella"
+        "nutella",
+        "hummus",
+        "guacamole"
       ],
       category: Category.spicesCanned),
   IconMapping(
