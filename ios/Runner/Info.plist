@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>de</string>
+		<string>en</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -44,19 +49,19 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>FlutterDeepLinkingEnabled</key>
-    <true/>
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLName</key>
-        <string>golist.ge1ger.de</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-        <string>customscheme</string>
-        </array>
-        </dict>
-    </array>
+	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>golist.ge1ger.de</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>customscheme</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

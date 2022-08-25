@@ -1,23 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_list/model/golist_model.dart';
+import 'package:go_list/model/list_of.dart';
 
 import 'item.dart';
 
 @immutable
 class ShoppingList extends GoListModel {
   late final String name;
-  late final List<Item> items;
-  late final int deviceCount;
+  late final ListOf<Item> items;
+  late final int  deviceCount;
 
   ShoppingList(
       {required this.name,
-      List<Item>? items,
+      ListOf<Item>? items,
       bool? deleted,
       int? modified,
       String? id,
       int? deviceCount})
       : super(modified: modified, deleted: deleted, id: id) {
-    this.items = items ?? [];
+    this.items = items ?? ListOf<Item>([]);
     this.deviceCount = deviceCount ?? 1;
   }
 
@@ -27,8 +28,8 @@ class ShoppingList extends GoListModel {
             deleted: json["deleted"],
             modified: json["modified"]) {
     name = json['name'];
-    items =
-        json["items"].map<Item>((element) => Item.fromJson(element)).toList();
+    items = ListOf<Item>(
+        json["items"].map<Item>((element) => Item.fromJson(element)).toList());
     deviceCount = json.containsKey("device_count") ? json["device_count"] : 1;
   }
 
@@ -44,7 +45,7 @@ class ShoppingList extends GoListModel {
 
   ShoppingList copyWith(
       {String? name,
-      List<Item>? items,
+      ListOf<Item>? items,
       bool? deleted,
       int? modified,
       String? id,
@@ -58,14 +59,7 @@ class ShoppingList extends GoListModel {
         deviceCount: deviceCount ?? this.deviceCount);
   }
 
-  ShoppingList withItems(List<Item> updatedItems) {
-    return copyWith(items: [
-      for (final item in items)
-        if (updatedItems.any((e) => e.id == item.id))
-          updatedItems
-              .firstWhere((e) => e.id == item.id)
-        else
-          item
-    ]);
+  ShoppingList withItems(ListOf<Item> updatedItems) {
+    return copyWith(items: items.updateWith(updatedItems));
   }
 }

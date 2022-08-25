@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/app_state_notifier.dart';
+import 'package:go_list/model/list_of.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -51,7 +52,7 @@ class _ShoppingListDrawerState extends ConsumerState<ShoppingListDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    List<ShoppingList> shoppingLists =
+    ListOf<ShoppingList> shoppingLists =
         ref.watch(AppStateNotifier.notDeletedShoppingListsProvider);
     return Drawer(
         //backgroundColor: Theme.of(context).backgroundColor,

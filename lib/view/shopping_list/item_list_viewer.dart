@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_list/model/list_of.dart';
 import 'package:go_list/view/shopping_list/refreshable_scroll_view.dart';
 import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
@@ -22,7 +23,7 @@ class ItemListViewer extends StatelessWidget {
       required this.parentWidth})
       : super(key: key);
 
-  final List<Item> items;
+  final ListOf<Item> items;
   final void Function(Item) onItemTapped;
   final void Function(Item)? onItemTappedLong;
   final Future<void> Function()? onPullForRefresh;

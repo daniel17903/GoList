@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/widgets.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/item.dart';
+import 'package:go_list/model/list_of.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -23,21 +24,22 @@ class AppStateNotifier extends StateNotifier<AppState> {
         .select((appState) => appState.currentShoppingList?.name ?? ""));
   });
 
-  static final currentItemsProvider = Provider<List<Item>>((ref) {
+  static final currentItemsProvider = Provider<ListOf<Item>>((ref) {
     return ref.watch(appStateProvider.select((appState) =>
-        appState.currentShoppingList?.items.where((i) => !i.deleted).toList() ??
-        []));
+        appState.currentShoppingList?.items.whereEntry((i) => !i.deleted) ??
+        ListOf<Item>([])));
   });
 
   static final notDeletedShoppingListsProvider =
-      Provider<List<ShoppingList>>((ref) {
+      Provider<ListOf<ShoppingList>>((ref) {
     return ref.watch(appStateProvider
         .select((appState) => appState.notDeletedShoppingLists));
   });
 
   AppStateNotifier(AppState appState) : super(appState);
 
-  void updateItems(List<Item> updatedItems, {bool updateRemoteStorage = true}) {
+  void updateItems(ListOf<Item> updatedItems,
+      {bool updateRemoteStorage = true}) {
     ShoppingList shoppingListWithUpdatedItem =
         currentShoppingList!.withItems(updatedItems);
 
@@ -45,8 +47,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
         updatedShoppingList: shoppingListWithUpdatedItem);
 
     // only store last 50 deleted items
-    List<Item> itemsToDelete =
-        shoppingListWithUpdatedItem.items.where((e) => e.deleted).toList()
+    ListOf<Item> itemsToDelete =
+        shoppingListWithUpdatedItem.items.whereEntry((e) => e.deleted)
           ..sort((item1, item2) => item2.modified.compareTo(item1.modified))
           ..skip(50);
 
@@ -58,7 +60,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
     }
 
     Storage().saveItems(shoppingListWithUpdatedItem,
-        shoppingListWithUpdatedItem.items.where(shouldBeRetained).toList(),
+        shoppingListWithUpdatedItem.items.whereEntry(shouldBeRetained),
         updateRemoteStorage: updateRemoteStorage);
   }
 
@@ -71,9 +73,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
     }
   }
 
-  void deleteItems(List<Item> itemsToDelete) {
-    itemsToDelete =
-        itemsToDelete.map((e) => e.copyWith(deleted: true)).toList();
+  void deleteItems(ListOf<Item> itemsToDelete) {
+    itemsToDelete = itemsToDelete.mapEntries((e) => e.copyWith(deleted: true));
     ShoppingList updatedShoppingList =
         currentShoppingList!.withItems(itemsToDelete);
     state = state.withShoppingList(updatedShoppingList: updatedShoppingList);
@@ -93,7 +94,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 
   void addItem(Item item) {
-    addItems([item]);
+    addItems(ListOf([item]));
   }
 
   void selectList(int index) {
@@ -101,10 +102,10 @@ class AppStateNotifier extends StateNotifier<AppState> {
     Storage().saveSelectedListIndex(index);
   }
 
-  void addItems(List<Item> items) {
+  void addItems(ListOf<Item> items) {
     ShoppingList shoppingListContainingItem = currentShoppingList!;
-    ShoppingList updatedShoppingList = shoppingListContainingItem
-        .copyWith(items: [...shoppingListContainingItem.items, ...items]);
+    ShoppingList updatedShoppingList = shoppingListContainingItem.copyWith(
+        items: ListOf([...shoppingListContainingItem.items, ...items]));
     state = state.withShoppingList(updatedShoppingList: updatedShoppingList);
     Storage().saveItems(updatedShoppingList, updatedShoppingList.items,
         updateRemoteStorage: true);
@@ -116,13 +117,14 @@ class AppStateNotifier extends StateNotifier<AppState> {
         : state.notDeletedShoppingLists.length;
 
     state = AppState(
-        shoppingLists: [...state.shoppingLists, shoppingList],
+        shoppingLists:
+            ListOf<ShoppingList>([...state.shoppingLists, shoppingList]),
         selectedList: newSelectedList);
     Storage().saveList(shoppingList);
     Storage().saveSelectedListIndex(newSelectedList);
   }
 
-  void setShoppingLists(List<ShoppingList> shoppingLists,
+  void setShoppingLists(ListOf<ShoppingList> shoppingLists,
       {bool updateStorage = false, int? selectedListIndex}) async {
     int notDeletedListsCount = shoppingLists.where((sl) => !sl.deleted).length;
     int newSelectedList = min(selectedListIndex ?? state.selectedList,
@@ -130,12 +132,11 @@ class AppStateNotifier extends StateNotifier<AppState> {
     state =
         AppState(shoppingLists: shoppingLists, selectedList: newSelectedList);
 
-    if(updateStorage) {
+    if (updateStorage) {
       Storage().saveSelectedListIndex(newSelectedList);
       for (ShoppingList shoppingList in shoppingLists) {
-        await Storage()
-            .saveList(shoppingList, updateRemoteStorage: true)
-            .then((_) => Storage().saveItems(shoppingList, shoppingList.items,
+        await Storage().saveList(shoppingList, updateRemoteStorage: true).then(
+            (_) => Storage().saveItems(shoppingList, shoppingList.items,
                 updateRemoteStorage: true));
       }
     }
@@ -146,7 +147,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
       ShoppingList newList = ShoppingList(
         name: AppLocalizations.of(context)!.default_name,
       );
-      setShoppingLists([...state.shoppingLists, newList],
+      setShoppingLists(ListOf<ShoppingList>([...state.shoppingLists, newList]),
           updateStorage: true);
     }
   }
@@ -170,5 +171,5 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   ShoppingList? get currentShoppingList => state.currentShoppingList;
 
-  List<ShoppingList> get shoppingLists => state.shoppingLists;
+  ListOf<ShoppingList> get shoppingLists => state.shoppingLists;
 }

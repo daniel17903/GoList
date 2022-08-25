@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
+import 'package:go_list/model/list_of.dart';
 import 'package:go_list/model/shopping_list.dart';
 
 @immutable
 class AppState {
-  late final List<ShoppingList> shoppingLists;
+  late final ListOf<ShoppingList> shoppingLists;
   late final int selectedList;
 
-  AppState({List<ShoppingList>? shoppingLists, int? selectedList}) {
-    this.shoppingLists = shoppingLists ?? [];
+  AppState({ListOf<ShoppingList>? shoppingLists, int? selectedList}) {
+    this.shoppingLists = shoppingLists ?? ListOf<ShoppingList>([]);
     this.selectedList = selectedList ?? 0;
   }
 
@@ -16,23 +17,20 @@ class AppState {
           ? notDeletedShoppingLists[selectedList]
           : null;
 
-  List<ShoppingList> get notDeletedShoppingLists =>
-      shoppingLists.where((sl) => !sl.deleted).toList();
+  ListOf<ShoppingList> get notDeletedShoppingLists =>
+      shoppingLists.whereEntry((sl) => !sl.deleted);
 
-  AppState copyWith({List<ShoppingList>? shoppingLists, int? selectedList}) {
+  AppState copyWith({ListOf<ShoppingList>? shoppingLists, int? selectedList}) {
     return AppState(
-        shoppingLists: shoppingLists ?? [...this.shoppingLists],
+        shoppingLists:
+            shoppingLists ?? ListOf<ShoppingList>([...this.shoppingLists]),
         selectedList: selectedList ?? this.selectedList);
   }
 
   AppState withShoppingList(
       {required ShoppingList updatedShoppingList, int? updatedSelectedList}) {
-    return copyWith(shoppingLists: [
-      for (ShoppingList shoppingList in shoppingLists)
-        if (shoppingList.id == updatedShoppingList.id)
-          updatedShoppingList
-        else
-          shoppingList
-    ], selectedList: updatedSelectedList ?? selectedList);
+    return copyWith(
+        shoppingLists: shoppingLists.updateEntry(updatedShoppingList),
+        selectedList: updatedSelectedList ?? selectedList);
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:go_list/model/item.dart';
+import 'package:go_list/model/list_of.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
@@ -12,19 +13,19 @@ class RemoteStorageProvider extends StorageProvider {
   final GoListClient goListClient = GoListClient();
 
   @override
-  Future<List<ShoppingList>> loadShoppingLists() async {
+  Future<ListOf<ShoppingList>> loadShoppingLists() async {
     try {
       final response = await goListClient.sendRequest(
           endpoint: "/api/shoppinglists", httpMethod: HttpMethod.get);
 
-      List<ShoppingList> shoppingLists =
+      ListOf<ShoppingList> shoppingLists = ListOf(
           jsonDecode(utf8.decode(response.bodyBytes))
               .map<ShoppingList>((element) {
         if (element is ShoppingList) {
           return element;
         }
         return ShoppingList.fromJson(element);
-      }).toList();
+      }).toList());
 
       return shoppingLists;
     } catch (e) {
@@ -34,12 +35,12 @@ class RemoteStorageProvider extends StorageProvider {
   }
 
   @override
-  Future<void> saveItems(ShoppingList shoppingList, List<Item> items) async {
+  Future<void> saveItems(ShoppingList shoppingList, ListOf<Item> items) async {
     try {
       await goListClient.sendRequest(
           endpoint: "/api/shoppinglist/${shoppingList.id}/items",
           httpMethod: HttpMethod.post,
-          body: items.map((i) => i.toJson()).toList());
+          body: items.toJson());
     } catch (e) {
       print("failed to save items on server: $e");
     }
