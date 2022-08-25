@@ -324,16 +324,16 @@ final List<IconMapping> iconMappings = [
           "karpfen",
           "fischstäbchen"
         ],
-        const Locale("en"): [],
-        const Locale("es"): []
+        const Locale("en"): ["fish", "salmmon"],
+        const Locale("es"): ["pescado"]
       },
       category: Category.meatFish),
   IconMapping(
       assetFileName: "cookie",
       matchingNames: {
-        const Locale("de"): ["keks", "kekse", "süssigkeiten"],
-        const Locale("en"): [],
-        const Locale("es"): []
+        const Locale("de"): ["keks", "süssigkeiten"],
+        const Locale("en"): ["cookie", "sweets", "snacks", "candy"],
+        const Locale("es"): [""]
       },
       category: Category.sweetsSnacks),
   IconMapping(
