@@ -62,7 +62,7 @@ final List<IconMapping> iconMappings = [
       category: Category.bread),
   IconMapping(
       assetFileName: "can",
-      matchingNames: ["bohnen", "dose"],
+      matchingNames: ["bohnen", "dose", "kichererbsen"],
       category: Category.spicesCanned),
   IconMapping(
       assetFileName: "carrot",
@@ -79,7 +79,7 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "corn",
-      matchingNames: ["samen", "körner", "linsen"],
+      matchingNames: ["samen", "körner", "linsen", "erbsen"],
       category: Category.cereals),
   IconMapping(
       assetFileName: "cup",
@@ -105,7 +105,8 @@ final List<IconMapping> iconMappings = [
         "schattenmorellen",
         "nutella",
         "hummus",
-        "guacamole"
+        "guacamole",
+        "senf"
       ],
       category: Category.spicesCanned),
   IconMapping(
