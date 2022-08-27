@@ -19,6 +19,7 @@
   },
   "name": "Nombre",
   "amount": "cantidad",
+  "what_to_buy": "Que quieres comprar?",
 
   "failed_to_load_list": "Error al cargar la lista",
   "failed_to_share_list": "Error al compartir la lista",

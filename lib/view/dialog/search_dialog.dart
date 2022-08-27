@@ -9,6 +9,7 @@ import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../model/item.dart';
 
@@ -98,14 +99,15 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
             autofocus: true,
             cursorColor: Colors.white,
             style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              hintText: 'Was möchtest du einkaufen?',
-              hintStyle: TextStyle(color: Colors.white),
-              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-              focusedBorder: OutlineInputBorder(
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.what_to_buy,
+              hintStyle: const TextStyle(color: Colors.white),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+              focusedBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   borderSide: BorderSide(color: Colors.white)),
-              border: OutlineInputBorder(
+              border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   borderSide: BorderSide(color: Colors.white)),
             ),
