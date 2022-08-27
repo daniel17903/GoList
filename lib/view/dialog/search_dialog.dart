@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/list_of.dart';
@@ -9,9 +10,10 @@ import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../model/item.dart';
+
+const recentlyUsedItemsSize = 20;
 
 class SearchDialog extends StatefulHookConsumerWidget {
   const SearchDialog({Key? key}) : super(key: key);
@@ -34,24 +36,33 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
   void initState() {
     AppState appState = ref.read<AppState>(AppStateNotifier.appStateProvider);
     setState(() {
+      String normalize(String s) => s.trim().toLowerCase();
+      Set<String> addedLowerCaseItemNames = {};
       recentlyUsedItemsSorted =
           ListOf<Item>([...appState.currentShoppingList!.items])
               .whereEntry((e) => e.deleted)
-              .mapEntries((e) => e.copyWith(amount: ""));
+              .whereEntry((e) {
+        if (addedLowerCaseItemNames.contains(normalize(e.name))) {
+          return false;
+        }
+        addedLowerCaseItemNames.add(normalize(e.name));
+        return true;
+      }).mapEntries((e) => e.copyWith(amount: "", modified: e.modified));
       sortItems();
 
-      // remove items with same name
-      Set<String> addedLowerCaseItemNames = {};
-      for (int i = 0; i < recentlyUsedItemsSorted.length; i++) {
-        if (addedLowerCaseItemNames
-            .contains(recentlyUsedItemsSorted[i].name.toLowerCase().trim())) {
-          recentlyUsedItemsSorted.removeAt(i);
-          i--;
-        } else {
-          addedLowerCaseItemNames
-              .add(recentlyUsedItemsSorted[i].name.toLowerCase().trim());
-        }
-      }
+      // if there is a newer item with this name use the new icon and category
+      recentlyUsedItemsSorted = recentlyUsedItemsSorted
+          .take(recentlyUsedItemsSize)
+          .mapEntries((recentlyUsedItem) {
+        Item latestItemWithSameName = appState.currentShoppingList!.items
+            .whereEntry(
+                (e) => normalize(e.name) == normalize(recentlyUsedItem.name))
+            .sort((a, b) => b.modified.compareTo(a.modified))
+            .first;
+        return recentlyUsedItem.copyWith(
+            iconName: latestItemWithSameName.iconName,
+            category: latestItemWithSameName.category);
+      });
     });
 
     super.initState();
@@ -148,7 +159,7 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
               items: ListOf([
                 if (newItem != null) newItem!,
                 ...recentlyUsedItemsSorted
-              ].take(20).toList())),
+              ].toList())),
         )
       ]),
     );

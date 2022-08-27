@@ -12,6 +12,15 @@ class ListOf<T extends GoListModel> extends DelegatingList<T> {
     return ListOf<T>([..._l]);
   }
 
+  @override
+  ListOf<T> sort([int Function(T, T)? compare]) {
+    _l.sort(compare);
+    return this;
+  }
+
+  @override
+  ListOf<T> take(int n) => ListOf<T>(_l.take(n).toList());
+
   ListOf<T> mapEntries(T Function(T) f) {
     return ListOf<T>(_l.map(f).toList());
   }
