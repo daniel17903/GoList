@@ -3,7 +3,7 @@
   "cancel": "Cancelar",
   "edit_item": "Editar articulo",
   "edit_list": "Editar lista",
-  "confirm_delete_list": "Realmente quieres eliminar esta lista?",
+  "confirm_delete_list": "¿Realmente quieres eliminar esta lista?",
   "my_lists": "Mis listas",
   "create_new_list": "Crear nueva lista",
   "default_name": "Lista de compras",
@@ -19,7 +19,7 @@
   },
   "name": "Nombre",
   "amount": "cantidad",
-  "what_to_buy": "Que quieres comprar?",
+  "what_to_buy": "¿Que quieres comprar?",
 
   "failed_to_load_list": "Error al cargar la lista",
   "failed_to_share_list": "Error al compartir la lista",
