@@ -36,7 +36,7 @@ class ShoppingListWidget extends HookConsumerWidget {
             icon: const Icon(Icons.edit),
             color: Colors.white,
             onPressed: () => DialogUtils.showSmallAlertDialog(
-                context: context, content: const EditListDialog()),
+                context: context, contentBuilder: (_) => const EditListDialog()),
           )
         ],
       ),
@@ -71,7 +71,7 @@ class ShoppingListWidget extends HookConsumerWidget {
             .deleteItems(ListOf([tappedItem]));
       },
       onItemTappedLong: (item) => DialogUtils.showSmallAlertDialog(
-          context: context, content: EditItemDialog(item: item)),
+          context: context, contentBuilder: (_) => EditItemDialog(item: item)),
       delayItemTap: true,
     );
   }

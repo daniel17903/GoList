@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_list/view/botton_navigation_bar.dart';
 import 'package:go_list/view/dialog/search_dialog.dart';
 import 'package:go_list/view/shopping_list/shopping_list_widget.dart';
-import 'package:go_list/view/shopping_list_drawer.dart';
+import 'package:go_list/view/drawer/shopping_list_drawer.dart';
 
 import 'dialog/dialog_utils.dart';
 

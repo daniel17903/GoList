@@ -22,10 +22,11 @@ class DialogUtils {
   }
 
   static void showSmallAlertDialog(
-      {required BuildContext context, required Widget content}) {
+      {required BuildContext context,
+      required Widget Function(BuildContext) contentBuilder}) {
     showDialog(
         context: context,
         barrierDismissible: false, // user must tap button!
-        builder: (_) => content);
+        builder: contentBuilder);
   }
 }
