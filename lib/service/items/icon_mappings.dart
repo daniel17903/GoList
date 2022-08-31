@@ -17,7 +17,8 @@ final List<IconMapping> iconMappings = [
       assetFileName: "bottle",
       matchingNames: [
         "flasche",
-        "wasser",
+        "getränke"
+            "wasser",
         "sprudel",
         "bier",
         "wein",
@@ -27,6 +28,14 @@ final List<IconMapping> iconMappings = [
         "limonade",
         "sprite",
         "apfelschorle",
+        "pils",
+        "hefeweizen",
+        "red bull"
+      ],
+      category: Category.beverages),
+  IconMapping(
+      assetFileName: "bottle",
+      matchingNames: [
         "öl",
         "oel",
         "essig",
@@ -34,10 +43,12 @@ final List<IconMapping> iconMappings = [
         "sojasosse",
         "soja sosse",
         "soja soße",
-        "pils",
-        "hefeweizen"
+        "nayonnaise",
+        "mayo",
+        "ketchup",
+        "remoulade"
       ],
-      category: Category.beverages),
+      category: Category.convenienceProductFrozen),
   IconMapping(
       assetFileName: "box",
       matchingNames: [
@@ -49,7 +60,13 @@ final List<IconMapping> iconMappings = [
         "müsli",
         "muesli",
         "tempos",
-        "taschentücher"
+        "taschentücher",
+        "kaugummi",
+        "geschirrspültaps",
+        "speisestärke",
+        "kakao",
+        "kakaopulver",
+        "zwieback"
       ],
       category: Category.household),
   IconMapping(
@@ -58,11 +75,24 @@ final List<IconMapping> iconMappings = [
       category: Category.cereals),
   IconMapping(
       assetFileName: "bread",
-      matchingNames: ["brot", "brötchen", "laugenstange", "brezel", "semmel"],
+      matchingNames: [
+        "brot",
+        "brötchen",
+        "laugenstange",
+        "brezel",
+        "semmel",
+        "baguette"
+      ],
       category: Category.bread),
   IconMapping(
       assetFileName: "can",
-      matchingNames: ["bohnen", "dose", "kichererbsen"],
+      matchingNames: [
+        "bohnen",
+        "dose",
+        "kichererbsen",
+        "dosentomaten",
+        "tomatendose"
+      ],
       category: Category.spicesCanned),
   IconMapping(
       assetFileName: "carrot",
@@ -79,7 +109,16 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "corn",
-      matchingNames: ["samen", "körner", "linsen", "erbsen"],
+      matchingNames: [
+        "samen",
+        "körner",
+        "linsen",
+        "erbsen",
+        "hirse",
+        "haferflocken",
+        "quinoa",
+        "bulgur"
+      ],
       category: Category.cereals),
   IconMapping(
       assetFileName: "cup",
@@ -90,7 +129,8 @@ final List<IconMapping> iconMappings = [
         "quark",
         "saure sahne",
         "schlagsahne",
-        "sahne"
+        "sahne",
+        "pudding"
       ],
       category: Category.milkCheese),
   IconMapping(
@@ -106,7 +146,9 @@ final List<IconMapping> iconMappings = [
         "nutella",
         "hummus",
         "guacamole",
-        "senf"
+        "senf",
+        "pesto",
+        "tahini"
       ],
       category: Category.spicesCanned),
   IconMapping(
@@ -115,7 +157,7 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "peanut",
-      matchingNames: ["nuss", "nüsse"],
+      matchingNames: ["nuss", "nüsse", "cashews", "cashewkerne"],
       category: Category.cereals),
   IconMapping(
       assetFileName: "almonds",
@@ -184,7 +226,7 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "onion",
-      matchingNames: ["zwiebel"],
+      matchingNames: ["zwiebel", "schalotte"],
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "pear",
@@ -215,7 +257,7 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "chocolate",
-      matchingNames: ["schokolade"],
+      matchingNames: ["schokolade", "schokostreusel", "schokoraspel"],
       category: Category.sweetsSnacks),
   IconMapping(
       assetFileName: "ice",
@@ -228,7 +270,8 @@ final List<IconMapping> iconMappings = [
         "himbeeren",
         "johannisbeeren",
         "heidelbeeren",
-        "blaubeeren"
+        "blaubeeren",
+        "trauben"
       ],
       category: Category.fruitsVegetables),
   IconMapping(
@@ -237,7 +280,7 @@ final List<IconMapping> iconMappings = [
       category: Category.fruitsVegetables),
   IconMapping(
       assetFileName: "block",
-      matchingNames: ["tofu", "butter", "margarine", "käse", "kaese"],
+      matchingNames: ["tofu", "butter", "margarine", "rama"],
       category: Category.milkCheese),
   IconMapping(
       assetFileName: "burger",
@@ -250,7 +293,8 @@ final List<IconMapping> iconMappings = [
         "petersilie",
         "basilikum",
         "koriander",
-        "dill"
+        "dill",
+        "minze"
       ],
       category: Category.spicesCanned),
   IconMapping(
@@ -269,7 +313,9 @@ final List<IconMapping> iconMappings = [
         "vanillezucker",
         "trockenhefe",
         "agar-agar",
-        "agar agar"
+        "agar agar",
+        "puddingpulver",
+        "gelierzucker"
       ],
       category: Category.spicesCanned),
   IconMapping(
@@ -385,7 +431,8 @@ final List<IconMapping> iconMappings = [
         "halloumi",
         "manchego",
         "tilsiter",
-        "ricotta"
+        "ricotta",
+        "caprice dieux"
       ],
       category: Category.milkCheese),
   IconMapping(
@@ -435,7 +482,8 @@ final List<IconMapping> iconMappings = [
         "aprikose",
         "zwetschge",
         "mirabelle",
-        "marille"
+        "marille",
+        "kiwi"
       ],
       category: Category.fruitsVegetables),
   IconMapping(
