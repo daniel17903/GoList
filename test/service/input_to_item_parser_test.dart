@@ -1,7 +1,12 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
-import 'package:test/test.dart';
 
 void main() {
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await InputToItemParser().init();
+  });
+
   group("Should parse amount:", () {
     Map<String, String?> inputsToExpected = {
       "efwefwg": null,
@@ -22,17 +27,21 @@ void main() {
     };
     inputsToExpected.forEach((input, expected) {
       test("$input -> $expected", () {
-        expect(InputToItemParser.parseAmount(input), expected);
+        expect(InputToItemParser().parseAmount(input), expected);
       });
     });
   });
 
   test("Should find correct icon", () {
-    expect(InputToItemParser.findMappingForName("apfelschorle").assetFileName,
+    expect(InputToItemParser().findMappingForName("apfelschorle").assetFileName,
         "bottle");
-    expect(InputToItemParser.findMappingForName("reis").assetFileName, "rice");
-    expect(InputToItemParser.findMappingForName("apfelessig").assetFileName, "bottle");
-    expect(InputToItemParser.findMappingForName("apfelkuchen").assetFileName, "pizza_cake");
-    expect(InputToItemParser.findMappingForName("birneneis").assetFileName, "ice");
+    expect(
+        InputToItemParser().findMappingForName("reis").assetFileName, "rice");
+    expect(InputToItemParser().findMappingForName("apfelessig").assetFileName,
+        "bottle");
+    expect(InputToItemParser().findMappingForName("apfelkuchen").assetFileName,
+        "pizza_cake");
+    expect(InputToItemParser().findMappingForName("birneneis").assetFileName,
+        "ice");
   });
 }

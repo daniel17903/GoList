@@ -18,10 +18,11 @@ class InputToItemParser {
 
   InputToItemParser._internal();
 
-  void init() async {
+  Future<void> init() async {
     return rootBundle.loadString("assets/mappings_de.json").then((value) {
       final jsonArray = json.decode(value);
-      iconMappings = jsonArray.map<IconMapping>((x) => IconMapping.fromJson(x)).toList();
+      iconMappings =
+          jsonArray.map<IconMapping>((x) => IconMapping.fromJson(x)).toList();
     });
   }
 
