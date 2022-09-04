@@ -25,4 +25,9 @@ class IconMapping {
 
     return matches;
   }
+
+  IconMapping.fromJson(Map<String, dynamic> json)
+      : assetFileName = json["assetFileName"],
+        matchingNames = List<String>.from(json["matchingNames"]),
+        category = categoryFromString(json["category"]);
 }

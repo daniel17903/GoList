@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/service/golist_client.dart';
+import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:go_list/service/storage/sync/websocket_sync.dart';
 import 'package:go_list/style/themed_app.dart';
@@ -31,6 +32,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
     _handleIncomingLinks();
     getInitialUri().then(_joinListWithTokenFromLink);
+    InputToItemParser().init();
   }
 
   @override
@@ -77,9 +79,12 @@ class _MyAppState extends ConsumerState<MyApp> {
             .read(AppStateNotifier.appStateProvider.notifier)
             .selectList(indexOfNewList);
       } catch (e) {
-        print(e);
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("${AppLocalizations.of(context)!.failed_to_open_list}: $e")));
+        if (kDebugMode) {
+          print(e);
+        }
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                "${AppLocalizations.of(context)!.failed_to_open_list}: $e")));
       }
     }
   }

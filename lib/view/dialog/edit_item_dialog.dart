@@ -61,7 +61,7 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
             child: Text(AppLocalizations.of(context)!.save),
             onPressed: () {
               Navigator.pop(context);
-              IconMapping iconMapping = InputToItemParser.findMappingForName(
+              IconMapping iconMapping = InputToItemParser().findMappingForName(
                   nameTextInputController.text);
               ref
                   .read(AppStateNotifier.appStateProvider.notifier)
