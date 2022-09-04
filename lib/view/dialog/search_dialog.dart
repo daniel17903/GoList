@@ -13,7 +13,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../model/item.dart';
 
-const recentlyUsedItemsSize = 20;
+const recentlyUsedItemsSize = 50;
 
 class SearchDialog extends StatefulHookConsumerWidget {
   const SearchDialog({Key? key}) : super(key: key);
