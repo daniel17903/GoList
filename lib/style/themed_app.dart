@@ -2,15 +2,16 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:go_list/style/colors.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:go_list/service/golist_languages.dart';
+import 'package:go_list/style/colors.dart';
 
 class ThemedApp extends StatelessWidget {
   final Widget child;
+  final Locale? locale;
 
-  ThemedApp({Key? key, required this.child}) : super(key: key);
+  ThemedApp({Key? key, required this.child, this.locale}) : super(key: key);
 
   final materialTheme = ThemeData(
       backgroundColor: GoListColors.darkBlue,
@@ -42,7 +43,7 @@ class ThemedApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            //locale: Locale('es', ''),
+            locale: locale ?? Locale(GoListLanguages.getLanguageCode()),
             title: 'GoList',
             home: child,
             material: (_, __) => MaterialAppData(

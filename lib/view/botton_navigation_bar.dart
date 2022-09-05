@@ -32,9 +32,10 @@ class GoListBottomNavigationBar extends HookConsumerWidget {
                 Rect.fromLTWH(0, 0, size.width, size.height / 2));
         print("${BackendUrl.httpUrl()}/join?token=$token");
       },
-    ).catchError((_) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content:
-                Text(AppLocalizations.of(context)!.failed_to_share_list))));
+    ).catchError((_) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!.failed_to_share_list)));
+    });
   }
 
   @override

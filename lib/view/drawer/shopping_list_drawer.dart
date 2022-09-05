@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_list/model/app_state_notifier.dart';
 import 'package:go_list/model/list_of.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/style/colors.dart';
+import 'package:go_list/view/dialog/dialog_utils.dart';
+import 'package:go_list/view/dialog/settings_dialog.dart';
 import 'package:go_list/view/drawer/create_new_list_tile.dart';
 import 'package:go_list/view/drawer/my_lists_header_tile.dart';
 import 'package:go_list/view/drawer/shopping_list_tile.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ShoppingListDrawer extends HookConsumerWidget {
   const ShoppingListDrawer({Key? key}) : super(key: key);
@@ -23,7 +27,7 @@ class ShoppingListDrawer extends HookConsumerWidget {
           decoration: BoxDecoration(
               color: Theme.of(context).bottomAppBarTheme.color,
               image: const DecorationImage(
-                  image: AssetImage("assets/icon_foreground.png"),
+                  image: AssetImage("assets/icons/icon_foreground.png"),
                   fit: BoxFit.contain,
                   alignment: Alignment.bottomRight)),
           child: const Text(
@@ -45,6 +49,21 @@ class ShoppingListDrawer extends HookConsumerWidget {
                   index == shoppingLists.length
                       ? const CreateNewListTile()
                       : ShoppingListTile(index)),
+        ),
+        InkWell(
+          onTap: () => DialogUtils.showSmallAlertDialog(
+              context: context, contentBuilder: (_) => SettingsDialog()),
+          child: Container(
+            color: GoListColors.turquoise,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 28),
+              child: Row(children: [
+                Text(AppLocalizations.of(context)!.settings,
+                    style: const TextStyle(fontSize: 16, color: Colors.white)),
+                const Icon(Icons.settings, color: Colors.white),
+              ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
+            ),
+          ),
         )
       ],
     ));

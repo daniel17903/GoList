@@ -133,7 +133,7 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
                           text == recentlyUsedItemsSorted[0].name) {
                     newItem = null;
                   } else {
-                    newItem = InputToItemParser.parseInput(text);
+                    newItem = InputToItemParser().parseInput(text);
                   }
                 });
               });
@@ -148,7 +148,7 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
               onItemTapped: (item) {
                 // parse icon name from history again in case mapping changed
                 IconMapping iconMapping =
-                    InputToItemParser.findMappingForName(item.name);
+                    InputToItemParser().findMappingForName(item.name);
                 addNewItemToList(
                     item.copyWith(
                         id: const Uuid().v4(),

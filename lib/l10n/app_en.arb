@@ -20,6 +20,7 @@
         }
     },
     "what_to_buy": "What do you want to buy?",
+    "settings": "Settings",
 
     "failed_to_load_list": "Failed to load the list",
     "failed_to_share_list": "Failed to share the list",

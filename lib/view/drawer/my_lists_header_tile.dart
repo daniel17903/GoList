@@ -9,7 +9,7 @@ class MyListsHeaderTile extends StatelessWidget {
     return ListTile(
       title: Text(
         AppLocalizations.of(context)!.my_lists,
-        style: TextStyle(color: Colors.primaries.first),
+        style: TextStyle(color: Colors.primaries.first, fontSize: 16),
       ),
     );
   }
