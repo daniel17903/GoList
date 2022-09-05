@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/style/golist_icons.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'category.dart';
 import 'icon_mapping_match.dart';
@@ -12,18 +15,38 @@ import 'icon_mapping_match.dart';
 class InputToItemParser {
   late final List<IconMapping> iconMappings;
 
+  static const String defaultLocale = "de";
+
   static final InputToItemParser _instance = InputToItemParser._internal();
 
   factory InputToItemParser() => _instance;
 
   InputToItemParser._internal();
 
-  Future<void> init() async {
-    return rootBundle.loadString("assets/mappings_de.json").then((value) {
+  String getLocale() {
+    String platformLocale = Platform.localeName.split("_")[0];
+    List<String> supportedLocales = AppLocalizations.supportedLocales
+        .map<String>((e) => e.languageCode)
+        .toList();
+    if (supportedLocales.contains(platformLocale)) {
+      return platformLocale;
+    }
+    return defaultLocale;
+  }
+
+  @visibleForTesting
+  Future<List<IconMapping>> iconMappingFromJsonFile(String filename) {
+    return rootBundle.loadString(filename).then((value) {
       final jsonArray = json.decode(value);
-      iconMappings =
-          jsonArray.map<IconMapping>((x) => IconMapping.fromJson(x)).toList();
+      return jsonArray
+          .map<IconMapping>((x) => IconMapping.fromJson(x))
+          .toList();
     });
+  }
+
+  Future<void> init([String? locale]) async {
+    iconMappings = await iconMappingFromJsonFile(
+        "assets/mappings_" + (locale ?? getLocale()) + ".json");
   }
 
   Item parseInput(String input) {

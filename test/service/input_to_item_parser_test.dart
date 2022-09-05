@@ -4,7 +4,17 @@ import 'package:go_list/service/items/input_to_item_parser.dart';
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    await InputToItemParser().init();
+    await InputToItemParser().init("de");
+  });
+
+  test("Should parse mappings json", () async {
+    for (String mappingFile in [
+      "assets/mappings_en.json",
+      "assets/mappings_de.json",
+      "assets/mappings_es.json"
+    ]) {
+      await InputToItemParser().iconMappingFromJsonFile(mappingFile);
+    }
   });
 
   group("Should parse amount:", () {
