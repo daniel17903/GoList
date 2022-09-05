@@ -48,4 +48,15 @@ class LocalStorageProvider implements StorageProvider {
     }
     return 0;
   }
+
+  void saveSelectedLanguage(String language) {
+    getStorage.write("language", language);
+  }
+
+  String? loadSelectedLanguage() {
+    if (getStorage.hasData("language")) {
+      return getStorage.read("language");
+    }
+    return null;
+  }
 }

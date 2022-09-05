@@ -27,7 +27,8 @@ class Storage {
         .loadShoppingLists()
         .then(updateWithListsFromRemote)
         .then(streamController.add)
-        .catchError((e) => print("failed to load shoppinglists from remote: $e"))
+        .catchError(
+            (e) => print("failed to load shoppinglists from remote: $e"))
         .whenComplete(streamController.close);
 
     return streamController.stream;
@@ -74,5 +75,13 @@ class Storage {
 
   int loadSelectedListIndex() {
     return localStorageProvider.loadSelectedListIndex();
+  }
+
+  void saveSelectedLanguage(String language) {
+    localStorageProvider.saveSelectedLanguage(language);
+  }
+
+  String? loadSelectedLanguage() {
+    return localStorageProvider.loadSelectedLanguage();
   }
 }
