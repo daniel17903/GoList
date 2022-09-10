@@ -84,4 +84,14 @@ class Storage {
   String? loadSelectedLanguage() {
     return localStorageProvider.loadSelectedLanguage();
   }
+
+  void saveShoppingListOrder(List<String> shoppingListOrder) {
+    localStorageProvider.saveShoppingListOrder(shoppingListOrder);
+  }
+
+  List<String> loadShoppingListOrder() {
+    print(
+        "order from storage: ${localStorageProvider.loadShoppingListOrder()}");
+    return localStorageProvider.loadShoppingListOrder();
+  }
 }

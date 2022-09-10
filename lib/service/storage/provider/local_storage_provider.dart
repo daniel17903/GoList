@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/list_of.dart';
@@ -58,5 +60,16 @@ class LocalStorageProvider implements StorageProvider {
       return getStorage.read("language");
     }
     return null;
+  }
+
+  void saveShoppingListOrder(List<String> shoppingListOrder) {
+    getStorage.write("shoppingListOrder", jsonEncode(shoppingListOrder));
+  }
+
+  List<String> loadShoppingListOrder() {
+    if (!getStorage.hasData("shoppingListOrder")) {
+      return [];
+    }
+    return List<String>.from(jsonDecode(getStorage.read("shoppingListOrder")));
   }
 }

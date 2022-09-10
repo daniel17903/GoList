@@ -40,15 +40,22 @@ class ShoppingListDrawer extends HookConsumerWidget {
         ),
         const MyListsHeaderTile(),
         Expanded(
-          child: ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              itemCount: shoppingLists.length + 1,
-              prototypeItem: const MyListsHeaderTile(),
-              itemBuilder: (BuildContext context, int index) =>
-                  index == shoppingLists.length
-                      ? const CreateNewListTile()
-                      : ShoppingListTile(index)),
+          child: ReorderableListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            itemCount: shoppingLists.length,
+            prototypeItem: const MyListsHeaderTile(),
+            footer: const CreateNewListTile(),
+            itemBuilder: (BuildContext context, int index) =>
+                ShoppingListTile(index, key: Key(shoppingLists[index].id)),
+            onReorder: (int oldIndex, int newIndex) {
+
+              print("from ${oldIndex} to ${newIndex}");
+              ref
+                  .read(AppStateNotifier.appStateProvider.notifier)
+                  .changeListOrder(oldIndex, newIndex);
+            },
+          ),
         ),
         InkWell(
           onTap: () => DialogUtils.showSmallAlertDialog(

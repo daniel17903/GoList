@@ -156,14 +156,17 @@ class AppStateNotifier extends StateNotifier<AppState> {
     if (loadingFuture == null) {
       Completer completer = Completer();
       loadingFuture = completer.future;
-      GetStorage.init().then((_) =>
-          Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
-            setShoppingLists(shoppingListsFromStorage,
-                selectedListIndex: Storage().loadSelectedListIndex());
-          }, onDone: () {
-            completer.complete();
-            loadingFuture = null;
-          }));
+      GetStorage.init().then((_) {
+        return Storage().loadShoppingLists().listen((shoppingListsFromStorage) {
+          setShoppingLists(shoppingListsFromStorage,
+              selectedListIndex: Storage().loadSelectedListIndex());
+          state = state.withChangedListOrder(
+              shoppingListOrder: Storage().loadShoppingListOrder());
+        }, onDone: () {
+          completer.complete();
+          loadingFuture = null;
+        });
+      });
     }
     return loadingFuture!;
   }
@@ -171,4 +174,26 @@ class AppStateNotifier extends StateNotifier<AppState> {
   ShoppingList? get currentShoppingList => state.currentShoppingList;
 
   ListOf<ShoppingList> get shoppingLists => state.shoppingLists;
+
+  void changeListOrder(int fromIndex, int toIndex) {
+    if (fromIndex < toIndex) {
+      // removing the item at oldIndex will shorten the list by 1.
+      toIndex -= 1;
+    }
+    List<ShoppingList> shoppingLists = state.notDeletedShoppingLists.copy();
+    ShoppingList shoppingListToMove = shoppingLists.removeAt(fromIndex);
+    shoppingLists.insert(toIndex, shoppingListToMove);
+
+    List<String> updatedShoppingListOrder =
+        shoppingLists.map((sl) => sl.id).toList();
+
+    int selectedList =
+        updatedShoppingListOrder.indexOf(state.currentShoppingList!.id);
+
+    state = state.copyWith(
+        shoppingListOrder: updatedShoppingListOrder,
+        selectedList: selectedList);
+
+    Storage().saveShoppingListOrder(updatedShoppingListOrder);
+  }
 }
