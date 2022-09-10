@@ -56,7 +56,7 @@ class ShoppingListDrawer extends HookConsumerWidget {
           child: Container(
             color: GoListColors.turquoise,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 28),
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 28),
               child: Row(children: [
                 Text(AppLocalizations.of(context)!.settings,
                     style: const TextStyle(fontSize: 16, color: Colors.white)),
