@@ -69,7 +69,14 @@ class _MyAppState extends ConsumerState<GoListApp> {
         // if app was opened with link lists have not been loaded yet
         await ref
             .read(AppStateNotifier.appStateProvider.notifier)
-            .loadAllFromStorage(context);
+            .loadAllFromStorage();
+
+        // use build context synchronously
+        if (!mounted) return;
+
+        ref
+            .read(AppStateNotifier.appStateProvider.notifier)
+            .initializeWithEmptyList(context);
 
         List<String> listIdsBeforeJoin = ref
             .read(AppStateNotifier.notDeletedShoppingListsProvider)
@@ -84,12 +91,15 @@ class _MyAppState extends ConsumerState<GoListApp> {
         // load the new list and sync with local storage
         await ref
             .read(AppStateNotifier.appStateProvider.notifier)
-            .loadAllFromStorage(context);
+            .loadAllFromStorage();
 
         int indexOfNewList = ref
             .read(AppStateNotifier.notDeletedShoppingListsProvider)
             .indexWhere(
                 (shoppingList) => !listIdsBeforeJoin.contains(shoppingList.id));
+
+        // use build context synchronously
+        if (!mounted) return;
 
         if (indexOfNewList == -1) {
           throw Exception(AppLocalizations.of(context)!.failed_to_load_list);
@@ -99,9 +109,7 @@ class _MyAppState extends ConsumerState<GoListApp> {
             .read(AppStateNotifier.appStateProvider.notifier)
             .selectList(indexOfNewList);
       } catch (e) {
-        if (kDebugMode) {
-          print(e);
-        }
+        print(e);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(
                 "${AppLocalizations.of(context)!.failed_to_open_list}: $e")));
@@ -121,8 +129,8 @@ class _MyAppState extends ConsumerState<GoListApp> {
   @override
   Widget build(BuildContext context) {
     return ThemedApp(
-      child: WebsocketSync(child: ShoppingListPage()),
       locale: _locale,
+      child: WebsocketSync(child: ShoppingListPage()),
     );
   }
 }

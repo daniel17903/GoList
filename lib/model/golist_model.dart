@@ -19,5 +19,4 @@ abstract class GoListModel {
   bool isEqualTo(GoListModel other) {
     return const DeepCollectionEquality().equals(toJson(), other.toJson());
   }
-
 }

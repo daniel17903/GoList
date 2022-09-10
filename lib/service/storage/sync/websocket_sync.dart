@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -24,6 +25,7 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
   String? subscribedToShoppingListWithId;
   bool connected = false;
   int retries = 0;
+  Future<void>? loadingFuture;
 
   Future<void> listenForChanges(ShoppingList? currentShoppingList) async {
     if (currentShoppingList == null || currentShoppingList.deviceCount == 1) {
@@ -77,27 +79,63 @@ class _WebsocketSyncState extends ConsumerState<WebsocketSync>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
+      await ref
+          .read(AppStateNotifier.appStateProvider.notifier)
+          .loadAllFromStorage();
+
+      if (!mounted) return;
+
       ref
           .read(AppStateNotifier.appStateProvider.notifier)
-          .loadAllFromStorage(context);
+          .initializeWithEmptyList(context);
       retries = 0;
       listenForChanges(
           ref.read(AppStateNotifier.appStateProvider).currentShoppingList);
     }
   }
 
+  Future<void> loadListsAndListenForChanges(
+      {bool onlyIfNotLoadedBefore = false}) async {
+    // if a loadingFuture exists Lists have been loaded before
+    if (onlyIfNotLoadedBefore && loadingFuture != null) return;
+
+    // wait until previous loadingFuture finishes
+    if (loadingFuture != null) await loadingFuture;
+
+    final completer = Completer<void>();
+    loadingFuture = completer.future;
+
+    await ref
+        .read(AppStateNotifier.appStateProvider.notifier)
+        .loadAllFromStorage();
+
+    if (!mounted) {
+      loadingFuture = null;
+      return;
+    }
+
+    ref
+        .read(AppStateNotifier.appStateProvider.notifier)
+        .initializeWithEmptyList(context);
+    retries = 0;
+    listenForChanges(
+        ref.read(AppStateNotifier.appStateProvider).currentShoppingList);
+
+    completer.complete();
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    loadListsAndListenForChanges(onlyIfNotLoadedBefore: true);
   }
 
   @override
   void dispose() {
-    print("dispose sync widget");
     WidgetsBinding.instance.removeObserver(this);
     disconnect();
     super.dispose();

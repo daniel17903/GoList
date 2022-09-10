@@ -32,7 +32,7 @@ class InputToItemParser {
 
   Future<void> init([String? languageCode]) async {
     iconMappings = await iconMappingFromJsonFile(
-        "assets/mappings_" + (languageCode ?? GoListLanguages.getLanguageCode()) + ".json");
+        "assets/mappings_${languageCode ?? GoListLanguages.getLanguageCode()}.json");
   }
 
   Item parseInput(String input) {

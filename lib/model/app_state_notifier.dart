@@ -152,7 +152,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
     }
   }
 
-  Future<void> loadAllFromStorage(BuildContext context) {
+  Future<void> loadAllFromStorage() {
     if (loadingFuture == null) {
       Completer completer = Completer();
       loadingFuture = completer.future;
@@ -162,7 +162,6 @@ class AppStateNotifier extends StateNotifier<AppState> {
                 selectedListIndex: Storage().loadSelectedListIndex());
           }, onDone: () {
             completer.complete();
-            initializeWithEmptyList(context);
             loadingFuture = null;
           }));
     }

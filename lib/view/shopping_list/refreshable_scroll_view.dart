@@ -19,8 +19,8 @@ class RefreshableScrollView extends StatelessWidget {
             constraints:
                 BoxConstraints(minHeight: viewportConstraints.maxHeight),
             child: Container(
-              child: child,
               alignment: Alignment.topCenter,
+              child: child,
             ),
           ));
     });

@@ -20,7 +20,7 @@ class GoListPlatformTextFormField
           if (labelText != null)
             Text(
               labelText!,
-              style: TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 14),
             ),
           CupertinoTextField(controller: controller)
         ],

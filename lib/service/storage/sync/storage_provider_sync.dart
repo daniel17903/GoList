@@ -16,7 +16,7 @@ class StorageProviderSync {
       ListOf<ShoppingList> shoppingListsFromLocal,
       StorageProvider remoteStorageProvider,
       ListOf<ShoppingList> shoppingListsFromRemote,
-      {updateRemoteStorage: true}) async {
+      {updateRemoteStorage = true}) async {
     Diff<ShoppingList, Item> diff =
         Diff.diff(shoppingListsFromLocal, shoppingListsFromRemote);
 

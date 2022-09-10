@@ -36,7 +36,8 @@ class ShoppingListWidget extends HookConsumerWidget {
             icon: const Icon(Icons.edit),
             color: Colors.white,
             onPressed: () => DialogUtils.showSmallAlertDialog(
-                context: context, contentBuilder: (_) => const EditListDialog()),
+                context: context,
+                contentBuilder: (_) => const EditListDialog()),
           )
         ],
       ),
@@ -62,9 +63,14 @@ class ShoppingListWidget extends HookConsumerWidget {
               ),
             )
           : null,
-      onPullForRefresh: () => ref
-          .read(AppStateNotifier.appStateProvider.notifier)
-          .loadAllFromStorage(context),
+      onPullForRefresh: () async {
+        await ref
+            .read(AppStateNotifier.appStateProvider.notifier)
+            .loadAllFromStorage();
+        ref
+            .read(AppStateNotifier.appStateProvider.notifier)
+            .initializeWithEmptyList(context);
+      },
       onItemTapped: (tappedItem) {
         ref
             .read(AppStateNotifier.appStateProvider.notifier)
