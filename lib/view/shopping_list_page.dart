@@ -40,7 +40,7 @@ class ShoppingListPage extends StatelessWidget {
                 onMenuButtonTapped: () =>
                     _scaffoldKey.currentState?.openDrawer()),
             body: const SafeArea(child: ShoppingListWidget()),
-            drawer: const ShoppingListDrawer(),
+            drawer: const SafeArea(child: ShoppingListDrawer()),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: FloatingActionButton(
