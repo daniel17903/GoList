@@ -112,9 +112,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 
   void addShoppingList(ShoppingList shoppingList) {
-    int newSelectedList = state.notDeletedShoppingLists.isEmpty
-        ? 0
-        : state.notDeletedShoppingLists.length;
+    int newSelectedList = state.notDeletedShoppingLists.length;
 
     state = AppState(
         shoppingLists:
@@ -122,6 +120,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
         selectedList: newSelectedList);
     Storage().saveList(shoppingList);
     Storage().saveSelectedListIndex(newSelectedList);
+
+    updateListOrder();
   }
 
   void setShoppingLists(ListOf<ShoppingList> shoppingLists,
@@ -175,7 +175,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   ListOf<ShoppingList> get shoppingLists => state.shoppingLists;
 
-  void changeListOrder(int fromIndex, int toIndex) {
+  void updateListOrder({int fromIndex = 0, int toIndex = 0}) {
     if (fromIndex < toIndex) {
       // removing the item at oldIndex will shorten the list by 1.
       toIndex -= 1;

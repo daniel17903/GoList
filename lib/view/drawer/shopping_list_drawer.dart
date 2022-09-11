@@ -49,11 +49,9 @@ class ShoppingListDrawer extends HookConsumerWidget {
             itemBuilder: (BuildContext context, int index) =>
                 ShoppingListTile(index, key: Key(shoppingLists[index].id)),
             onReorder: (int oldIndex, int newIndex) {
-
-              print("from ${oldIndex} to ${newIndex}");
               ref
                   .read(AppStateNotifier.appStateProvider.notifier)
-                  .changeListOrder(oldIndex, newIndex);
+                  .updateListOrder(fromIndex: oldIndex, toIndex: newIndex);
             },
           ),
         ),
