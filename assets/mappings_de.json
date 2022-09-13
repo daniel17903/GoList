@@ -71,7 +71,8 @@
       "speisestärke",
       "kakao",
       "kakaopulver",
-      "zwieback"
+      "zwieback",
+      "caotina"
     ],
     "category": "household"
   },
@@ -90,7 +91,8 @@
       "laugenstange",
       "brezel",
       "semmel",
-      "baguette"
+      "baguette",
+      "ekmek"
     ],
     "category": "bread"
   },
@@ -180,7 +182,8 @@
       "nuss",
       "nüsse",
       "cashews",
-      "cashewkerne"
+      "cashewkerne",
+      "pistazien"
     ],
     "category": "cereals"
   },
@@ -589,7 +592,8 @@
       "manchego",
       "tilsiter",
       "ricotta",
-      "caprice dieux"
+      "caprice dieux",
+      "mozzarella"
     ],
     "category": "milkCheese"
   },
