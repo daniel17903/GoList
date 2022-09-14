@@ -90,8 +90,6 @@ class Storage {
   }
 
   List<String> loadShoppingListOrder() {
-    print(
-        "order from storage: ${localStorageProvider.loadShoppingListOrder()}");
     return localStorageProvider.loadShoppingListOrder();
   }
 }
