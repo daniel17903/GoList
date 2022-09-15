@@ -56,19 +56,22 @@ class ShoppingListDrawer extends HookConsumerWidget {
           ),
         ),
         SafeArea(
+          top: false,
           child: InkWell(
             onTap: () => DialogUtils.showSmallAlertDialog(
-                context: context, contentBuilder: (_) => const SettingsDialog()),
+                context: context,
+                contentBuilder: (_) => const SettingsDialog()),
             child: Container(
               color: GoListColors.turquoise,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 28),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 28),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(AppLocalizations.of(context)!.settings,
-                          style:
-                              const TextStyle(fontSize: 16, color: Colors.white)),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white)),
                       const Icon(Icons.settings, color: Colors.white),
                     ]),
               ),
