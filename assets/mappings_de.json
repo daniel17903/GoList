@@ -33,7 +33,8 @@
       "apfelschorle",
       "pils",
       "hefeweizen",
-      "red bull"
+      "red bull",
+      "trinken"
     ],
     "category": "beverages"
   },
@@ -164,7 +165,8 @@
       "guacamole",
       "senf",
       "pesto",
-      "tahini"
+      "tahini",
+      "oliven"
     ],
     "category": "spicesCanned"
   },
@@ -753,5 +755,32 @@
       "snacks"
     ],
     "category": "fruitsVegetables"
+  },
+  {
+    "assetFileName": "cream",
+    "matchingNames": [
+      "haargel",
+      "creme"
+    ],
+    "category": "household"
+  },
+  {
+    "assetFileName": "shower_gel",
+    "matchingNames": [
+      "duschgel",
+      "shampoo"
+    ],
+    "category": "household"
+  },
+  {
+    "assetFileName": "dish_soap",
+    "matchingNames": [
+      "badreiniger",
+      "spüli",
+      "spülmittel",
+      "putzmittel",
+      "neutralreiniger"
+    ],
+    "category": "household"
   }
 ]

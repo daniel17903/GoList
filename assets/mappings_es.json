@@ -2,9 +2,9 @@
   {
     "assetFileName": "apple",
     "matchingNames": [
-      "manzanas",
+      "fruta",
       "manzana",
-      "fruta"
+      "manzanas"
     ],
     "category": "fruitsVegetables"
   },
@@ -19,67 +19,68 @@
     "assetFileName": "bottle",
     "matchingNames": [
       "agua",
-      "limusina",
-      "burbuja",
       "agua con gas",
-      "cerveza",
-      "hefeweizen",
-      "toro rojo",
-      "pils",
-      "fanta",
-      "refresco de manzana",
-      "vino",
-      "sprite",
-      "botella",
+      "beber",
       "bebidas",
-      "fantástico",
+      "botella",
+      "burbuja",
+      "cerveza",
       "cola",
-      "reajuste salarial",
+      "fanta",
+      "fantástico",
+      "hefeweizen",
       "limonada",
-      "sprites",
+      "limusina",
+      "pils",
+      "reajuste salarial",
+      "refresco de manzana",
       "soda",
-      "spritzer de manzana"
+      "sprite",
+      "sprites",
+      "spritzer de manzana",
+      "toro rojo",
+      "vino"
     ],
     "category": "beverages"
   },
   {
     "assetFileName": "bottle",
     "matchingNames": [
-      "mayo",
       "aceite",
       "ketchup",
+      "mayo",
       "mayonesa",
       "remolada",
-      "salsa de tomate",
-      "vinagre",
+      "remoulade",
       "salsa de soja",
-      "remoulade"
+      "salsa de tomate",
+      "vinagre"
     ],
     "category": "convenienceProductFrozen"
   },
   {
     "assetFileName": "box",
     "matchingNames": [
-      "jabones para lavavajillas",
-      "pestañas para el lavavajillas",
-      "muesli",
-      "polvo de cacao",
-      "almidón alimenticio",
-      "pañuelos",
-      "cereal",
-      "caja",
-      "müsli",
-      "chicle",
-      "cacao en polvo",
-      "grifos para lavavajillas",
-      "caotina",
-      "bizcocho hecho con huevos",
-      "pastillas para lavavajillas",
-      "zwieback",
-      "sal para lavavajillas",
       "almidón",
+      "almidón alimenticio",
+      "bizcocho hecho con huevos",
       "cacao",
-      "tempos"
+      "cacao en polvo",
+      "caja",
+      "caotina",
+      "cereal",
+      "chicle",
+      "grifos para lavavajillas",
+      "jabones para lavavajillas",
+      "muesli",
+      "müsli",
+      "pastillas para lavavajillas",
+      "pañuelos",
+      "pestañas para el lavavajillas",
+      "polvo de cacao",
+      "sal para lavavajillas",
+      "tempos",
+      "zwieback"
     ],
     "category": "household"
   },
@@ -93,101 +94,103 @@
   {
     "assetFileName": "bread",
     "matchingNames": [
-      "galleta salada",
-      "semmel",
-      "pretzel",
-      "ekmek",
       "baguette",
-      "rollo",
-      "pan",
       "barra de lejía",
-      "varilla de lejía",
-      "rodar",
+      "bollo",
+      "ekmek",
+      "galleta salada",
       "junquillo",
-      "bollo"
+      "pan",
+      "pretzel",
+      "rodar",
+      "rollo",
+      "semmel",
+      "varilla de lejía"
     ],
     "category": "bread"
   },
   {
     "assetFileName": "can",
     "matchingNames": [
-      "puede",
-      "lata de tomate",
-      "tomates enlatados",
-      "pueden",
+      "frijoles",
       "garbanzos",
-      "frijoles"
+      "lata de tomate",
+      "puede",
+      "pueden",
+      "tomates enlatados"
     ],
     "category": "spicesCanned"
   },
   {
     "assetFileName": "carrot",
     "matchingNames": [
+      "chirivía",
+      "nabo",
+      "remolacha",
+      "rettich",
       "ruebe",
       "rábano",
-      "chirivía",
-      "rettich",
-      "remolacha",
-      "zanahoria",
       "verduras",
-      "nabo"
+      "zanahoria"
     ],
     "category": "fruitsVegetables"
   },
   {
     "assetFileName": "corn",
     "matchingNames": [
-      "quinoa",
       "avena",
-      "semillas",
-      "granos",
       "bulgur",
-      "mijo",
-      "semilla",
-      "lentes",
+      "granos",
+      "guisantes",
       "harina de avena",
+      "lentes",
+      "mijo",
+      "quinoa",
       "quinua",
-      "guisantes"
+      "semilla",
+      "semillas"
     ],
     "category": "cereals"
   },
   {
     "assetFileName": "cup",
     "matchingNames": [
-      "nata montada",
-      "pudding",
-      "cuarc",
-      "yogur",
-      "pudín",
-      "nata agria",
-      "tazas",
-      "taza",
       "ccrea agria",
       "crema",
       "crema batida",
-      "quark"
+      "cuarc",
+      "nata agria",
+      "nata montada",
+      "pudding",
+      "pudín",
+      "quark",
+      "taza",
+      "tazas",
+      "yogur"
     ],
     "category": "milkCheese"
   },
   {
     "assetFileName": "glas",
     "matchingNames": [
-      "miel",
-      "mermelada",
-      "vidrio",
-      "tahini",
+      "aceitunas",
       "chucrut",
       "difundir",
       "gafas",
-      "guindas",
-      "mostaza",
-      "hummus",
       "guacamole",
-      "nutella",
-      "pesto",
-      "untado",
+      "guindas",
+      "hummus",
       "humus",
-      "lentes"
+      "lentes",
+      "mermelada",
+      "miel",
+      "mostaza",
+      "nutella",
+      "olivos",
+      "pesto",
+      "tahini",
+      "untado",
+      "vidrio"
     ],
     "category": "spicesCanned"
   },
@@ -201,10 +204,10 @@
   {
     "assetFileName": "peanut",
     "matchingNames": [
-      "pistachos",
-      "nuez",
-      "nueces",
       "anacardos",
+      "nueces",
+      "nuez",
+      "pistachos",
       "tuerca"
     ],
     "category": "cereals"
@@ -219,58 +222,60 @@
   {
     "assetFileName": "round_fruit",
     "matchingNames": [
-      "melocotón",
-      "nectarina",
-      "naranja",
+      "durazno",
       "mandarina",
-      "tomate",
       "mango",
-      "durazno"
+      "melocotón",
+      "naranja",
+      "nectarina",
+      "tomate"
     ],
     "category": "fruitsVegetables"
   },
   {
     "assetFileName": "dead_cow",
     "matchingNames": [
-      "filete",
-      "bovino",
       "bistec",
+      "bovino",
+      "carne",
       "carne picada",
-      "ganado",
-      "carne"
+      "filete",
+      "ganado"
     ],
     "category": "meatFish"
   },
   {
     "assetFileName": "dead_pig",
     "matchingNames": [
-      "tocino",
-      "fiambres",
-      "lyon",
-      "queso de carne",
-      "viena",
-      "pastel de carne",
-      "vienés",
-      "queso de hígado",
-      "león",
-      "salchicha",
-      "pancho",
       "bacon",
-      "salchichas",
-      "salami",
-      "embutidos",
       "cerdos",
       "embutido",
-      "jamón"
+      "embutidos",
+      "fiambres",
+      "hidromiel",
+      "jamón",
+      "león",
+      "lyon",
+      "pancho",
+      "pastel de carne",
+      "queso de carne",
+      "queso de hígado",
+      "reunió",
+      "salami",
+      "salchicha",
+      "salchichas",
+      "tocino",
+      "viena",
+      "vienés"
     ],
     "category": "meatFish"
   },
   {
     "assetFileName": "dead_chicken",
     "matchingNames": [
-      "pollos",
-      "pollo",
       "pavo",
+      "pollo",
+      "pollos",
       "turquía"
     ],
     "category": "meatFish"
@@ -279,18 +284,18 @@
     "assetFileName": "fish",
     "matchingNames": [
       "arenque",
-      "pike",
-      "salmón",
-      "perca",
+      "bacalao",
+      "besugo",
       "carpa",
       "dedos de pescado",
-      "besugo",
-      "pescado",
-      "bacalao",
-      "pez",
-      "palitos de pescado",
       "dorada",
       "lucio",
+      "palitos de pescado",
+      "perca",
+      "pescado",
+      "pez",
+      "pike",
+      "salmón",
       "trucha"
     ],
     "category": "meatFish"
@@ -298,26 +303,26 @@
   {
     "assetFileName": "cookie",
     "matchingNames": [
+      "dulces",
       "galleta",
-      "galletas",
-      "dulces"
+      "galletas"
     ],
     "category": "sweetsSnacks"
   },
   {
     "assetFileName": "pepper",
     "matchingNames": [
-      "pimentón",
-      "pimenton"
+      "pimenton",
+      "pimentón"
     ],
     "category": "fruitsVegetables"
   },
   {
     "assetFileName": "onion",
     "matchingNames": [
-      "schalotte",
+      "cebolla",
       "chalote",
-      "cebolla"
+      "schalotte"
     ],
     "category": "fruitsVegetables"
   },
@@ -331,10 +336,10 @@
   {
     "assetFileName": "cabbage",
     "matchingNames": [
-      "saboya",
       "col de milán",
+      "kohl",
       "repollo",
-      "kohl"
+      "saboya"
     ],
     "category": "fruitsVegetables"
   },
@@ -355,14 +360,14 @@
   {
     "assetFileName": "salad",
     "matchingNames": [
-      "espinaca",
-      "mangold",
       "acelga",
-      "pak choi",
-      "rúcula",
+      "ensalada",
+      "espinaca",
       "espinacas",
+      "mangold",
+      "pak choi",
       "pak choy",
-      "ensalada"
+      "rúcula"
     ],
     "category": "fruitsVegetables"
   },
@@ -371,9 +376,9 @@
     "matchingNames": [
       "chispas de chocolate",
       "chocolate",
-      "virutas de chocolate",
+      "espolvoreado de chocolate",
       "raspaduras de chocolate",
-      "espolvoreado de chocolate"
+      "virutas de chocolate"
     ],
     "category": "sweetsSnacks"
   },
@@ -381,21 +386,21 @@
     "assetFileName": "ice",
     "matchingNames": [
       "botella doble",
-      "magnum",
-      "hielo"
+      "hielo",
+      "magnum"
     ],
     "category": "sweetsSnacks"
   },
   {
     "assetFileName": "berries",
     "matchingNames": [
-      "baya",
       "arándanos",
+      "baya",
       "bayas",
       "frambuesas",
       "grosellas",
-      "uvas",
-      "pasas de corinto"
+      "pasas de corinto",
+      "uvas"
     ],
     "category": "fruitsVegetables"
   },
@@ -409,42 +414,42 @@
   {
     "assetFileName": "block",
     "matchingNames": [
-      "tofu",
-      "ram",
-      "rama",
       "manteca",
       "mantequilla",
-      "margarina"
+      "margarina",
+      "ram",
+      "rama",
+      "tofu"
     ],
     "category": "milkCheese"
   },
   {
     "assetFileName": "burger",
     "matchingNames": [
-      "los ciudadanos",
-      "hamburguesa"
+      "hamburguesa",
+      "los ciudadanos"
     ],
     "category": "convenienceProductFrozen"
   },
   {
     "assetFileName": "herbs",
     "matchingNames": [
-      "eneldo",
       "albahaca",
-      "perejil",
+      "cilantro",
+      "eneldo",
       "hierbas",
       "menta",
-      "cilantro"
+      "perejil"
     ],
     "category": "spicesCanned"
   },
   {
     "assetFileName": "pizza_cake",
     "matchingNames": [
-      "tarta",
       "pastel",
-      "tarta flambeada",
-      "pizza"
+      "pizza",
+      "tarta",
+      "tarta flambeada"
     ],
     "category": "convenienceProductFrozen"
   },
@@ -458,18 +463,18 @@
   {
     "assetFileName": "package",
     "matchingNames": [
-      "agar-agar",
-      "natrón",
-      "mermelada de azucar",
-      "levadura en polvo",
-      "soda",
-      "pudín en polvo",
-      "polvo de hornear",
-      "levadura seca",
       "agar agar",
+      "agar-agar",
       "azúcar de vainilla",
       "azúcar gelificante",
-      "polvo de pudín"
+      "levadura en polvo",
+      "levadura seca",
+      "mermelada de azucar",
+      "natrón",
+      "polvo de hornear",
+      "polvo de pudín",
+      "pudín en polvo",
+      "soda"
     ],
     "category": "spicesCanned"
   },
@@ -477,8 +482,8 @@
     "assetFileName": "pasta",
     "matchingNames": [
       "espaguetis",
-      "pasta",
-      "fideos"
+      "fideos",
+      "pasta"
     ],
     "category": "cereals"
   },
@@ -507,16 +512,16 @@
   {
     "assetFileName": "spice",
     "matchingNames": [
-      "especias",
-      "sal",
-      "pimienta",
+      "alcaravea",
+      "canela",
       "carvi",
       "condimento",
       "curry",
       "cúrcuma",
-      "alcaravea",
+      "especias",
       "kuemmel",
-      "canela"
+      "pimienta",
+      "sal"
     ],
     "category": "spicesCanned"
   },
@@ -530,8 +535,8 @@
   {
     "assetFileName": "paper_towel",
     "matchingNames": [
-      "zewa",
-      "papel de cocina"
+      "papel de cocina",
+      "zewa"
     ],
     "category": "household"
   },
@@ -545,20 +550,20 @@
   {
     "assetFileName": "baking_paper",
     "matchingNames": [
-      "papel film",
       "papel de hornear",
-      "película adhesiva",
       "papel de la espalda",
+      "papel film",
+      "papel para hornear",
       "papel pergamino",
-      "papel para hornear"
+      "película adhesiva"
     ],
     "category": "household"
   },
   {
     "assetFileName": "mushroom",
     "matchingNames": [
-      "hongos",
-      "hongo"
+      "hongo",
+      "hongos"
     ],
     "category": "fruitsVegetables"
   },
@@ -579,16 +584,16 @@
   {
     "assetFileName": "tetrapack",
     "matchingNames": [
+      "bebida de almendra",
+      "bebida de almendras",
+      "bebida de arroz",
+      "bebida de avena",
+      "bebida de soja",
       "bebida de soya",
       "jugo",
-      "bebida de soja",
       "leche",
       "té helado",
-      "zumo",
-      "bebida de almendras",
-      "bebida de avena",
-      "bebida de almendra",
-      "bebida de arroz"
+      "zumo"
     ],
     "category": "milkCheese"
   },
@@ -602,9 +607,9 @@
   {
     "assetFileName": "coffee_beans",
     "matchingNames": [
+      "café",
       "café exprés",
-      "espresso",
-      "café"
+      "espresso"
     ],
     "category": "beverages"
   },
@@ -625,35 +630,35 @@
   {
     "assetFileName": "cheese",
     "matchingNames": [
-      "queso",
-      "mangego",
-      "edam",
-      "mozarella",
-      "emmental",
-      "queso edam",
-      "capricho dieux",
-      "mozzarella",
-      "brie",
       "appenzell",
-      "tilitro",
       "appenzeller",
-      "camembert",
-      "cheddar",
-      "queso cheddar",
-      "holaumi",
-      "queso mozzarella",
-      "caprice dieux",
-      "tilsit",
+      "brie",
       "bueno",
+      "camembert",
+      "caprice dieux",
+      "capricho dieux",
+      "cheddar",
+      "edam",
+      "emmental",
+      "feta",
+      "gauda",
+      "halloumi",
+      "holaumi",
       "manchego",
+      "mangego",
+      "mozarella",
+      "mozzarella",
+      "parmesano",
+      "queso",
       "queso brie",
       "queso camembert",
-      "feta",
-      "ricotta",
+      "queso cheddar",
+      "queso edam",
       "queso feta",
-      "gauda",
-      "parmesano",
-      "halloumi"
+      "queso mozzarella",
+      "ricotta",
+      "tilitro",
+      "tilsit"
     ],
     "category": "milkCheese"
   },
@@ -674,21 +679,21 @@
   {
     "assetFileName": "pumpkin",
     "matchingNames": [
+      "calabaza",
       "hokkaido",
-      "hokkaidō",
-      "calabaza"
+      "hokkaidō"
     ],
     "category": "fruitsVegetables"
   },
   {
     "assetFileName": "beetroot",
     "matchingNames": [
+      "nabo amarillo",
       "raíz de remolacha",
       "remolacha",
-      "nabo amarillo",
       "remolacha amarilla",
-      "remolachas amarillas",
-      "remolacha roja"
+      "remolacha roja",
+      "remolachas amarillas"
     ],
     "category": "fruitsVegetables"
   },
@@ -725,8 +730,8 @@
   {
     "assetFileName": "paper_bag",
     "matchingNames": [
-      "tuete",
-      "bolsa"
+      "bolsa",
+      "tuete"
     ],
     "category": "household"
   },
@@ -741,19 +746,19 @@
   {
     "assetFileName": "round_fruit_small",
     "matchingNames": [
-      "mirabelle",
+      "albaricoque",
+      "ciruela",
       "kiwi",
       "mirabel",
-      "albaricoque",
-      "ciruela"
+      "mirabelle"
     ],
     "category": "fruitsVegetables"
   },
   {
     "assetFileName": "seeds",
     "matchingNames": [
-      "escamas",
       "copos",
+      "escamas",
       "núcleos"
     ],
     "category": "cereals"
@@ -762,24 +767,24 @@
     "assetFileName": "sponge",
     "matchingNames": [
       "esponja",
-      "schwaemme",
-      "esponjas"
+      "esponjas",
+      "schwaemme"
     ],
     "category": "household"
   },
   {
     "assetFileName": "zucchini",
     "matchingNames": [
-      "zuchini",
-      "calabacín"
+      "calabacín",
+      "zuchini"
     ],
     "category": "fruitsVegetables"
   },
   {
     "assetFileName": "avocado",
     "matchingNames": [
-      "palta",
-      "aguacate"
+      "aguacate",
+      "palta"
     ],
     "category": "fruitsVegetables"
   },
@@ -807,17 +812,47 @@
   {
     "assetFileName": "sweets",
     "matchingNames": [
-      "cantuccini",
-      "galleta",
-      "regaliz",
-      "chips",
-      "bocadillos",
-      "dulces",
       "aperitivos",
+      "bocadillos",
+      "cantuccini",
+      "chips",
+      "dulces",
+      "galleta",
+      "osito de goma",
       "osos de goma",
       "patatas fritas",
-      "osito de goma"
+      "regaliz"
     ],
     "category": "fruitsVegetables"
+  },
+  {
+    "assetFileName": "cream",
+    "matchingNames": [
+      "crema",
+      "gel para el cabello"
+    ],
+    "category": "household"
+  },
+  {
+    "assetFileName": "shower_gel",
+    "matchingNames": [
+      "champú",
+      "gel de ducha"
+    ],
+    "category": "household"
+  },
+  {
+    "assetFileName": "dish_soap",
+    "matchingNames": [
+      "agente de limpieza",
+      "detergente",
+      "detergente para lavavajillas",
+      "lavar platos",
+      "limpiador de baños",
+      "limpiador neutro",
+      "limpiando suministros",
+      "líquido lavavajillas"
+    ],
+    "category": "household"
   }
 ]
