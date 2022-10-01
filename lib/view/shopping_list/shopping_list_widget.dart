@@ -19,7 +19,7 @@ class ShoppingListWidget extends HookConsumerWidget {
         ref.watch(AppStateNotifier.appStateProvider).currentShoppingList;
     final int otherDevicesCount =
         currentShoppingList != null ? currentShoppingList.deviceCount - 1 : 0;
-    final ListOf<Item> items = ref.watch(AppStateNotifier.currentItemsProvider);
+    final ListOf<Item> items = ref.watch(AppStateNotifier.currentItemsProvider).sort();
     final String name =
         ref.watch(AppStateNotifier.currentShoppingListNameProvider);
 
@@ -27,7 +27,7 @@ class ShoppingListWidget extends HookConsumerWidget {
       itemColor: Theme.of(context).cardColor,
       parentWidth: MediaQuery.of(context).size.width,
       darkBackground: false,
-      items: items..sort(),
+      items: items,
       header: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

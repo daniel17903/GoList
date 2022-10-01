@@ -14,8 +14,8 @@ enum Category {
 }
 
 Category categoryFromString(String value) {
-  return Category.values
-      .firstWhere((e) => e.toString() == value, orElse: () => Category.other);
+  return Category.values.firstWhere((e) => e.toString() == "Category.$value",
+      orElse: () => Category.other);
 }
 
 const defaultCategory = Category.other;
