@@ -33,11 +33,16 @@ class ShoppingListItem extends StatefulWidget {
 
 class _ShoppingListItemState extends State<ShoppingListItem> {
   late final ItemAnimationController animationController;
+  late Widget iconWidget;
 
   @override
   void initState() {
-    animationController = ItemAnimationController();
     super.initState();
+    animationController = ItemAnimationController();
+
+    iconWidget = GoListIcons.defaultIcon();
+    GoListIcons.tryGetIcon(widget.item.iconName)
+        .then((gotItemWidget) => setState(() => iconWidget = gotItemWidget));
   }
 
   @override
@@ -59,12 +64,11 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
         animationController: animationController,
         child: CustomMultiChildLayout(
             delegate: ItemLayoutDelegate(
-                containerSize:
-                    defaultSize * widget.initialScaleFactor),
+                containerSize: defaultSize * widget.initialScaleFactor),
             children: [
               LayoutId(
                 id: ItemLayoutChild.icon,
-                child: GoListIcons.icon(widget.item.iconName),
+                child: iconWidget,
               ),
               LayoutId(
                 id: ItemLayoutChild.name,

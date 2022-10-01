@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class GoListIcons {
-
   static const String defaultAsset = "default";
 
-  static Widget icon(String name) {
+  static String _iconPath(String name) {
+    return "assets/icons/$name.png";
+  }
+
+  static Widget _icon(String name) {
+    return Image.asset(
+      _iconPath(name),
+      color: Colors.white,
+      fit: BoxFit.contain,
+    );
+  }
+
+  static Widget defaultIcon() {
+    return _icon(defaultAsset);
+  }
+
+  static Future<Widget> tryGetIcon(String name) async {
     try {
-      return Image.asset(
-        "assets/icons/$name.png",
-        color: Colors.white,
-        fit: BoxFit.contain,
-      );
+      await rootBundle.load(_iconPath(name));
+      return _icon(name);
     } catch (_) {
-      return icon(defaultAsset);
+      return Future.value(defaultIcon());
     }
   }
 }
