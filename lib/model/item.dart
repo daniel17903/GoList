@@ -64,7 +64,7 @@ class Item extends GoListModel implements Comparable<Item> {
   @override
   int compareTo(Item other) {
     if (category.index == other.category.index) {
-      return name.compareTo(other.name);
+      return name.toLowerCase().compareTo(other.name.toLowerCase());
     }
     return category.index.compareTo(other.category.index);
   }

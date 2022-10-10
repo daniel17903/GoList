@@ -14,7 +14,8 @@ enum Category {
 }
 
 Category categoryFromString(String value) {
-  return Category.values.firstWhere((e) => e.toString() == "Category.$value",
+  return Category.values.firstWhere(
+      (e) => e.toString() == "Category.$value" || e.toString() == value,
       orElse: () => Category.other);
 }
 
