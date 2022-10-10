@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/app_state.dart';
 import 'package:go_list/model/app_state_notifier.dart';
+import 'package:go_list/model/item.dart';
 import 'package:go_list/model/list_of.dart';
 import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../model/item.dart';
 
 const recentlyUsedItemsSize = 50;
 
@@ -41,14 +40,14 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
       recentlyUsedItemsSorted =
           ListOf<Item>([...appState.currentShoppingList!.items])
               .whereEntry((e) => e.deleted)
+              .sort(compareItems())
               .whereEntry((e) => addedLowerCaseItemNames.add(normalize(e.name)))
+              .take(recentlyUsedItemsSize)
               .mapEntries((e) => e.copyWith(amount: "", modified: e.modified));
-      sortItems();
 
       // if there is a newer item with this name use the new icon and category
-      recentlyUsedItemsSorted = recentlyUsedItemsSorted
-          .take(recentlyUsedItemsSize)
-          .mapEntries((recentlyUsedItem) {
+      recentlyUsedItemsSorted =
+          recentlyUsedItemsSorted.mapEntries((recentlyUsedItem) {
         Item latestItemWithSameName = appState.currentShoppingList!.items
             .whereEntry(
                 (e) => normalize(e.name) == normalize(recentlyUsedItem.name))
@@ -71,25 +70,23 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
     }
   }
 
-  void sortItems({String? inputText}) {
-    if (recentlyUsedItemsSorted.isNotEmpty) {
-      recentlyUsedItemsSorted.sort((item1, item2) {
-        startsWithIgnoreCase(String value, String start) {
-          return value.toLowerCase().startsWith(start.toLowerCase());
-        }
+  int Function(Item, Item) compareItems({String? inputText}) {
+    return (item1, item2) {
+      startsWithIgnoreCase(String value, String start) {
+        return value.toLowerCase().startsWith(start.toLowerCase());
+      }
 
-        if (inputText != null && inputText.isNotEmpty) {
-          if (startsWithIgnoreCase(item2.name, inputText)) {
-            return 1;
-          } else if (startsWithIgnoreCase(item1.name, inputText)) {
-            return -1;
-          }
-          return 0;
-        } else {
-          return item2.modified.compareTo(item1.modified);
+      if (inputText != null && inputText.isNotEmpty) {
+        if (startsWithIgnoreCase(item2.name, inputText)) {
+          return 1;
+        } else if (startsWithIgnoreCase(item1.name, inputText)) {
+          return -1;
         }
-      });
-    }
+        return 0;
+      } else {
+        return item2.modified.compareTo(item1.modified);
+      }
+    };
   }
 
   @override
@@ -122,7 +119,7 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
             onChanged: (text) {
               _debounced(() {
                 setState(() {
-                  sortItems(inputText: text);
+                  recentlyUsedItemsSorted.sort(compareItems(inputText: text));
                   if (text.isEmpty ||
                       recentlyUsedItemsSorted.isNotEmpty &&
                           text == recentlyUsedItemsSorted[0].name) {
