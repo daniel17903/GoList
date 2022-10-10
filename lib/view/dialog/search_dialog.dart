@@ -41,13 +41,8 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
       recentlyUsedItemsSorted =
           ListOf<Item>([...appState.currentShoppingList!.items])
               .whereEntry((e) => e.deleted)
-              .whereEntry((e) {
-        if (addedLowerCaseItemNames.contains(normalize(e.name))) {
-          return false;
-        }
-        addedLowerCaseItemNames.add(normalize(e.name));
-        return true;
-      }).mapEntries((e) => e.copyWith(amount: "", modified: e.modified));
+              .whereEntry((e) => addedLowerCaseItemNames.add(normalize(e.name)))
+              .mapEntries((e) => e.copyWith(amount: "", modified: e.modified));
       sortItems();
 
       // if there is a newer item with this name use the new icon and category
@@ -83,7 +78,7 @@ class _SearchDialogState extends ConsumerState<SearchDialog> {
           return value.toLowerCase().startsWith(start.toLowerCase());
         }
 
-        if (inputText != null) {
+        if (inputText != null && inputText.isNotEmpty) {
           if (startsWithIgnoreCase(item2.name, inputText)) {
             return 1;
           } else if (startsWithIgnoreCase(item1.name, inputText)) {
