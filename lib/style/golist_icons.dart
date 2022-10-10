@@ -1,31 +1,40 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class GoListIcons {
-  static const String defaultAsset = "default";
+  static const String defaultIconAssetName = "default";
+  List<String> existingAssets = [];
 
-  static String _iconPath(String name) {
+  static final GoListIcons _instance = GoListIcons._internal();
+
+  factory GoListIcons() {
+    return _instance;
+  }
+
+  GoListIcons._internal() {
+    rootBundle
+        .loadString('AssetManifest.json')
+        .then((manifestContent) => json.decode(manifestContent).keys.toList())
+        .then((assetEntriesInManifest) =>
+            existingAssets = assetEntriesInManifest);
+  }
+
+  String _iconPath(String name) {
     return "assets/icons/$name.png";
   }
 
-  static Widget _icon(String name) {
+  bool _assetForIconWithNameExists(String name) {
+    return existingAssets.contains(_iconPath(name));
+  }
+
+  Widget getIconImageWidget(String name) {
     return Image.asset(
-      _iconPath(name),
+      _iconPath(
+          _assetForIconWithNameExists(name) ? name : defaultIconAssetName),
       color: Colors.white,
       fit: BoxFit.contain,
     );
-  }
-
-  static Widget defaultIcon() {
-    return _icon(defaultAsset);
-  }
-
-  static Future<Widget> tryGetIcon(String name) async {
-    try {
-      await rootBundle.load(_iconPath(name));
-      return _icon(name);
-    } catch (_) {
-      return Future.value(defaultIcon());
-    }
   }
 }

@@ -73,7 +73,7 @@ class InputToItemParser {
 
     return iconMappingMatches.firstOrNull?.iconMapping ??
         IconMapping(
-            assetFileName: GoListIcons.defaultAsset,
+            assetFileName: GoListIcons.defaultIconAssetName,
             matchingNames: [],
             category: defaultCategory);
   }
