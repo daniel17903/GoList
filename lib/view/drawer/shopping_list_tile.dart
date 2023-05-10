@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:go_list/model/app_state_notifier.dart';
-import 'package:go_list/model/list_of.dart';
-import 'package:go_list/model/shopping_list.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-class ShoppingListTile extends HookConsumerWidget {
-  final int index;
+class ShoppingListTile extends StatelessWidget {
+  final String shoppingListName;
+  final Function onTap;
+  final Function onDelete;
 
-  const ShoppingListTile(this.index, {Key? key}) : super(key: key);
+  const ShoppingListTile(
+      {Key? key,
+      required this.shoppingListName,
+      required this.onTap,
+      required this.onDelete})
+      : super(key: key);
 
   void _showAlertDialog(
       {required Function onConfirmed, required BuildContext context}) {
@@ -34,25 +37,15 @@ class ShoppingListTile extends HookConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ListOf<ShoppingList> shoppingLists =
-        ref.read(AppStateNotifier.notDeletedShoppingListsProvider);
+  Widget build(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.list),
-      title: Text(shoppingLists[index].name),
-      onTap: () {
-        Navigator.pop(context);
-        ref.read(AppStateNotifier.appStateProvider.notifier).selectList(index);
-      },
+      title: Text(shoppingListName),
+      onTap: () => onTap(),
       trailing: IconButton(
         icon: const Icon(Icons.delete),
-        onPressed: () => _showAlertDialog(
-            onConfirmed: () {
-              ref
-                  .read(AppStateNotifier.appStateProvider.notifier)
-                  .deleteShoppingList(shoppingLists[index].id, context);
-            },
-            context: context),
+        onPressed: () =>
+            _showAlertDialog(onConfirmed: onDelete, context: context),
       ),
     );
   }

@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:go_list/model/app_state_notifier.dart';
-import 'package:go_list/model/list_of.dart';
-import 'package:go_list/service/items/icon_mapping.dart';
-import 'package:go_list/service/items/input_to_item_parser.dart';
-import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:go_list/model/item.dart';
+import 'package:go_list/model/selected_shopping_list_state.dart';
+import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
+import 'package:provider/provider.dart';
 
-import '../../model/item.dart';
-
-class EditItemDialog extends StatefulHookConsumerWidget {
+class EditItemDialog extends StatefulWidget {
   const EditItemDialog({Key? key, required this.item}) : super(key: key);
 
   final Item item;
 
   @override
-  ConsumerState<EditItemDialog> createState() => _EditItemDialogState();
+  State<EditItemDialog> createState() => _EditItemDialogState();
 }
 
-class _EditItemDialogState extends ConsumerState<EditItemDialog> {
+class _EditItemDialogState extends State<EditItemDialog> {
   late final TextEditingController nameTextInputController;
   late final TextEditingController amountInputController;
 
@@ -61,18 +57,11 @@ class _EditItemDialogState extends ConsumerState<EditItemDialog> {
             child: Text(AppLocalizations.of(context)!.save),
             onPressed: () {
               Navigator.pop(context);
-              IconMapping iconMapping = InputToItemParser().findMappingForName(
-                  nameTextInputController.text);
-              ref
-                  .read(AppStateNotifier.appStateProvider.notifier)
-                  .updateItems(ListOf([
-                    widget.item.copyWith(
-                        name: nameTextInputController.text,
-                        amount: amountInputController.text,
-                        iconName: iconMapping.assetFileName,
-                        category: iconMapping.category,
-                        modified: DateTime.now().millisecondsSinceEpoch)
-                  ]));
+              widget.item.name = nameTextInputController.text;
+              widget.item.amount = amountInputController.text;
+              widget.item.findMapping();
+              Provider.of<SelectedShoppingListState>(context, listen: false)
+                  .upsertItem(widget.item);
             })
       ],
     );

@@ -12,7 +12,7 @@ class ThemedApp extends StatelessWidget {
   ThemedApp({Key? key, required this.child, this.locale}) : super(key: key);
 
   final materialTheme = ThemeData(
-      backgroundColor: GoListColors.darkBlue,
+      dialogBackgroundColor: GoListColors.darkBlue,
       cardColor: const Color(0x94024461),
       bottomAppBarTheme: const BottomAppBarTheme(
           shape: CircularNotchedRectangle(), color: Color(0xff005382)),

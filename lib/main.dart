@@ -4,23 +4,46 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:go_list/model/app_state_notifier.dart';
+import 'package:go_list/model/global_app_state.dart';
+import 'package:go_list/model/selected_shopping_list_state.dart';
+import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/golist_languages.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
+import 'package:go_list/service/storage/local_settings_storage.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
-import 'package:go_list/service/storage/storage.dart';
-import 'package:go_list/service/storage/sync/websocket_sync.dart';
+import 'package:go_list/service/storage/shopping_list_storage.dart';
 import 'package:go_list/style/themed_app.dart';
 import 'package:go_list/view/shopping_list_page.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:provider/provider.dart';
 import 'package:uni_links/uni_links.dart';
 
 void main() {
-  runApp(const ProviderScope(child: GoListApp()));
+  runApp(MultiProvider(
+    providers: [
+      // you must first provider the object that will be passed to the proxy
+      ChangeNotifierProvider<GlobalAppState>(
+          create: (_) => GlobalAppState().loadListsFromStorage()),
+      // Because the ChangeNotifierProxyProvider is being used,
+      // each class used must be of ChangeNotifier type
+      ChangeNotifierProxyProvider<GlobalAppState, SelectedShoppingListState>(
+          // first, create the _proxy_ object, the one that you'll use in your UI
+          // at this point, you will have access to the previously provided objects
+          create: (BuildContext context) => SelectedShoppingListState(
+              Provider.of<GlobalAppState>(context, listen: false)
+                  .getSelectedShoppingList()),
+          // next, define a function to be called on `update`. It will return the same type
+          // as the create method.
+          update: (BuildContext context, GlobalAppState globalAppsSate,
+                  SelectedShoppingListState? selectedShoppingListState) =>
+              SelectedShoppingListState(
+                  globalAppsSate.getSelectedShoppingList())),
+    ],
+    child: const GoListApp(),
+  ));
 }
 
-class GoListApp extends StatefulHookConsumerWidget {
+class GoListApp extends StatefulWidget {
   const GoListApp({Key? key}) : super(key: key);
 
   static void setLocale(BuildContext context, Locale newLocale) async {
@@ -29,10 +52,12 @@ class GoListApp extends StatefulHookConsumerWidget {
   }
 
   @override
-  ConsumerState<GoListApp> createState() => _MyAppState();
+  State<StatefulWidget> createState() {
+    return _MyAppState();
+  }
 }
 
-class _MyAppState extends ConsumerState<GoListApp> {
+class _MyAppState extends State<GoListApp> {
   StreamSubscription? _uriLinkStreamSubscription;
   Locale? _locale;
 
@@ -40,7 +65,7 @@ class _MyAppState extends ConsumerState<GoListApp> {
   void initState() {
     super.initState();
     _handleIncomingLinks();
-    getInitialUri().then(_joinListWithTokenFromLink);
+    //getInitialUri().then(_joinListWithTokenFromLink);
     InputToItemParser().init();
     GetStorage.init().then((_) {
       changeLanguage(Locale(GoListLanguages.getLanguageCode()));
@@ -57,10 +82,11 @@ class _MyAppState extends ConsumerState<GoListApp> {
     setState(() {
       _locale = locale;
     });
-    Storage().saveSelectedLanguage(locale.languageCode);
+    LocalSettingsStorage().saveSelectedLanguage(locale.languageCode);
     InputToItemParser().init();
   }
 
+  /**
   Future<void> _joinListWithTokenFromLink(Uri? uri) async {
     if (uri != null && uri.queryParameters.containsKey("token")) {
       try {
@@ -115,13 +141,13 @@ class _MyAppState extends ConsumerState<GoListApp> {
                 "${AppLocalizations.of(context)!.failed_to_open_list}: $e")));
       }
     }
-  }
+  }*/
 
   void _handleIncomingLinks() {
     if (!kIsWeb) {
       _uriLinkStreamSubscription = uriLinkStream.listen((Uri? uri) {
         if (!mounted) return;
-        _joinListWithTokenFromLink(uri);
+        //_joinListWithTokenFromLink(uri);
       });
     }
   }
@@ -130,7 +156,7 @@ class _MyAppState extends ConsumerState<GoListApp> {
   Widget build(BuildContext context) {
     return ThemedApp(
       locale: _locale,
-      child: WebsocketSync(child: ShoppingListPage()),
+      child: ShoppingListPage(),
     );
   }
 }

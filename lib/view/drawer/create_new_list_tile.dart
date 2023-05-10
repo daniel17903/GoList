@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/model/app_state_notifier.dart';
+import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
-class CreateNewListTile extends StatefulHookConsumerWidget {
-
+class CreateNewListTile extends StatefulWidget {
   const CreateNewListTile({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<CreateNewListTile> createState() => _CreateNewListTileState();
+  State<CreateNewListTile> createState() => _CreateNewListTileState();
 }
 
-class _CreateNewListTileState extends ConsumerState<CreateNewListTile> {
-  final TextEditingController newListNameInputController = TextEditingController();
+class _CreateNewListTileState extends State<CreateNewListTile> {
+  final TextEditingController _newListNameInputController =
+      TextEditingController();
 
   @override
   void dispose() {
-    newListNameInputController.dispose();
+    _newListNameInputController.dispose();
     super.dispose();
   }
 
@@ -31,31 +31,29 @@ class _CreateNewListTileState extends ConsumerState<CreateNewListTile> {
         DialogUtils.showSmallAlertDialog(
             context: context,
             contentBuilder: (context) => AlertDialog(
-              title: Text(AppLocalizations.of(context)!.create_new_list),
-              content: TextFormField(
-                  controller: newListNameInputController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.name,
-                  )),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(AppLocalizations.of(context)!.cancel),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    ShoppingList newShoppingList =
-                        ShoppingList(name: newListNameInputController.text);
-                    ref
-                        .read(AppStateNotifier.appStateProvider.notifier)
-                        .addShoppingList(newShoppingList);
-                  },
-                  child: Text(AppLocalizations.of(context)!.save),
-                ),
-              ],
-            ));
+                  title: Text(AppLocalizations.of(context)!.create_new_list),
+                  content: TextFormField(
+                      controller: _newListNameInputController,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.name,
+                      )),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(AppLocalizations.of(context)!.cancel),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Provider.of<GlobalAppState>(context, listen: false)
+                            .upsertShoppingList(ShoppingList(
+                                name: _newListNameInputController.text));
+                      },
+                      child: Text(AppLocalizations.of(context)!.save),
+                    ),
+                  ],
+                ));
       },
     );
   }

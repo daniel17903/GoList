@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/model/app_state_notifier.dart';
-import 'package:go_list/model/list_of.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
@@ -8,16 +8,28 @@ import 'package:go_list/view/dialog/settings_dialog.dart';
 import 'package:go_list/view/drawer/create_new_list_tile.dart';
 import 'package:go_list/view/drawer/my_lists_header_tile.dart';
 import 'package:go_list/view/drawer/shopping_list_tile.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
-class ShoppingListDrawer extends HookConsumerWidget {
+class ShoppingListDrawer extends StatelessWidget {
   const ShoppingListDrawer({Key? key}) : super(key: key);
 
+  _deleteShoppingList(
+      ShoppingList shoppingList, GlobalAppState globalAppState) {
+    globalAppState.deleteShoppingList(shoppingList);
+  }
+
+  _selectShoppingList(
+      ShoppingList shoppingList, GlobalAppState globalAppState) {
+    globalAppState.setSelectedShoppingListId(shoppingList.id);
+  }
+
+  _reorderShoppingList(
+      int oldIndex, int newIndex, GlobalAppState globalAppState) {
+    globalAppState.updateListOrder(oldIndex, newIndex);
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ListOf<ShoppingList> shoppingLists =
-        ref.watch(AppStateNotifier.notDeletedShoppingListsProvider);
+  Widget build(BuildContext context) {
     return Drawer(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -40,20 +52,31 @@ class ShoppingListDrawer extends HookConsumerWidget {
         ),
         const MyListsHeaderTile(),
         Expanded(
-          child: ReorderableListView.builder(
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            itemCount: shoppingLists.length,
-            prototypeItem: const MyListsHeaderTile(),
-            footer: const CreateNewListTile(),
-            itemBuilder: (BuildContext context, int index) =>
-                ShoppingListTile(index, key: Key(shoppingLists[index].id)),
-            onReorder: (int oldIndex, int newIndex) {
-              ref
-                  .read(AppStateNotifier.appStateProvider.notifier)
-                  .updateListOrder(fromIndex: oldIndex, toIndex: newIndex);
-            },
-          ),
+          child: Consumer<GlobalAppState>(
+              builder: (context, globalAppState, _) =>
+                  ReorderableListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      itemCount: globalAppState.shoppingLists.length(),
+                      prototypeItem: const MyListsHeaderTile(),
+                      footer: const CreateNewListTile(),
+                      itemBuilder: (BuildContext context, int index) {
+                        ShoppingList shoppingList =
+                            globalAppState.shoppingLists.get(index);
+                        return ShoppingListTile(
+                          shoppingListName: shoppingList.name,
+                          key: Key(shoppingList.id),
+                          onTap: () {
+                            _selectShoppingList(shoppingList, globalAppState);
+                            Navigator.pop(context);
+                          },
+                          onDelete: () =>
+                              _deleteShoppingList(shoppingList, globalAppState),
+                        );
+                      },
+                      onReorder: (int oldIndex, int newIndex) =>
+                          _reorderShoppingList(
+                              oldIndex, newIndex, globalAppState))),
         ),
         SafeArea(
           top: false,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/model/list_of.dart';
+import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/view/shopping_list/refreshable_scroll_view.dart';
 import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
@@ -23,7 +23,7 @@ class ItemListViewer extends StatelessWidget {
       required this.parentWidth})
       : super(key: key);
 
-  final ListOf<Item> items;
+  final GoListCollection<Item> items;
   final void Function(Item) onItemTapped;
   final void Function(Item)? onItemTappedLong;
   final Future<void> Function()? onPullForRefresh;
@@ -67,7 +67,7 @@ class ItemListViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: darkBackground ? Theme.of(context).backgroundColor : null,
+        color: darkBackground ? Theme.of(context).dialogBackgroundColor : null,
         constraints: const BoxConstraints.expand(),
         child: RefreshableScrollView(
             onRefresh: onPullForRefresh,
@@ -87,7 +87,7 @@ class ItemListViewer extends StatelessWidget {
                         runSpacing: spacing,
                         direction: Axis.horizontal,
                         crossAxisAlignment: WrapCrossAlignment.center,
-                        children: items.map((Item item) {
+                        children: items.entries().map((Item item) {
                           return ShoppingListItem(
                             initialScaleFactor:
                                 _calcItemBoxScaleFactor(parentWidth),

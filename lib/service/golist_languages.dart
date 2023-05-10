@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:go_list/main.dart';
-import 'package:go_list/service/storage/storage.dart';
+import 'package:go_list/service/storage/local_settings_storage.dart';
 
 class GoListLanguages {
   static const defaultLanguage = "en";
@@ -14,7 +14,7 @@ class GoListLanguages {
   static List<String> supportedLanguageCodes = supportedLanguages.keys.toList();
 
   static String getLanguageCode() {
-    String? previouslySetLanguage = Storage().loadSelectedLanguage();
+    String? previouslySetLanguage = LocalSettingsStorage().loadSelectedLanguage();
     String platformLanguage = Platform.localeName.split("_")[0];
     if (supportedLanguageCodes.contains(platformLanguage)) {
       return previouslySetLanguage ?? platformLanguage;

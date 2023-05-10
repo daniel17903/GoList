@@ -1,84 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/model/app_state_notifier.dart';
-import 'package:go_list/model/item.dart';
-import 'package:go_list/model/list_of.dart';
-import 'package:go_list/model/shopping_list.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_list/model/selected_shopping_list_state.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:go_list/view/dialog/edit_item_dialog.dart';
 import 'package:go_list/view/dialog/edit_list_dialog.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
-class ShoppingListWidget extends HookConsumerWidget {
+class ShoppingListWidget extends StatelessWidget {
   const ShoppingListWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ShoppingList? currentShoppingList =
-        ref.watch(AppStateNotifier.appStateProvider).currentShoppingList;
-    final int otherDevicesCount =
-        currentShoppingList != null ? currentShoppingList.deviceCount - 1 : 0;
-    final ListOf<Item> items = ref.watch(AppStateNotifier.currentItemsProvider).sort();
-    final String name =
-        ref.watch(AppStateNotifier.currentShoppingListNameProvider);
-
-    return ItemListViewer(
-      itemColor: Theme.of(context).cardColor,
-      parentWidth: MediaQuery.of(context).size.width,
-      darkBackground: false,
-      items: items,
-      header: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(name, style: const TextStyle(color: Colors.white, fontSize: 22)),
-          IconButton(
-            icon: const Icon(Icons.edit),
-            color: Colors.white,
-            onPressed: () => DialogUtils.showSmallAlertDialog(
-                context: context,
-                contentBuilder: (_) => const EditListDialog()),
-          )
-        ],
-      ),
-      footer: otherDevicesCount != 0
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(22.0),
-                    color: const Color(0x50000000),
-                  ),
-                  padding: const EdgeInsets.only(
-                      left: 8.0, right: 8.0, top: 2.0, bottom: 2.0),
-                  child: Text(
-                      AppLocalizations.of(context)!
-                          .shared_devices_info(otherDevicesCount),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontStyle: FontStyle.italic)),
-                ),
+  Widget build(BuildContext context) {
+    return Consumer<SelectedShoppingListState>(
+        builder: (context, selectedShoppingListState, child) => ItemListViewer(
+              itemColor: Theme.of(context).cardColor,
+              parentWidth: MediaQuery.of(context).size.width,
+              darkBackground: false,
+              items: selectedShoppingListState.selectedShoppingList.items,
+              header: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(selectedShoppingListState.selectedShoppingList.name,
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 22)),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    color: Colors.white,
+                    onPressed: () => DialogUtils.showSmallAlertDialog(
+                        context: context,
+                        contentBuilder: (_) => EditListDialog(
+                            shoppingList: selectedShoppingListState
+                                .selectedShoppingList)),
+                  )
+                ],
               ),
-            )
-          : null,
-      onPullForRefresh: () async {
-        await ref
-            .read(AppStateNotifier.appStateProvider.notifier)
-            .loadAllFromStorage();
-        ref
-            .read(AppStateNotifier.appStateProvider.notifier)
-            .initializeWithEmptyList(context);
-      },
-      onItemTapped: (tappedItem) {
-        ref
-            .read(AppStateNotifier.appStateProvider.notifier)
-            .deleteItems(ListOf([tappedItem]));
-      },
-      onItemTappedLong: (item) => DialogUtils.showSmallAlertDialog(
-          context: context, contentBuilder: (_) => EditItemDialog(item: item)),
-      delayItemTap: true,
-    );
+              footer: selectedShoppingListState
+                          .selectedShoppingList.deviceCount !=
+                      1
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(22.0),
+                            color: const Color(0x50000000),
+                          ),
+                          padding: const EdgeInsets.only(
+                              left: 8.0, right: 8.0, top: 2.0, bottom: 2.0),
+                          child: Text(
+                              AppLocalizations.of(context)!.shared_devices_info(
+                                  selectedShoppingListState
+                                          .selectedShoppingList.deviceCount -
+                                      1),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic)),
+                        ),
+                      ),
+                    )
+                  : null,
+              onPullForRefresh: () =>
+                  selectedShoppingListState.loadListFromStorage(),
+              onItemTapped: (tappedItem) =>
+                  selectedShoppingListState.deleteItem(tappedItem),
+              onItemTappedLong: (item) => DialogUtils.showSmallAlertDialog(
+                  context: context,
+                  contentBuilder: (_) => EditItemDialog(item: item)),
+              delayItemTap: true,
+            ));
   }
 }

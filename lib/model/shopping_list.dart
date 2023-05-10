@@ -1,65 +1,89 @@
 import 'package:flutter/cupertino.dart';
+import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/golist_model.dart';
-import 'package:go_list/model/list_of.dart';
+import 'package:go_list/model/mergeable.dart';
 
 import 'item.dart';
 
-@immutable
-class ShoppingList extends GoListModel {
-  late final String name;
-  late final ListOf<Item> items;
-  late final int  deviceCount;
+class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
+  late GoListCollection<Item> items;
+  late GoListCollection<Item> recentlyUsedItems;
+  late int deviceCount;
 
   ShoppingList(
-      {required this.name,
-      ListOf<Item>? items,
+      {required String name,
+      GoListCollection<Item>? items,
+      GoListCollection<Item>? recentlyUsedItems,
       bool? deleted,
-      int? modified,
+      DateTime? modified,
       String? id,
       int? deviceCount})
-      : super(modified: modified, deleted: deleted, id: id) {
-    this.items = items ?? ListOf<Item>([]);
+      : super(name: name, modified: modified, deleted: deleted, id: id) {
+    this.items = items ?? GoListCollection<Item>();
+    this.recentlyUsedItems = recentlyUsedItems ?? this.items;
     this.deviceCount = deviceCount ?? 1;
   }
 
   ShoppingList.fromJson(Map<String, dynamic> json)
       : super(
             id: json["id"],
+            name: json["name"],
             deleted: json["deleted"],
-            modified: json["modified"]) {
-    name = json['name'];
-    items = ListOf<Item>(
-        json["items"].map<Item>((element) => Item.fromJson(element)).toList());
+            modified: json["modified"] is String
+                ? DateTime.parse(json["modified"])
+                : DateTime.fromMillisecondsSinceEpoch(json["modified"])) {
+    items = _itemsFromJson(json, "items");
+    recentlyUsedItems = _itemsFromJson(json, "recently_used_items");
     deviceCount = json.containsKey("device_count") ? json["device_count"] : 1;
+  }
+
+  GoListCollection<Item> _itemsFromJson(Map<String, dynamic> json, String key) {
+    if (json.containsKey(key) && json["key"] is Map<String, dynamic>) {
+      return GoListCollection<Item>(
+          json[key].map<Item>((element) => Item.fromJson(element)).toList());
+    }
+    return GoListCollection();
   }
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
+        ...super.toJson(),
         'items': items.map((item) => item.toJson()).toList(),
-        'deleted': deleted,
-        'modified': modified,
+        'recently_used_items':
+            recentlyUsedItems.map((item) => item.toJson()).toList(),
         'device_count': deviceCount
       };
 
   ShoppingList copyWith(
       {String? name,
-      ListOf<Item>? items,
+      GoListCollection<Item>? items,
       bool? deleted,
-      int? modified,
+      DateTime? modified,
       String? id,
       int? deviceCount}) {
     return ShoppingList(
         name: name ?? this.name,
         items: items ?? this.items,
         deleted: deleted ?? this.deleted,
-        modified: modified ?? DateTime.now().millisecondsSinceEpoch,
+        modified: modified ?? DateTime.now(),
         id: id ?? this.id,
         deviceCount: deviceCount ?? this.deviceCount);
   }
 
-  ShoppingList withItems(ListOf<Item> updatedItems) {
-    return copyWith(items: items.updateWith(updatedItems));
+  ShoppingList upsertItem(Item item) {
+    items = items.upsert(item).sort();
+    recentlyUsedItems = recentlyUsedItems.upsert(item).sort()..skip(100);
+    return this;
+  }
+
+  @override
+  ShoppingList merge(ShoppingList other) {
+    ShoppingList merged = lastModified(this, other);
+    merged.items = items.merge(other.items);
+    return merged;
+  }
+
+  List<Item> itemsAsList() {
+    return items.entries();
   }
 }

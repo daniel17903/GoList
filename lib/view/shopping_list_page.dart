@@ -5,7 +5,9 @@ import 'package:go_list/view/botton_navigation_bar.dart';
 import 'package:go_list/view/dialog/search_dialog.dart';
 import 'package:go_list/view/shopping_list/shopping_list_widget.dart';
 import 'package:go_list/view/drawer/shopping_list_drawer.dart';
+import 'package:provider/provider.dart';
 
+import '../model/global_app_state.dart';
 import 'dialog/dialog_utils.dart';
 
 class ShoppingListPage extends StatelessWidget {
@@ -30,22 +32,23 @@ class ShoppingListPage extends StatelessWidget {
             Color(0xff005382),
           ],
         )),
-        child: Scaffold(
-            backgroundColor: Colors.transparent,
-            key: _scaffoldKey,
-            extendBody: true,
-            resizeToAvoidBottomInset: false,
-            // prevents resizing when opening keyboard
-            bottomNavigationBar: GoListBottomNavigationBar(
-                onMenuButtonTapped: () =>
-                    _scaffoldKey.currentState?.openDrawer()),
-            body: const SafeArea(child: ShoppingListWidget()),
-            drawer: const ShoppingListDrawer(),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: FloatingActionButton(
-                onPressed: () => DialogUtils.showLargeAnimatedDialog(
-                    context: context, child: const SearchDialog()),
-                child: const Icon(Icons.add))));
+        child: Consumer<GlobalAppState>(
+            builder: (context, appState, child) => Scaffold(
+                backgroundColor: Colors.transparent,
+                key: _scaffoldKey,
+                extendBody: true,
+                resizeToAvoidBottomInset: false,
+                // prevents resizing when opening keyboard
+                bottomNavigationBar: GoListBottomNavigationBar(
+                    onMenuButtonTapped: () =>
+                        _scaffoldKey.currentState?.openDrawer()),
+                body: const SafeArea(child: ShoppingListWidget()),
+                drawer: const ShoppingListDrawer(),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+                floatingActionButton: FloatingActionButton(
+                    onPressed: () => DialogUtils.showLargeAnimatedDialog(
+                        context: context, child: const SearchDialog()),
+                    child: const Icon(Icons.add)))));
   }
 }

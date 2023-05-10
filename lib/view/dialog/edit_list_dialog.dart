@@ -1,49 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:go_list/model/app_state.dart';
-import 'package:go_list/model/app_state_notifier.dart';
+import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:provider/provider.dart';
 
-class EditListDialog extends StatefulHookConsumerWidget {
-  const EditListDialog({Key? key}) : super(key: key);
+class EditListDialog extends StatefulWidget {
+  final ShoppingList shoppingList;
+
+  const EditListDialog({Key? key, required this.shoppingList})
+      : super(key: key);
 
   @override
-  ConsumerState<EditListDialog> createState() => _EditListDialogState();
+  State<EditListDialog> createState() => _EditListDialogState();
 }
 
-class _EditListDialogState extends ConsumerState<EditListDialog> {
-  late final TextEditingController nameTextInputController;
+class _EditListDialogState extends State<EditListDialog> {
+  late final TextEditingController _nameTextInputController;
 
   @override
   void initState() {
     super.initState();
-    nameTextInputController = TextEditingController();
-    nameTextInputController.text = ref
-        .read<AppState>(AppStateNotifier.appStateProvider)
-        .currentShoppingList!
-        .name;
+    _nameTextInputController = TextEditingController();
+    _nameTextInputController.text = widget.shoppingList.name;
   }
 
   @override
   void dispose() {
-    nameTextInputController.dispose();
+    _nameTextInputController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    AppStateNotifier appStateNotifier =
-        ref.watch<AppStateNotifier>(AppStateNotifier.appStateProvider.notifier);
     return PlatformAlertDialog(
       title: Text(AppLocalizations.of(context)!.edit_list),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           GoListPlatformTextFormField(
-              controller: nameTextInputController,
+              controller: _nameTextInputController,
               labelText: AppLocalizations.of(context)!.name)
         ],
       ),
@@ -55,9 +52,9 @@ class _EditListDialogState extends ConsumerState<EditListDialog> {
         PlatformDialogAction(
             child: Text(AppLocalizations.of(context)!.save),
             onPressed: () {
-              ShoppingList shoppingList = appStateNotifier.currentShoppingList!;
-              appStateNotifier.updateShoppingList(
-                  shoppingList.copyWith(name: nameTextInputController.text));
+              widget.shoppingList.name = _nameTextInputController.text;
+              Provider.of<GlobalAppState>(context, listen: false)
+                  .upsertShoppingList(widget.shoppingList);
               Navigator.pop(context);
             })
       ],
