@@ -2,21 +2,18 @@ import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
 
 class LocalStorageProvider implements StorageProvider {
   final getStorage = GetStorage();
 
   @override
-  GoListCollection<ShoppingList> loadShoppingLists() {
+  ShoppingListCollection loadShoppingLists() {
     if (getStorage.hasData("shoppingLists")) {
-      GoListCollection<ShoppingList> shoppingLists = GoListCollection(getStorage
-          .read("shoppingLists")
-          .map<ShoppingList>(ShoppingList.fromJson)
-          .toList());
-      return shoppingLists;
+      return ShoppingListCollection.fromJson(getStorage.read("shoppingLists"));
     }
-    return GoListCollection([]);
+    return ShoppingListCollection();
   }
 
   @override
@@ -38,5 +35,4 @@ class LocalStorageProvider implements StorageProvider {
     // TODO: implement upsertItem
     throw UnimplementedError();
   }
-
 }

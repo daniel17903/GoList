@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/service/storage/local_settings_storage.dart';
 import 'package:go_list/service/storage/shopping_list_storage.dart';
 
 class GlobalAppState extends ChangeNotifier {
-  late GoListCollection<ShoppingList> shoppingLists;
+  late ShoppingListCollection shoppingLists;
   late String selectedShoppingListId;
   late List<String> shoppingListOrder;
 
@@ -25,13 +25,14 @@ class GlobalAppState extends ChangeNotifier {
     return this;
   }
 
-  setShoppingLists(GoListCollection<ShoppingList> shoppingLists) {
-    this.shoppingLists = shoppingLists.sortByIds(shoppingListOrder);
+  setShoppingLists(ShoppingListCollection shoppingLists) {
+    this.shoppingLists = shoppingLists;
+    this.shoppingLists.setOrder(shoppingListOrder);
     notifyListeners();
   }
 
   setShoppingListOrder(List<String> shoppingListOrder) {
-    shoppingLists.sortByIds(shoppingListOrder);
+    shoppingLists.setOrder(shoppingListOrder);
     LocalSettingsStorage().saveShoppingListOrder(shoppingListOrder);
     notifyListeners();
   }
@@ -61,15 +62,8 @@ class GlobalAppState extends ChangeNotifier {
   }
 
   void updateListOrder(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) {
-      // removing the item at oldIndex will shorten the list by 1.
-      newIndex -= 1;
-    }
-    ShoppingList fromOldIndex = shoppingLists.removeAt(oldIndex);
-    shoppingLists.upsert(fromOldIndex, newIndex);
-    List<String> order = shoppingLists.entries().map((e) => e.id).toList();
-    shoppingLists.setOrder(order);
-    LocalSettingsStorage().saveShoppingListOrder(order);
+    shoppingLists.moveListInOrder(oldIndex, newIndex);
+    LocalSettingsStorage().saveShoppingListOrder(shoppingLists.order);
     notifyListeners();
   }
 }

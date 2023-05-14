@@ -23,14 +23,33 @@ abstract class GoListModel {
         'name': name
       };
 
-  bool isEqualTo(GoListModel other) {
-    return const DeepCollectionEquality().equals(toJson(), other.toJson());
-  }
-
   T lastModified<T extends GoListModel>(T a, T b) {
     if (a.modified.isAfter(b.modified)) {
       return a;
     }
     return b;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      other is GoListModel &&
+      const DeepCollectionEquality().equals(toJson(), other.toJson());
+
+  @override
+  int get hashCode => toJson().hashCode;
+
+  static int compareByModified(GoListModel a, GoListModel b) {
+    return b.modified.compareTo(a.modified);
+  }
+
+  static bool Function(GoListModel) equalsById(String id) {
+    return (e) => e.id == id;
+  }
+
+  static bool Function(GoListModel) equalsByName(GoListModel other) {
+    return (e) =>
+        e.name.trim().toLowerCase() == other.name.trim().toLowerCase();
+  }
+
+  T copy<T extends GoListModel>();
 }

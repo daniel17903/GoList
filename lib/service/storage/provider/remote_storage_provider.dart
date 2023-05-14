@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:go_list/model/item.dart';
-import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
 
@@ -13,21 +13,13 @@ class RemoteStorageProvider extends StorageProvider {
   final GoListClient goListClient = GoListClient();
 
   @override
-  Future<GoListCollection<ShoppingList>> loadShoppingLists() async {
+  Future<ShoppingListCollection> loadShoppingLists() async {
     try {
       final response = await goListClient.sendRequest(
           endpoint: "/api/shoppinglists", httpMethod: HttpMethod.get);
 
-      GoListCollection<ShoppingList> shoppingLists = GoListCollection(
-          jsonDecode(utf8.decode(response.bodyBytes))
-              .map<ShoppingList>((element) {
-        if (element is ShoppingList) {
-          return element;
-        }
-        return ShoppingList.fromJson(element);
-      }).toList());
-
-      return shoppingLists;
+      return ShoppingListCollection.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
     } catch (e) {
       print("failed to load shopping lists from server: $e");
       rethrow;

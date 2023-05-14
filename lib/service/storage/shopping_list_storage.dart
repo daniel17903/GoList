@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 
@@ -18,7 +19,7 @@ class ShoppingListStorage {
     return _singleton;
   }
 
-  GoListCollection<ShoppingList> loadShoppingListsFromLocalStorage() {
+  ShoppingListCollection loadShoppingListsFromLocalStorage() {
     return localStorageProvider.loadShoppingLists();
   }
 
@@ -26,9 +27,9 @@ class ShoppingListStorage {
     return localStorageProvider.loadShoppingList(shoppingListId);
   }
 
-  Stream<GoListCollection<ShoppingList>> loadShoppingLists() async* {
-    GoListCollection<ShoppingList> shoppingListsFromLocalStorage =
-    loadShoppingListsFromLocalStorage();
+  Stream<ShoppingListCollection> loadShoppingLists() async* {
+    ShoppingListCollection shoppingListsFromLocalStorage =
+        loadShoppingListsFromLocalStorage();
     yield shoppingListsFromLocalStorage;
 
     //GoListCollection<ShoppingList> shoppingListsFromRemoteStorage =
@@ -39,12 +40,12 @@ class ShoppingListStorage {
   }
 
   Stream<ShoppingList> loadShoppingList(String shoppingListId) async* {
-    ShoppingList shoppingListFromLocalStorage = loadShoppingListFromLocalStorage(
-        shoppingListId);
+    ShoppingList shoppingListFromLocalStorage =
+        loadShoppingListFromLocalStorage(shoppingListId);
     yield shoppingListFromLocalStorage;
 
     //ShoppingList shoppingListFromRemoteStorage = await remoteStorageProvider
-      //  .loadShoppingList(shoppingListId);
+    //  .loadShoppingList(shoppingListId);
     // TODO update storage if diff
     //yield shoppingListFromLocalStorage.merge(shoppingListFromRemoteStorage)
   }

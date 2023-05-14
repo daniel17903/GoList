@@ -40,6 +40,10 @@ class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
     findMapping();
   }
 
+  Item copyAsRecenltyUsedItem() {
+    return Item(name: name, iconName: iconName, category: category);
+  }
+
   void findMapping() {
     IconMapping iconMapping = InputToItemParser().findMappingForName(name);
     iconName = iconMapping.assetFileName;
@@ -70,5 +74,16 @@ class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
   @override
   Item merge(Item other) {
     return lastModified(this, other);
+  }
+
+  @override
+  T copy<T extends GoListModel>() {
+    return Item(
+        name: name,
+        iconName: iconName,
+        amount: amount,
+        category: category,
+        deleted: deleted,
+        modified: modified) as T;
   }
 }

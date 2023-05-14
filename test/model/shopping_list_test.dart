@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/service/items/category.dart';
 
 import '../builders/item_builder.dart';
 import '../builders/shopping_list_builder.dart';
@@ -43,15 +44,16 @@ void main() {
       Item item5 = ItemBuilder().withId("id3").build();
 
       ShoppingList list1 =
-      ShoppingListBuilder().withItems([item2, item3]).build();
+          ShoppingListBuilder().withItems([item2, item3]).build();
       ShoppingList list2 =
-      ShoppingListBuilder().withItems([item1, item4, item5]).build();
+          ShoppingListBuilder().withItems([item1, item4, item5]).build();
 
       ShoppingList mergedList1 = list1.merge(list2);
       ShoppingList mergedList2 = list2.merge(list1);
 
       expect(mergedList1.itemsAsList(), unorderedEquals([item2, item4, item5]));
-      expect(mergedList1.itemsAsList(), unorderedEquals(mergedList2.itemsAsList()));
+      expect(mergedList1.itemsAsList(),
+          unorderedEquals(mergedList2.itemsAsList()));
     });
   });
 
@@ -70,6 +72,7 @@ void main() {
     ShoppingList list = ShoppingListBuilder()
         .withId("id")
         .withItems([item1, item2])
+        .withRecentlyUsedItems([item1, item2])
         .withModified(DateTime(2020, 1, 2))
         .build();
 
@@ -98,6 +101,26 @@ void main() {
           'category': 'Category.beverages'
         }
       ],
+      'recently_used_items': [
+        {
+          'id': 'id1',
+          'deleted': false,
+          'modified': '2020-01-01T00:00:00.000',
+          'name': 'name1',
+          'iconName': 'iconName',
+          'amount': '1',
+          'category': 'Category.beverages'
+        },
+        {
+          'id': 'id2',
+          'deleted': false,
+          'modified': '2020-01-02T00:00:00.000',
+          'name': 'name2',
+          'iconName': 'iconName',
+          'amount': '1',
+          'category': 'Category.beverages'
+        }
+      ],
       'device_count': 1
     };
 
@@ -107,7 +130,7 @@ void main() {
 
     test("parses a shopping list from json", () async {
       ShoppingList shoppingListFromJson = ShoppingList.fromJson(json);
-      expect(shoppingListFromJson.isEqualTo(list), isTrue);
+      expect(shoppingListFromJson, list);
     });
 
     test("parses a shopping list from json with time as ms", () async {
@@ -126,13 +149,23 @@ void main() {
             'amount': '1',
             'category': 'Category.beverages'
           }
+        ],
+        'recently_used_items': [
+          {
+            'id': 'id',
+            'deleted': false,
+            'modified': 1683059350203,
+            'name': 'name1',
+            'iconName': 'iconName',
+            'amount': '1',
+            'category': 'Category.beverages'
+          }
         ]
       });
       List<Item> expectedItems = [
         ItemBuilder()
             .withId("id")
-            .withModified(
-            DateTime.fromMillisecondsSinceEpoch(1683059350203))
+            .withModified(DateTime.fromMillisecondsSinceEpoch(1683059350203))
             .withName("name1")
             .withIconName("iconName")
             .build()
@@ -142,8 +175,72 @@ void main() {
           .withModified(DateTime.fromMillisecondsSinceEpoch(1683059350203))
           .withName("name")
           .withItems(expectedItems)
+          .withRecentlyUsedItems(expectedItems)
           .build();
-      expect(shoppingListFromJson.isEqualTo(expectedShoppingList), isTrue);
+      expect(shoppingListFromJson, expectedShoppingList);
+    });
+  });
+
+  group("upserts items", () {
+    test("upserts an item at correct index", () async {
+      Item itemWithLowerSortedCategory = ItemBuilder()
+          .withName("itemWithLowerSortedCategory")
+          .withCategory(Category.household)
+          .withModified(DateTime(2020, 1, 2))
+          .build();
+      Item itemWitMidSortedCategory = ItemBuilder()
+          .withName("itemWitMidSortedCategory")
+          .withCategory(Category.spicesCanned)
+          .build();
+      Item itemWithHigherSortedCategory = ItemBuilder()
+          .withName("itemWithHigherSortedCategory")
+          .withCategory(Category.bread)
+          .withModified(DateTime(2020, 1, 1))
+          .build();
+
+      ShoppingList shoppingList = ShoppingListBuilder().withItems(
+          [itemWithLowerSortedCategory, itemWithHigherSortedCategory]).build();
+
+      shoppingList.upsertItem(itemWitMidSortedCategory);
+
+      expect(
+          shoppingList.itemsAsList(),
+          orderedEquals([
+            itemWithHigherSortedCategory,
+            itemWitMidSortedCategory,
+            itemWithLowerSortedCategory,
+          ]));
+
+      expect(
+          shoppingList.recentlyUsedItems.entries.map((e) => e.name),
+          orderedEquals([
+            itemWitMidSortedCategory.name,
+            itemWithLowerSortedCategory.name,
+            itemWithHigherSortedCategory.name,
+          ]));
+    });
+
+    test("keeps names of recently used items unique", () async {
+      Item firstItem = ItemBuilder()
+          .withName("firstItem")
+          .withModified(DateTime(2020, 1, 1))
+          .build();
+      Item secondItem = ItemBuilder()
+          .withName("secondItem")
+          .withModified(DateTime(2020, 1, 2))
+          .build();
+      Item itemWithExistingName = ItemBuilder().withName("firstItem").build();
+
+      ShoppingList shoppingList =
+          ShoppingListBuilder().withItems([firstItem, secondItem]).build();
+      shoppingList.upsertItem(itemWithExistingName);
+
+      expect(
+          shoppingList.recentlyUsedItems.entries.map((e) => e.name),
+          orderedEquals([
+            firstItem.name,
+            secondItem.name,
+          ]));
     });
   });
 }
