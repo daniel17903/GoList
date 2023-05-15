@@ -1,6 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:go_list/model/mergeable.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class GoListModel {
@@ -15,6 +13,8 @@ abstract class GoListModel {
     this.modified = modified ?? DateTime.now();
     this.deleted = deleted ?? false;
   }
+
+  GoListModel.fromJson(Map<String, dynamic> json);
 
   Map<String, dynamic> toJson() => {
         'id': id,

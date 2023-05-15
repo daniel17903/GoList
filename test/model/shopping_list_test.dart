@@ -103,6 +103,15 @@ void main() {
       ],
       'recently_used_items': [
         {
+          'id': 'id2',
+          'deleted': false,
+          'modified': '2020-01-02T00:00:00.000',
+          'name': 'name2',
+          'iconName': 'iconName',
+          'amount': '1',
+          'category': 'Category.beverages'
+        },
+        {
           'id': 'id1',
           'deleted': false,
           'modified': '2020-01-01T00:00:00.000',
@@ -111,15 +120,6 @@ void main() {
           'amount': '1',
           'category': 'Category.beverages'
         },
-        {
-          'id': 'id2',
-          'deleted': false,
-          'modified': '2020-01-02T00:00:00.000',
-          'name': 'name2',
-          'iconName': 'iconName',
-          'amount': '1',
-          'category': 'Category.beverages'
-        }
       ],
       'device_count': 1
     };
@@ -198,7 +198,10 @@ void main() {
           .withModified(DateTime(2020, 1, 1))
           .build();
 
-      ShoppingList shoppingList = ShoppingListBuilder().withItems(
+      ShoppingList shoppingList = ShoppingListBuilder().withItems([
+        itemWithLowerSortedCategory,
+        itemWithHigherSortedCategory
+      ]).withRecentlyUsedItems(
           [itemWithLowerSortedCategory, itemWithHigherSortedCategory]).build();
 
       shoppingList.upsertItem(itemWitMidSortedCategory);
@@ -231,8 +234,9 @@ void main() {
           .build();
       Item itemWithExistingName = ItemBuilder().withName("firstItem").build();
 
-      ShoppingList shoppingList =
-          ShoppingListBuilder().withItems([firstItem, secondItem]).build();
+      ShoppingList shoppingList = ShoppingListBuilder()
+          .withItems([firstItem, secondItem]).withRecentlyUsedItems(
+              [firstItem, secondItem]).build();
       shoppingList.upsertItem(itemWithExistingName);
 
       expect(

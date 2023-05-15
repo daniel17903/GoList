@@ -40,7 +40,7 @@ class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
     findMapping();
   }
 
-  Item copyAsRecenltyUsedItem() {
+  Item copyAsRecentlyUsedItem() {
     return Item(name: name, iconName: iconName, category: category);
   }
 

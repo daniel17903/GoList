@@ -87,7 +87,7 @@ class ItemListViewer extends StatelessWidget {
                         runSpacing: spacing,
                         direction: Axis.horizontal,
                         crossAxisAlignment: WrapCrossAlignment.center,
-                        children: items.entries().map((Item item) {
+                        children: items.entries.map((Item item) {
                           return ShoppingListItem(
                             initialScaleFactor:
                                 _calcItemBoxScaleFactor(parentWidth),

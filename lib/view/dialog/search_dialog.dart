@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/item.dart';
+import 'package:go_list/model/recently_used_item_collection.dart';
 import 'package:go_list/model/selected_shopping_list_state.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
@@ -19,7 +20,8 @@ class SearchDialog extends StatefulWidget {
 class _SearchDialogState extends State<SearchDialog> {
   Item? previewItem;
   Timer? _debounce;
-  GoListCollection<Item> _recentlyUsedItemsSorted = GoListCollection();
+  RecentlyUsedItemCollection _recentlyUsedItemsSorted =
+      RecentlyUsedItemCollection();
 
   void _debounced(Function function) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
@@ -92,7 +94,7 @@ class _SearchDialogState extends State<SearchDialog> {
               onItemTapped: addNewItemToList,
               items: GoListCollection([
                 if (previewItem != null) previewItem!,
-                ..._recentlyUsedItemsSorted.entries()
+                ..._recentlyUsedItemsSorted.entries
               ].toList())),
         )
       ]),

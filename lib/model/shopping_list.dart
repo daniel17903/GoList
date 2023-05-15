@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/golist_model.dart';
 import 'package:go_list/model/item_collection.dart';
 import 'package:go_list/model/mergeable.dart';
@@ -25,6 +23,8 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
     this.recentlyUsedItems = recentlyUsedItems ??
         RecentlyUsedItemCollection.fromItemCollection(this.items);
     this.deviceCount = deviceCount ?? 1;
+    this.items.sort();
+    this.recentlyUsedItems.sort();
   }
 
   ShoppingList.fromJson(Map<String, dynamic> json)
@@ -37,16 +37,8 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
                 : DateTime.fromMillisecondsSinceEpoch(json["modified"])) {
     items = ItemCollection.fromJson(json["items"]);
     recentlyUsedItems =
-        RecentlyUsedItemCollection(_itemsFromJson(json, "recently_used_items"))
-            .sort();
+        RecentlyUsedItemCollection.fromJson(json["recently_used_items"]);
     deviceCount = json.containsKey("device_count") ? json["device_count"] : 1;
-  }
-
-  List<Item> _itemsFromJson(Map<String, dynamic> json, String key) {
-    if (json.containsKey(key)) {
-      return json[key].map<Item>((element) => Item.fromJson(element)).toList();
-    }
-    return [];
   }
 
   @override
@@ -76,7 +68,7 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
 
   ShoppingList upsertItem(Item item) {
     items.upsert(item);
-    recentlyUsedItems.upsert(item.copyAsRecenltyUsedItem());
+    recentlyUsedItems.upsert(item.copyAsRecentlyUsedItem());
     return this;
   }
 
