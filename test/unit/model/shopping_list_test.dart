@@ -1,10 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/item.dart';
+import 'package:go_list/model/recently_used_item_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/items/category.dart';
 
-import '../builders/item_builder.dart';
-import '../builders/shopping_list_builder.dart';
+import '../../builders/item_builder.dart';
+import '../../builders/shopping_list_builder.dart';
 
 void main() {
   group("merge shopping list items", () {
@@ -246,5 +247,15 @@ void main() {
             secondItem.name,
           ]));
     });
+  });
+
+  test("does not create more than maxItems recently used items", () async {
+    ShoppingList shoppingList = ShoppingListBuilder().build();
+    for (int i = 0; i < 10000; i++) {
+      shoppingList.upsertItem(
+          ItemBuilder().withName(i.toString()).withId(i.toString()).build());
+    }
+    expect(shoppingList.recentlyUsedItems.entries.length,
+        RecentlyUsedItemCollection.maxItems);
   });
 }

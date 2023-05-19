@@ -4,8 +4,8 @@ import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/model/shopping_list_collection.dart';
 
-import '../builders/item_builder.dart';
-import '../builders/shopping_list_builder.dart';
+import '../../builders/item_builder.dart';
+import '../../builders/shopping_list_builder.dart';
 
 void main() {
   group("merge shopping list collections", () {

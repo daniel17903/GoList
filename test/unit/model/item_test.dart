@@ -2,7 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/service/items/category.dart';
 
-import '../builders/item_builder.dart';
+import '../../builders/item_builder.dart';
+
 
 void main() {
   group("merge items", () {

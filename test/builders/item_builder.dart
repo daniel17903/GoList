@@ -11,37 +11,37 @@ class ItemBuilder {
   bool _deleted = false;
   String _amount = "1";
 
-  withId(String id) {
+  ItemBuilder withId(String id) {
     _id = id;
     return this;
   }
 
-  withName(String name) {
+  ItemBuilder withName(String name) {
     _name = name;
     return this;
   }
 
-  withDeleted(bool deleted) {
+  ItemBuilder withDeleted(bool deleted) {
     _deleted = deleted;
     return this;
   }
 
-  withModified(DateTime modified) {
+  ItemBuilder withModified(DateTime modified) {
     _modified = modified;
     return this;
   }
 
-  withCategory(Category category) {
+  ItemBuilder withCategory(Category category) {
     _category = category;
     return this;
   }
 
-  withIconName(String iconName) {
+  ItemBuilder withIconName(String iconName) {
     _iconName = iconName;
     return this;
   }
 
-  withAmount(String amount) {
+  ItemBuilder withAmount(String amount) {
     _amount = amount;
     return this;
   }

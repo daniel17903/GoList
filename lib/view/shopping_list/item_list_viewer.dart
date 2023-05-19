@@ -9,6 +9,18 @@ const double horizontalPadding = 6;
 const double spacing = 6;
 
 class ItemListViewer extends StatelessWidget {
+
+  final GoListCollection<Item> items;
+  final void Function(Item) onItemTapped;
+  final void Function(Item)? onItemTappedLong;
+  final Future<void> Function()? onPullForRefresh;
+  final bool delayItemTap;
+  final Widget? header;
+  final Widget? footer;
+  final bool darkBackground;
+  final Color itemColor;
+  final double parentWidth;
+
   const ItemListViewer(
       {Key? key,
       required this.items,
@@ -22,17 +34,6 @@ class ItemListViewer extends StatelessWidget {
       required this.itemColor,
       required this.parentWidth})
       : super(key: key);
-
-  final GoListCollection<Item> items;
-  final void Function(Item) onItemTapped;
-  final void Function(Item)? onItemTappedLong;
-  final Future<void> Function()? onPullForRefresh;
-  final bool delayItemTap;
-  final Widget? header;
-  final Widget? footer;
-  final bool darkBackground;
-  final Color itemColor;
-  final double parentWidth;
 
   double _calcItemBoxScaleFactor(double parentWidth) {
     double minSize = 90;

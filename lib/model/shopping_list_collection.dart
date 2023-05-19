@@ -5,7 +5,7 @@ import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 
 class ShoppingListCollection extends ExtendedGoListCollection<ShoppingList> {
-  late final List<String> _order;
+  late List<String> _order;
 
   ShoppingListCollection(
       {List<ShoppingList>? entries,
