@@ -7,6 +7,7 @@ import 'package:go_list/model/item.dart';
 import 'package:go_list/model/recently_used_item_collection.dart';
 import 'package:go_list/model/selected_shopping_list_state.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
+import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:provider/provider.dart';
 
@@ -51,7 +52,7 @@ class _SearchDialogState extends State<SearchDialog> {
       child: Column(children: [
         Container(
           padding: const EdgeInsets.all(8.0),
-          color: Theme.of(context).dialogBackgroundColor,
+          color: GoListColors.searchDialogBackground,
           child: TextField(
             autofocus: true,
             cursorColor: Colors.white,
@@ -89,7 +90,7 @@ class _SearchDialogState extends State<SearchDialog> {
         Expanded(
           child: ItemListViewer(
               parentWidth: MediaQuery.of(context).size.width - 80.0,
-              itemColor: const Color(0x63d5feb5),
+              itemColor: GoListColors.searchDialogItemBackground,
               darkBackground: true,
               onItemTapped: addNewItemToList,
               items: GoListCollection([

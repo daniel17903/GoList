@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/selected_shopping_list_state.dart';
+import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:go_list/view/dialog/edit_item_dialog.dart';
 import 'package:go_list/view/dialog/edit_list_dialog.dart';
@@ -14,7 +15,7 @@ class ShoppingListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SelectedShoppingListState>(
         builder: (context, selectedShoppingListState, child) => ItemListViewer(
-              itemColor: Theme.of(context).cardColor,
+              itemColor: GoListColors.itemBackground,
               parentWidth: MediaQuery.of(context).size.width,
               darkBackground: false,
               items: selectedShoppingListState.selectedShoppingList.items,
@@ -44,7 +45,7 @@ class ShoppingListWidget extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(22.0),
-                            color: const Color(0x50000000),
+                            color: GoListColors.sharedDevicesTextBackground,
                           ),
                           padding: const EdgeInsets.only(
                               left: 8.0, right: 8.0, top: 2.0, bottom: 2.0),

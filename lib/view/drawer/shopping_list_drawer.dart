@@ -35,14 +35,14 @@ class ShoppingListDrawer extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        DrawerHeader(
+        const DrawerHeader(
           decoration: BoxDecoration(
-              color: Theme.of(context).bottomAppBarTheme.color,
-              image: const DecorationImage(
+              color: GoListColors.appBarColor,
+              image: DecorationImage(
                   image: AssetImage("assets/icons/icon_foreground.png"),
                   fit: BoxFit.contain,
                   alignment: Alignment.bottomRight)),
-          child: const Text(
+          child: Text(
             'GoList',
             style: TextStyle(
               color: Colors.white,
@@ -85,7 +85,7 @@ class ShoppingListDrawer extends StatelessWidget {
                 context: context,
                 contentBuilder: (_) => const SettingsDialog()),
             child: Container(
-              color: GoListColors.turquoise,
+              color: GoListColors.settingsButtonBackground,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 28),

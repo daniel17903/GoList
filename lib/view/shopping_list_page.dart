@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/botton_navigation_bar.dart';
 import 'package:go_list/view/dialog/search_dialog.dart';
 import 'package:go_list/view/shopping_list/shopping_list_widget.dart';
@@ -24,13 +25,7 @@ class ShoppingListPage extends StatelessWidget {
             gradient: RadialGradient(
           radius: screenSize.height / radiusUnit, // 2.0 = screen height
           center: Alignment.bottomCenter, // behind the fab
-          colors: const <Color>[
-            Color(0xffe4b2d2),
-            Color(0xffbde5ee),
-            Color(0xffd8e8af),
-            Color(0xfff6f294),
-            Color(0xff005382),
-          ],
+          colors: GoListColors.backgroundGradientColors,
         )),
         child: Consumer<GlobalAppState>(
             builder: (context, appState, child) => Scaffold(
@@ -47,6 +42,7 @@ class ShoppingListPage extends StatelessWidget {
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerDocked,
                 floatingActionButton: FloatingActionButton(
+                    backgroundColor: GoListColors.appBarColor,
                     onPressed: () => DialogUtils.showLargeAnimatedDialog(
                         context: context, child: const SearchDialog()),
                     child: const Icon(Icons.add)))));

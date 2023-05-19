@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_list/model/golist_collection.dart';
+import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list/refreshable_scroll_view.dart';
 import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
 
@@ -9,7 +10,6 @@ const double horizontalPadding = 6;
 const double spacing = 6;
 
 class ItemListViewer extends StatelessWidget {
-
   final GoListCollection<Item> items;
   final void Function(Item) onItemTapped;
   final void Function(Item)? onItemTappedLong;
@@ -68,7 +68,7 @@ class ItemListViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: darkBackground ? Theme.of(context).dialogBackgroundColor : null,
+        color: darkBackground ? GoListColors.searchDialogBackground : null,
         constraints: const BoxConstraints.expand(),
         child: RefreshableScrollView(
             onRefresh: onPullForRefresh,

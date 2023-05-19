@@ -6,6 +6,7 @@ import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/service/backend_url.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
+import 'package:go_list/style/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -42,16 +43,18 @@ class GoListBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
+        color: GoListColors.appBarColor,
+        shape: const CircularNotchedRectangle(),
         child: Row(children: <Widget>[
-      IconButton(
-          color: Colors.white,
-          icon: const Icon(Icons.menu),
-          onPressed: onMenuButtonTapped),
-      const Spacer(),
-      IconButton(
-          onPressed: () => onShareList(context),
-          icon: const Icon(Icons.share),
-          color: Colors.white)
-    ]));
+          IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.menu),
+              onPressed: onMenuButtonTapped),
+          const Spacer(),
+          IconButton(
+              onPressed: () => onShareList(context),
+              icon: const Icon(Icons.share),
+              color: Colors.white)
+        ]));
   }
 }
