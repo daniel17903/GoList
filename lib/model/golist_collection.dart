@@ -70,9 +70,6 @@ class GoListCollection<T extends GoListModel> {
 
   List<T> get entries => _entries;
 
-  List<T> copyEntries() {
-    return _copyList(_entries);
-  }
 
   GoListCollection<T> upsert(T entry) {
     _entries.removeWhere(GoListModel.equalsById(entry.id));
@@ -80,13 +77,4 @@ class GoListCollection<T extends GoListModel> {
     return this;
   }
 
-  List<T> _copyList(List<T> list) {
-    return list.map((e) => e.copy<T>()).toList();
-  }
-
-/*
-  GoListCollection<T> copy() {
-    return GoListCollection(
-        _copyList(_entries), _copyList(_deletedEntries), [..._order]);
-  }*/
 }

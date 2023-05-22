@@ -27,4 +27,9 @@ class ItemCollection extends ExtendedGoListCollection<Item> {
   ItemCollection merge(ExtendedGoListCollection<Item> other) {
     return super.merge(other) as ItemCollection;
   }
+
+  List<Item> copyEntries() {
+    return entries.map<Item>((e) => e.copy()).toList();
+  }
+
 }

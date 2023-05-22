@@ -1,5 +1,4 @@
 import 'package:go_list/model/item.dart';
-import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/item_collection.dart';
 import 'package:go_list/model/recently_used_item_collection.dart';
 import 'package:go_list/model/shopping_list.dart';

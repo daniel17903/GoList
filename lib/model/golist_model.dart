@@ -50,6 +50,4 @@ abstract class GoListModel {
     return (e) =>
         e.name.trim().toLowerCase() == other.name.trim().toLowerCase();
   }
-
-  T copy<T extends GoListModel>();
 }

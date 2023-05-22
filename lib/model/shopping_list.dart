@@ -27,7 +27,7 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
     this.recentlyUsedItems.sort();
   }
 
-  ShoppingList.fromJson(Map<String, dynamic> json)
+  ShoppingList.fromJson(dynamic json)
       : super(
             id: json["id"],
             name: json["name"],
@@ -83,9 +83,4 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
     return items.entries;
   }
 
-  @override
-  T copy<T extends GoListModel>() {
-    // TODO: implement copy
-    throw UnimplementedError();
-  }
 }

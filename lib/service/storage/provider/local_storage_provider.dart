@@ -1,5 +1,4 @@
 import 'package:get_storage/get_storage.dart';
-import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/model/shopping_list_collection.dart';
@@ -26,13 +25,19 @@ class LocalStorageProvider implements StorageProvider {
 
   @override
   ShoppingList loadShoppingList(String shoppingListId) {
-    // TODO: implement loadShoppingList
-    throw UnimplementedError();
+    ShoppingListCollection shoppingLists = loadShoppingLists();
+    ShoppingList? shoppingList = shoppingLists.entryWithId(shoppingListId);
+    if (shoppingList == null) {
+      throw Exception(
+          "Shopping list with id $shoppingListId does not exist in local storage.");
+    }
+    return shoppingList;
   }
 
   @override
   void upsertItem(String shoppingListId, Item item) {
-    // TODO: implement upsertItem
-    throw UnimplementedError();
+    ShoppingList shoppingList = loadShoppingList(shoppingListId);
+    shoppingList.upsertItem(item);
+    upsertShoppingList(shoppingList);
   }
 }

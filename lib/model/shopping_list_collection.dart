@@ -15,7 +15,7 @@ class ShoppingListCollection extends ExtendedGoListCollection<ShoppingList> {
     _order = order ?? [];
   }
 
-  static ShoppingListCollection fromJson(List<Map<String, dynamic>> json) {
+  static ShoppingListCollection fromJson(List<dynamic> json) {
     ShoppingListCollection shoppingListCollection = ShoppingListCollection();
     json.map<ShoppingList>(ShoppingList.fromJson).forEach((shoppingList) {
       shoppingListCollection.upsert(shoppingList);

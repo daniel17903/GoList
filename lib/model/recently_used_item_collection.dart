@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/item.dart';
+import 'package:go_list/model/item_collection.dart';
 
 import 'golist_model.dart';
 
@@ -22,7 +23,7 @@ class RecentlyUsedItemCollection extends GoListCollection<Item> {
   }
 
   static RecentlyUsedItemCollection fromItemCollection(
-      GoListCollection<Item> itemCollection) {
+      ItemCollection itemCollection) {
     return RecentlyUsedItemCollection(itemCollection.copyEntries());
   }
 
