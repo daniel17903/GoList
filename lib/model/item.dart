@@ -1,15 +1,13 @@
-import 'package:flutter/foundation.dart' show immutable;
 import 'package:go_list/model/golist_model.dart';
 import 'package:go_list/model/mergeable.dart';
 import 'package:go_list/service/items/category.dart';
 import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 
-@immutable
 class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
-  late final String iconName;
-  late final String? amount;
-  late final Category category;
+  late String iconName;
+  late String? amount;
+  late Category category;
 
   Item(
       {String? id,
@@ -50,6 +48,11 @@ class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
     category = iconMapping.category;
   }
 
+  void setName(String name) {
+    this.name = name;
+    findMapping();
+  }
+
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
@@ -74,6 +77,11 @@ class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
   @override
   Item merge(Item other) {
     return lastModified(this, other);
+  }
+
+  Item newFromTemplate() {
+    return Item(
+        name: name, iconName: iconName, amount: amount, category: category);
   }
 
   @override

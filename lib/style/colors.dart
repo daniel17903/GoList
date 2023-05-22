@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 class GoListColors {
-  static const Color searchDialogBackground = Color(0xBF01141D);
-  static const Color searchDialogItemBackground = Color(0x63d5feb5);
+  static const Color addItemDialogBackground = Color(0xBF01141D);
+  static const Color addItemDialogItemBackground = Color(0x63d5feb5);
 
   static const Color itemBackground = Color(0x94024461);
 

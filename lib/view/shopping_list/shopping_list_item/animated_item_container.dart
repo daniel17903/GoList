@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/view/shopping_list_item/disappear_animation.dart';
-import 'package:go_list/view/shopping_list_item/item_animation_controller.dart';
+import 'package:go_list/view/shopping_list/shopping_list_item/disappear_animation.dart';
+import 'package:go_list/view/shopping_list/shopping_list_item/item_animation_controller.dart';
 
 class AnimatedItemContainer extends StatefulWidget {
   const AnimatedItemContainer(

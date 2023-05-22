@@ -57,9 +57,8 @@ class _EditItemDialogState extends State<EditItemDialog> {
             child: Text(AppLocalizations.of(context)!.save),
             onPressed: () {
               Navigator.pop(context);
-              widget.item.name = nameTextInputController.text;
+              widget.item.setName(nameTextInputController.text);
               widget.item.amount = amountInputController.text;
-              widget.item.findMapping();
               Provider.of<SelectedShoppingListState>(context, listen: false)
                   .upsertItem(widget.item);
             })

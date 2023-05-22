@@ -18,7 +18,7 @@ class LocalStorageProvider implements StorageProvider {
 
   @override
   void upsertShoppingList(ShoppingList shoppingList) {
-    GoListCollection shoppingLists = loadShoppingLists();
+    ShoppingListCollection shoppingLists = loadShoppingLists();
     shoppingLists.upsert(shoppingList);
 
     getStorage.write("shoppingLists", shoppingLists.toJson());

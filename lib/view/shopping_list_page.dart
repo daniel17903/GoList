@@ -1,14 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/botton_navigation_bar.dart';
-import 'package:go_list/view/dialog/search_dialog.dart';
-import 'package:go_list/view/shopping_list/shopping_list_widget.dart';
+import 'package:go_list/view/shopping_list/add_item_dialog/add_item_dialog.dart';
 import 'package:go_list/view/drawer/shopping_list_drawer.dart';
+import 'package:go_list/view/shopping_list/main_item_list_viewer.dart';
 import 'package:provider/provider.dart';
 
-import '../model/global_app_state.dart';
 import 'dialog/dialog_utils.dart';
 
 class ShoppingListPage extends StatelessWidget {
@@ -37,14 +37,16 @@ class ShoppingListPage extends StatelessWidget {
                 bottomNavigationBar: GoListBottomNavigationBar(
                     onMenuButtonTapped: () =>
                         _scaffoldKey.currentState?.openDrawer()),
-                body: const SafeArea(child: ShoppingListWidget()),
+                body: SafeArea(
+                    child: MainItemListViewer(
+                        parentWidth: MediaQuery.of(context).size.width)),
                 drawer: const ShoppingListDrawer(),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerDocked,
                 floatingActionButton: FloatingActionButton(
                     backgroundColor: GoListColors.appBarColor,
                     onPressed: () => DialogUtils.showLargeAnimatedDialog(
-                        context: context, child: const SearchDialog()),
+                        context: context, child: const AddItemDialog()),
                     child: const Icon(Icons.add)))));
   }
 }

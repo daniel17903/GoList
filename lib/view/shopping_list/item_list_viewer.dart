@@ -1,37 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list/refreshable_scroll_view.dart';
-import 'package:go_list/view/shopping_list_item/shopping_list_item.dart';
-
-import '../../model/item.dart';
+import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 
 const double horizontalPadding = 6;
 const double spacing = 6;
 
 class ItemListViewer extends StatelessWidget {
-  final GoListCollection<Item> items;
-  final void Function(Item) onItemTapped;
-  final void Function(Item)? onItemTappedLong;
   final Future<void> Function()? onPullForRefresh;
-  final bool delayItemTap;
   final Widget? header;
   final Widget? footer;
   final bool darkBackground;
-  final Color itemColor;
   final double parentWidth;
+  final Widget body;
 
   const ItemListViewer(
       {Key? key,
-      required this.items,
-      required this.onItemTapped,
-      this.delayItemTap = false,
-      this.onItemTappedLong,
+      required this.body,
       this.header,
       this.onPullForRefresh,
       this.footer,
       required this.darkBackground,
-      required this.itemColor,
       required this.parentWidth})
       : super(key: key);
 
@@ -68,7 +57,7 @@ class ItemListViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: darkBackground ? GoListColors.searchDialogBackground : null,
+        color: darkBackground ? GoListColors.addItemDialogBackground : null,
         constraints: const BoxConstraints.expand(),
         child: RefreshableScrollView(
             onRefresh: onPullForRefresh,
@@ -83,23 +72,7 @@ class ItemListViewer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     if (header != null) header!,
-                    Wrap(
-                        spacing: spacing,
-                        runSpacing: spacing,
-                        direction: Axis.horizontal,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: items.entries.map((Item item) {
-                          return ShoppingListItem(
-                            initialScaleFactor:
-                                _calcItemBoxScaleFactor(parentWidth),
-                            color: itemColor,
-                            key: UniqueKey(),
-                            item: item,
-                            onItemTapped: onItemTapped,
-                            onItemTappedLong: onItemTappedLong ?? (_) {},
-                            delayItemTap: delayItemTap,
-                          );
-                        }).toList()),
+                    body,
                     if (footer != null) footer!
                   ],
                 ))));

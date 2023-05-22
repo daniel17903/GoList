@@ -1,33 +1,24 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/recently_used_item_collection.dart';
 import 'package:go_list/model/selected_shopping_list_state.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/style/colors.dart';
-import 'package:go_list/view/shopping_list/item_list_viewer.dart';
+import 'package:go_list/view/shopping_list/add_item_dialog/add_item_list_viewer.dart';
 import 'package:provider/provider.dart';
 
-class SearchDialog extends StatefulWidget {
-  const SearchDialog({Key? key}) : super(key: key);
+class AddItemDialog extends StatefulWidget {
+  const AddItemDialog({Key? key}) : super(key: key);
 
   @override
-  State<SearchDialog> createState() => _SearchDialogState();
+  State<AddItemDialog> createState() => _AddItemDialogState();
 }
 
-class _SearchDialogState extends State<SearchDialog> {
+class _AddItemDialogState extends State<AddItemDialog> {
   Item? previewItem;
-  Timer? _debounce;
   RecentlyUsedItemCollection _recentlyUsedItemsSorted =
       RecentlyUsedItemCollection();
-
-  void _debounced(Function function) {
-    if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 100), () => function());
-  }
 
   @override
   void initState() {
@@ -38,10 +29,10 @@ class _SearchDialogState extends State<SearchDialog> {
             .recentlyUsedItems;
   }
 
-  void addNewItemToList([Item? item]) {
-    if (previewItem != null || item != null) {
+  void addNewItemToList(Item? item) {
+    if (item != null) {
       Provider.of<SelectedShoppingListState>(context, listen: false)
-          .upsertItem(item ?? previewItem!);
+          .upsertItem(item.newFromTemplate());
       Navigator.pop(context);
     }
   }
@@ -52,7 +43,7 @@ class _SearchDialogState extends State<SearchDialog> {
       child: Column(children: [
         Container(
           padding: const EdgeInsets.all(8.0),
-          color: GoListColors.searchDialogBackground,
+          color: GoListColors.addItemDialogBackground,
           child: TextField(
             autofocus: true,
             cursorColor: Colors.white,
@@ -69,42 +60,34 @@ class _SearchDialogState extends State<SearchDialog> {
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   borderSide: BorderSide(color: Colors.white)),
             ),
-            onSubmitted: (_) => addNewItemToList(),
+            onSubmitted: (_) => addNewItemToList(previewItem),
             textInputAction: TextInputAction.done,
-            onChanged: (text) {
-              _debounced(() {
-                setState(() {
-                  _recentlyUsedItemsSorted.searchBy(text);
-                  if (text.isEmpty ||
-                      _recentlyUsedItemsSorted.isNotEmpty() &&
-                          text == _recentlyUsedItemsSorted.first()!.name) {
-                    previewItem = null;
-                  } else {
-                    previewItem = InputToItemParser().parseInput(text);
-                  }
-                });
+            onChanged: (searchText) {
+              bool previewItemMatchesFirstRecentlyUsedItem =
+                  _recentlyUsedItemsSorted.isNotEmpty() &&
+                      searchText == _recentlyUsedItemsSorted.first()!.name;
+              bool previewItemDidChange = previewItem?.name != searchText;
+              setState(() {
+                _recentlyUsedItemsSorted.searchBy(searchText);
+                if (searchText.isEmpty ||
+                    previewItemMatchesFirstRecentlyUsedItem) {
+                  previewItem = null;
+                } else if (previewItemDidChange) {
+                  previewItem = InputToItemParser().parseInput(searchText);
+                }
               });
             },
           ),
         ),
         Expanded(
-          child: ItemListViewer(
+          child: AddItemListViewer(
               parentWidth: MediaQuery.of(context).size.width - 80.0,
-              itemColor: GoListColors.searchDialogItemBackground,
-              darkBackground: true,
               onItemTapped: addNewItemToList,
-              items: GoListCollection([
-                if (previewItem != null) previewItem!,
-                ..._recentlyUsedItemsSorted.entries
-              ].toList())),
+              recentlyUsedItemsSorted: previewItem == null
+                  ? _recentlyUsedItemsSorted
+                  : _recentlyUsedItemsSorted.prepend(previewItem!)),
         )
       ]),
     );
-  }
-
-  @override
-  void dispose() {
-    _debounce?.cancel();
-    super.dispose();
   }
 }

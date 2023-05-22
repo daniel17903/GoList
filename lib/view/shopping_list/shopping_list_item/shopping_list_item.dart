@@ -1,34 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:go_list/model/item.dart';
 import 'package:go_list/style/golist_icons.dart';
-import 'package:go_list/view/shopping_list_item/animated_item_container.dart';
-import 'package:go_list/view/shopping_list_item/item_animation_controller.dart';
-import 'package:go_list/view/shopping_list_item/item_layout_delegate.dart';
-import 'package:go_list/view/shopping_list_item/tap_detector.dart';
-
-import '../../model/item.dart';
+import 'package:go_list/view/shopping_list/shopping_list_item/animated_item_container.dart';
+import 'package:go_list/view/shopping_list/shopping_list_item/item_animation_controller.dart';
+import 'package:go_list/view/shopping_list/shopping_list_item/item_layout_delegate.dart';
+import 'package:go_list/view/shopping_list/shopping_list_item/tap_detector.dart';
 
 const double defaultSize = 120;
+const double horizontalPadding = 6;
+const double spacing = 6;
 
 class ShoppingListItem extends StatefulWidget {
-  const ShoppingListItem(
+  final Item item;
+  final Function(Item) onItemTapped;
+  late final void Function(Item) onItemTappedLong;
+  late final bool delayItemTap;
+  final Color backgroundColor;
+  late final double initialScaleFactor;
+
+  ShoppingListItem(
       {Key? key,
       required this.item,
       required this.onItemTapped,
-      required this.delayItemTap,
-      required this.onItemTappedLong,
-      required this.color,
-      required this.initialScaleFactor})
-      : super(key: key);
-
-  final Item item;
-  final Function(Item) onItemTapped;
-  final void Function(Item) onItemTappedLong;
-  final bool delayItemTap;
-  final Color color;
-  final double initialScaleFactor;
+      bool? delayItemTap,
+      void Function(Item)? onItemTappedLong,
+      required this.backgroundColor,
+      required double parentWidth})
+      : super(key: key) {
+    this.onItemTappedLong = onItemTappedLong ?? (_) => {};
+    this.delayItemTap = delayItemTap ?? false;
+    initialScaleFactor = _initialScaleFactor(parentWidth);
+  }
 
   @override
   State<ShoppingListItem> createState() => _ShoppingListItemState();
+
+  double _initialScaleFactor(double parentWidth) {
+    double minSize = 90;
+
+    double widthForItems(int itemCount, double itemSize) {
+      return itemCount * itemSize +
+          (itemCount - 1) * spacing +
+          2 * horizontalPadding;
+    }
+
+    double size = defaultSize;
+    while (widthForItems(3, size) > parentWidth && size > minSize) {
+      size--;
+    }
+
+    return size / defaultSize;
+  }
 }
 
 class _ShoppingListItemState extends State<ShoppingListItem> {
@@ -55,7 +77,7 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
       onLongTap: () => widget.onItemTappedLong(widget.item),
       child: AnimatedItemContainer(
         initialSize: defaultSize * widget.initialScaleFactor,
-        color: widget.color,
+        color: widget.backgroundColor,
         animationController: animationController,
         child: CustomMultiChildLayout(
             delegate: ItemLayoutDelegate(

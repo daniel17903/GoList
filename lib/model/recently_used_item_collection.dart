@@ -11,7 +11,8 @@ class RecentlyUsedItemCollection extends GoListCollection<Item> {
   RecentlyUsedItemCollection([List<Item>? items]) : super(items ?? []);
 
   static RecentlyUsedItemCollection fromJson(List<dynamic>? json) {
-    RecentlyUsedItemCollection recentlyUsedItemCollection = RecentlyUsedItemCollection();
+    RecentlyUsedItemCollection recentlyUsedItemCollection =
+        RecentlyUsedItemCollection();
     if (json != null) {
       json.map<Item>((itemJson) => Item.fromJson(itemJson)).forEach((item) {
         recentlyUsedItemCollection.upsert(item);
@@ -25,7 +26,7 @@ class RecentlyUsedItemCollection extends GoListCollection<Item> {
     return RecentlyUsedItemCollection(itemCollection.copyEntries());
   }
 
-  searchBy(String? searchText) {
+  RecentlyUsedItemCollection searchBy(String? searchText) {
     super.sort((entry1, entry2) {
       startsWithIgnoreCase(String value, String start) {
         return value.toLowerCase().startsWith(start.toLowerCase());
@@ -45,6 +46,10 @@ class RecentlyUsedItemCollection extends GoListCollection<Item> {
     return this;
   }
 
+  RecentlyUsedItemCollection prepend(Item item) {
+    return RecentlyUsedItemCollection([item, ...entries]);
+  }
+
   @override
   RecentlyUsedItemCollection sort([int Function(Item, Item)? compare]) {
     super.sort(GoListModel.compareByModified);
@@ -56,7 +61,7 @@ class RecentlyUsedItemCollection extends GoListCollection<Item> {
     entries.removeWhere(GoListModel.equalsByName(entry));
     super.upsert(entry);
     sort();
-    if(entries.length > maxItems) {
+    if (entries.length > maxItems) {
       entries.removeRange(maxItems - 1, max(entries.length, maxItems - 1));
     }
     return this;
