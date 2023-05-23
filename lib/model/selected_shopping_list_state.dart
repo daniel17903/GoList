@@ -7,7 +7,7 @@ import 'package:go_list/service/storage/shopping_list_storage.dart';
 import 'item.dart';
 
 class SelectedShoppingListState extends ChangeNotifier {
-  late final ShoppingList selectedShoppingList;
+  late ShoppingList selectedShoppingList;
 
   SelectedShoppingListState(this.selectedShoppingList);
 

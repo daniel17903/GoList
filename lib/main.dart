@@ -18,7 +18,8 @@ import 'package:go_list/view/shopping_list_page.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_links/uni_links.dart';
 
-void main() {
+void main() async {
+  await Future.wait([GetStorage.init(), InputToItemParser().init()]);
   runApp(MultiProvider(
     providers: [
       // you must first provider the object that will be passed to the proxy
@@ -66,10 +67,7 @@ class _MyAppState extends State<GoListApp> {
     super.initState();
     _handleIncomingLinks();
     //getInitialUri().then(_joinListWithTokenFromLink);
-    InputToItemParser().init();
-    GetStorage.init().then((_) {
-      changeLanguage(Locale(GoListLanguages.getLanguageCode()));
-    });
+    changeLanguage(Locale(GoListLanguages.getLanguageCode()));
   }
 
   @override
@@ -87,61 +85,61 @@ class _MyAppState extends State<GoListApp> {
   }
 
   /**
-  Future<void> _joinListWithTokenFromLink(Uri? uri) async {
-    if (uri != null && uri.queryParameters.containsKey("token")) {
+      Future<void> _joinListWithTokenFromLink(Uri? uri) async {
+      if (uri != null && uri.queryParameters.containsKey("token")) {
       try {
-        GoListClient goListClient = GoListClient();
+      GoListClient goListClient = GoListClient();
 
-        // if app was opened with link lists have not been loaded yet
-        await ref
-            .read(AppStateNotifier.appStateProvider.notifier)
-            .loadAllFromStorage();
+      // if app was opened with link lists have not been loaded yet
+      await ref
+      .read(AppStateNotifier.appStateProvider.notifier)
+      .loadAllFromStorage();
 
-        // use build context synchronously
-        if (!mounted) return;
+      // use build context synchronously
+      if (!mounted) return;
 
-        ref
-            .read(AppStateNotifier.appStateProvider.notifier)
-            .initializeWithEmptyList(context);
+      ref
+      .read(AppStateNotifier.appStateProvider.notifier)
+      .initializeWithEmptyList(context);
 
-        List<String> listIdsBeforeJoin = ref
-            .read(AppStateNotifier.notDeletedShoppingListsProvider)
-            .map((e) => e.id)
-            .toList();
+      List<String> listIdsBeforeJoin = ref
+      .read(AppStateNotifier.notDeletedShoppingListsProvider)
+      .map((e) => e.id)
+      .toList();
 
-        // join the list
-        await goListClient.sendRequest(
-            endpoint: "/api/joinwithtoken/${uri.queryParameters["token"]}",
-            httpMethod: HttpMethod.post);
+      // join the list
+      await goListClient.sendRequest(
+      endpoint: "/api/joinwithtoken/${uri.queryParameters["token"]}",
+      httpMethod: HttpMethod.post);
 
-        // load the new list and sync with local storage
-        await ref
-            .read(AppStateNotifier.appStateProvider.notifier)
-            .loadAllFromStorage();
+      // load the new list and sync with local storage
+      await ref
+      .read(AppStateNotifier.appStateProvider.notifier)
+      .loadAllFromStorage();
 
-        int indexOfNewList = ref
-            .read(AppStateNotifier.notDeletedShoppingListsProvider)
-            .indexWhere(
-                (shoppingList) => !listIdsBeforeJoin.contains(shoppingList.id));
+      int indexOfNewList = ref
+      .read(AppStateNotifier.notDeletedShoppingListsProvider)
+      .indexWhere(
+      (shoppingList) => !listIdsBeforeJoin.contains(shoppingList.id));
 
-        // use build context synchronously
-        if (!mounted) return;
+      // use build context synchronously
+      if (!mounted) return;
 
-        if (indexOfNewList == -1) {
-          throw Exception(AppLocalizations.of(context)!.failed_to_load_list);
-        }
-
-        ref
-            .read(AppStateNotifier.appStateProvider.notifier)
-            .selectList(indexOfNewList);
-      } catch (e) {
-        print(e);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-                "${AppLocalizations.of(context)!.failed_to_open_list}: $e")));
+      if (indexOfNewList == -1) {
+      throw Exception(AppLocalizations.of(context)!.failed_to_load_list);
       }
-    }
-  }*/
+
+      ref
+      .read(AppStateNotifier.appStateProvider.notifier)
+      .selectList(indexOfNewList);
+      } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+      "${AppLocalizations.of(context)!.failed_to_open_list}: $e")));
+      }
+      }
+      }*/
 
   void _handleIncomingLinks() {
     if (!kIsWeb) {

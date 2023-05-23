@@ -9,7 +9,9 @@ class LocalStorageProvider implements StorageProvider {
 
   @override
   ShoppingListCollection loadShoppingLists() {
+    print(getStorage.getKeys());
     if (getStorage.hasData("shoppingLists")) {
+      print(getStorage.read("shoppingLists"));
       return ShoppingListCollection.fromJson(getStorage.read("shoppingLists"));
     }
     return ShoppingListCollection();
