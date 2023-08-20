@@ -9,9 +9,7 @@ class LocalStorageProvider implements StorageProvider {
 
   @override
   ShoppingListCollection loadShoppingLists() {
-    print(getStorage.getKeys());
     if (getStorage.hasData("shoppingLists")) {
-      print(getStorage.read("shoppingLists"));
       return ShoppingListCollection.fromJson(getStorage.read("shoppingLists"));
     }
     return ShoppingListCollection();
@@ -34,12 +32,5 @@ class LocalStorageProvider implements StorageProvider {
           "Shopping list with id $shoppingListId does not exist in local storage.");
     }
     return shoppingList;
-  }
-
-  @override
-  void upsertItem(String shoppingListId, Item item) {
-    ShoppingList shoppingList = loadShoppingList(shoppingListId);
-    shoppingList.upsertItem(item);
-    upsertShoppingList(shoppingList);
   }
 }

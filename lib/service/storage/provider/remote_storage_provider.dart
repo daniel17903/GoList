@@ -44,10 +44,4 @@ class RemoteStorageProvider extends StorageProvider {
     // TODO: implement loadShoppingList
     throw UnimplementedError();
   }
-
-  @override
-  Future<void> upsertItem(String shoppingListId, Item item) {
-    // TODO: implement upsertItem
-    throw UnimplementedError();
-  }
 }
