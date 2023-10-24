@@ -13,6 +13,25 @@ class AddItemDialog extends StatefulWidget {
 
   @override
   State<AddItemDialog> createState() => _AddItemDialogState();
+
+  static void show({required BuildContext context}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionBuilder: (context, a1, a2, widget) {
+          return SlideTransition(
+            position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0))
+                .animate(a1),
+            child: widget,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) => const SafeArea(
+              child: AddItemDialog(),
+            ));
+  }
 }
 
 class _AddItemDialogState extends State<AddItemDialog> {
@@ -63,12 +82,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
             onSubmitted: (_) => addNewItemToList(previewItem),
             textInputAction: TextInputAction.done,
             onChanged: (searchText) {
-              bool previewItemMatchesFirstRecentlyUsedItem =
-                  _recentlyUsedItemsSorted.isNotEmpty() &&
-                      searchText == _recentlyUsedItemsSorted.first()!.name;
-              bool previewItemDidChange = previewItem?.name != searchText;
               setState(() {
                 _recentlyUsedItemsSorted.searchBy(searchText);
+                bool previewItemMatchesFirstRecentlyUsedItem =
+                    _recentlyUsedItemsSorted.isNotEmpty() &&
+                        searchText == _recentlyUsedItemsSorted.first()!.name;
+                bool previewItemDidChange = previewItem?.name != searchText;
                 if (searchText.isEmpty ||
                     previewItemMatchesFirstRecentlyUsedItem) {
                   previewItem = null;

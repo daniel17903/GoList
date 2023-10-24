@@ -2,17 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/model/selected_shopping_list_state.dart';
-import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/golist_languages.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/service/storage/local_settings_storage.dart';
-import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
-import 'package:go_list/service/storage/shopping_list_storage.dart';
 import 'package:go_list/style/themed_app.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:provider/provider.dart';
@@ -20,28 +15,7 @@ import 'package:uni_links/uni_links.dart';
 
 void main() async {
   await Future.wait([GetStorage.init(), InputToItemParser().init()]);
-  runApp(MultiProvider(
-    providers: [
-      // you must first provider the object that will be passed to the proxy
-      ChangeNotifierProvider<GlobalAppState>(
-          create: (_) => GlobalAppState().loadListsFromStorage()),
-      // Because the ChangeNotifierProxyProvider is being used,
-      // each class used must be of ChangeNotifier type
-      ChangeNotifierProxyProvider<GlobalAppState, SelectedShoppingListState>(
-          // first, create the _proxy_ object, the one that you'll use in your UI
-          // at this point, you will have access to the previously provided objects
-          create: (BuildContext context) => SelectedShoppingListState(
-              Provider.of<GlobalAppState>(context, listen: false)
-                  .getSelectedShoppingList()),
-          // next, define a function to be called on `update`. It will return the same type
-          // as the create method.
-          update: (BuildContext context, GlobalAppState globalAppsSate,
-                  SelectedShoppingListState? selectedShoppingListState) =>
-              SelectedShoppingListState(
-                  globalAppsSate.getSelectedShoppingList())),
-    ],
-    child: const GoListApp(),
-  ));
+  runApp(const GoListApp());
 }
 
 class GoListApp extends StatefulWidget {
@@ -65,7 +39,7 @@ class _MyAppState extends State<GoListApp> {
   @override
   void initState() {
     super.initState();
-    _handleIncomingLinks();
+    //_handleIncomingLinks();
     //getInitialUri().then(_joinListWithTokenFromLink);
     changeLanguage(Locale(GoListLanguages.getLanguageCode()));
   }
@@ -152,9 +126,25 @@ class _MyAppState extends State<GoListApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ThemedApp(
-      locale: _locale,
-      child: ShoppingListPage(),
+    return MultiProvider(
+      providers: [
+        // provides the GlobalAppState
+        ChangeNotifierProvider<GlobalAppState>(
+            create: (_) => GlobalAppState().loadListsFromStorage()),
+        // provides the SelectedShoppingListState based on the GlobalAppState
+        ChangeNotifierProxyProvider<GlobalAppState, SelectedShoppingListState>(
+            create: (BuildContext context) => SelectedShoppingListState(
+                Provider.of<GlobalAppState>(context, listen: false)
+                    .getSelectedShoppingList()),
+            update: (BuildContext context, GlobalAppState globalAppsSate,
+                    SelectedShoppingListState? selectedShoppingListState) =>
+                SelectedShoppingListState(
+                    globalAppsSate.getSelectedShoppingList())),
+      ],
+      child: ThemedApp(
+        locale: _locale,
+        child: ShoppingListPage(),
+      ),
     );
   }
 }

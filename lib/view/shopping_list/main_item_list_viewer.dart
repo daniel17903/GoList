@@ -10,6 +10,8 @@ import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 import 'package:provider/provider.dart';
 
+import 'shopping_list_item/shopping_list_item_wrap.dart';
+
 class MainItemListViewer extends StatelessWidget {
   final double parentWidth;
 
@@ -20,7 +22,6 @@ class MainItemListViewer extends StatelessWidget {
       ShoppingListItem(
         parentWidth: parentWidth,
         backgroundColor: GoListColors.itemBackground,
-        key: UniqueKey(),
         item: item,
         onItemTapped: (tappedItem) =>
             Provider.of<SelectedShoppingListState>(context, listen: false)
@@ -57,11 +58,7 @@ class MainItemListViewer extends StatelessWidget {
             )
           ],
         ),
-        body: Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            direction: Axis.horizontal,
-            crossAxisAlignment: WrapCrossAlignment.center,
+        body: ShoppingListItemWrap(
             children: selectedShoppingListState
                 .selectedShoppingList.items.entries
                 .map((item) => _widgetForItem(item, context))

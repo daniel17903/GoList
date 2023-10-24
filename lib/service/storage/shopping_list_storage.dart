@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
@@ -47,11 +46,6 @@ class ShoppingListStorage {
     //  .loadShoppingList(shoppingListId);
     // TODO update storage if diff
     //yield shoppingListFromLocalStorage.merge(shoppingListFromRemoteStorage)
-  }
-
-  Future<void> upsertItem(String shoppingListId, Item item) async {
-    localStorageProvider.upsertItem(shoppingListId, item);
-    //await remoteStorageProvider.upsertItem(shoppingListId, item);
   }
 
   Future<void> upsertShoppingList(ShoppingList shoppingList) async {
