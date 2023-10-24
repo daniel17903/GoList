@@ -8,10 +8,10 @@ import 'snapshot/fixtures.dart';
 
 // see https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
-  mockPlugins();
   // This is necessary for the InputToItemParser to work which is used
   // when entering text in the AddItemDialog
   TestWidgetsFlutterBinding.ensureInitialized();
+  mockPlugins();
   await InputToItemParser().init("en");
   await loadAppFonts();
   return testMain();
