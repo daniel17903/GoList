@@ -3,14 +3,12 @@ import 'package:go_list/model/item.dart';
 import 'package:go_list/model/selected_shopping_list_state.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/style/golist_icons.dart';
+import 'package:go_list/view/dialog/edit_item_dialog.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/animated_item_container.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/item_animation_controller.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/item_layout_delegate.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/tap_detector.dart';
 import 'package:provider/provider.dart';
-
-import '../../dialog/dialog_utils.dart';
-import '../../dialog/edit_item_dialog.dart';
 
 const double defaultSize = 120;
 const double horizontalPadding = 6;
@@ -25,14 +23,13 @@ class ShoppingListItem extends StatefulWidget {
   late final double initialScaleFactor;
 
   ShoppingListItem(
-      {Key? key,
-      required this.item,
+      {required this.item,
       required this.onItemTapped,
       bool? delayItemTap,
       void Function(Item)? onItemTappedLong,
       required this.backgroundColor,
       required double parentWidth})
-      : super(key: key) {
+      : super(key: Key(item.id)) {
     this.onItemTappedLong = onItemTappedLong ?? (_) => {};
     this.delayItemTap = delayItemTap ?? false;
     initialScaleFactor = _initialScaleFactor(parentWidth);

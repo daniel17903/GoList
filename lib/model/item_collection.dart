@@ -18,12 +18,6 @@ class ItemCollection extends ExtendedGoListCollection<Item> {
   }
 
   @override
-  ItemCollection upsert(Item entry) {
-    super.upsert(entry);
-    return this;
-  }
-
-  @override
   ItemCollection merge(ExtendedGoListCollection<Item> other) {
     return super.merge(other) as ItemCollection;
   }

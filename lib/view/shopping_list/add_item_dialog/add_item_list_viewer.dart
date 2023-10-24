@@ -22,7 +22,6 @@ class AddItemListViewer extends StatelessWidget {
       ShoppingListItem(
         parentWidth: parentWidth,
         backgroundColor: GoListColors.addItemDialogItemBackground,
-        key: UniqueKey(),
         item: item,
         onItemTapped: onItemTapped,
       );

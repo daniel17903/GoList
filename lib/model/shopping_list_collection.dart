@@ -1,7 +1,5 @@
-import 'package:go_list/model/golist_collection.dart';
-import 'package:go_list/model/golist_model.dart';
 import 'package:go_list/model/extended_golist_collection.dart';
-import 'package:go_list/model/item.dart';
+import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
 
 class ShoppingListCollection extends ExtendedGoListCollection<ShoppingList> {
@@ -33,9 +31,7 @@ class ShoppingListCollection extends ExtendedGoListCollection<ShoppingList> {
   ShoppingListCollection copyWith(List<ShoppingList> entries,
       [List<ShoppingList>? deletedEntries]) {
     return ShoppingListCollection(
-        entries: entries,
-        deletedEntries: deletedEntries ?? deletedEntries,
-        order: _order);
+        entries: entries, deletedEntries: deletedEntries, order: _order);
   }
 
   void setOrder(List<String> order) {
