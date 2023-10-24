@@ -13,7 +13,6 @@ void main() async {
   late ShoppingList shoppingListWithRecentlyUsedItems;
 
   setUp(() async {
-    mockPlugins();
     shoppingListWithRecentlyUsedItems = ShoppingListBuilder().withItems(
         [ItemBuilder().withName("item 1").build()]).withRecentlyUsedItems([
       ItemBuilder().withName("a recently used a").withAmount("").build(),

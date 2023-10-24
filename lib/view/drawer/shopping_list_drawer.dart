@@ -13,21 +13,6 @@ import 'package:provider/provider.dart';
 class ShoppingListDrawer extends StatelessWidget {
   const ShoppingListDrawer({Key? key}) : super(key: key);
 
-  _deleteShoppingList(
-      ShoppingList shoppingList, GlobalAppState globalAppState) {
-    globalAppState.deleteShoppingList(shoppingList);
-  }
-
-  _selectShoppingList(
-      ShoppingList shoppingList, GlobalAppState globalAppState) {
-    globalAppState.setSelectedShoppingListId(shoppingList.id);
-  }
-
-  _reorderShoppingList(
-      int oldIndex, int newIndex, GlobalAppState globalAppState) {
-    globalAppState.updateListOrder(oldIndex, newIndex);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -67,16 +52,16 @@ class ShoppingListDrawer extends StatelessWidget {
                           shoppingListName: shoppingList.name,
                           key: Key(shoppingList.id),
                           onTap: () {
-                            _selectShoppingList(shoppingList, globalAppState);
+                            globalAppState
+                                .setSelectedShoppingListId(shoppingList.id);
                             Navigator.pop(context);
                           },
                           onDelete: () =>
-                              _deleteShoppingList(shoppingList, globalAppState),
+                              globalAppState.deleteShoppingList(shoppingList),
                         );
                       },
                       onReorder: (int oldIndex, int newIndex) =>
-                          _reorderShoppingList(
-                              oldIndex, newIndex, globalAppState))),
+                          globalAppState.updateListOrder(oldIndex, newIndex))),
         ),
         SafeArea(
           top: false,

@@ -7,7 +7,7 @@ import 'package:go_list/service/storage/shopping_list_storage.dart';
 class GlobalAppState extends ChangeNotifier {
   late ShoppingListCollection shoppingLists;
   late String selectedShoppingListId;
-  late List<String> shoppingListOrder;
+  late List<String>? shoppingListOrder;
 
   GlobalAppState() {
     shoppingListOrder = LocalSettingsStorage().loadShoppingListOrder();
@@ -27,7 +27,9 @@ class GlobalAppState extends ChangeNotifier {
 
   setShoppingLists(ShoppingListCollection shoppingLists) {
     this.shoppingLists = shoppingLists;
-    this.shoppingLists.setOrder(shoppingListOrder);
+    if (shoppingListOrder != null) {
+      this.shoppingLists.setOrder(shoppingListOrder!);
+    }
     notifyListeners();
   }
 
@@ -58,6 +60,7 @@ class GlobalAppState extends ChangeNotifier {
   void upsertShoppingList(ShoppingList shoppingList) {
     shoppingLists.upsert(shoppingList);
     ShoppingListStorage().upsertShoppingList(shoppingList);
+    setSelectedShoppingListId(shoppingList.id);
     notifyListeners();
   }
 

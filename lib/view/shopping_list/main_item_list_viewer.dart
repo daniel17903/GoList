@@ -18,20 +18,6 @@ class MainItemListViewer extends StatelessWidget {
   const MainItemListViewer({Key? key, required this.parentWidth})
       : super(key: key);
 
-  ShoppingListItem _widgetForItem(Item item, BuildContext context) =>
-      ShoppingListItem(
-        parentWidth: parentWidth,
-        backgroundColor: GoListColors.itemBackground,
-        item: item,
-        onItemTapped: (tappedItem) =>
-            Provider.of<SelectedShoppingListState>(context, listen: false)
-                .deleteItem(tappedItem),
-        onItemTappedLong: (item) => DialogUtils.showSmallAlertDialog(
-            context: context,
-            contentBuilder: (_) => EditItemDialog(item: item)),
-        delayItemTap: true,
-      );
-
   @override
   Widget build(BuildContext context) {
     return Consumer<SelectedShoppingListState>(
@@ -61,7 +47,8 @@ class MainItemListViewer extends StatelessWidget {
         body: ShoppingListItemWrap(
             children: selectedShoppingListState
                 .selectedShoppingList.items.entries
-                .map((item) => _widgetForItem(item, context))
+                .map((item) =>
+                    ShoppingListItem.forItem(item, context, parentWidth))
                 .toList()),
         footer: selectedShoppingListState.selectedShoppingList.deviceCount != 1
             ? Center(

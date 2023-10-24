@@ -6,6 +6,8 @@ import 'package:go_list/model/selected_shopping_list_state.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
 import 'package:provider/provider.dart';
 
+import 'dialog_utils.dart';
+
 class EditItemDialog extends StatefulWidget {
   const EditItemDialog({Key? key, required this.item}) : super(key: key);
 
@@ -13,6 +15,11 @@ class EditItemDialog extends StatefulWidget {
 
   @override
   State<EditItemDialog> createState() => _EditItemDialogState();
+
+  static show(BuildContext context, Item item) {
+    DialogUtils.showSmallAlertDialog(
+        context: context, contentBuilder: (_) => EditItemDialog(item: item));
+  }
 }
 
 class _EditItemDialogState extends State<EditItemDialog> {

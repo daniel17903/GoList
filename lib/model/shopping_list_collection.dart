@@ -12,7 +12,7 @@ class ShoppingListCollection extends ExtendedGoListCollection<ShoppingList> {
       List<ShoppingList>? deletedEntries,
       List<String>? order})
       : super(entries: entries, deletedEntries: deletedEntries) {
-    _order = order ?? [];
+    _order = order ?? entries?.map((e) => e.id).toList() ?? [];
   }
 
   static ShoppingListCollection fromJson(List<dynamic> json) {
@@ -21,6 +21,12 @@ class ShoppingListCollection extends ExtendedGoListCollection<ShoppingList> {
       shoppingListCollection.upsert(shoppingList);
     });
     return shoppingListCollection;
+  }
+
+  @override
+  ExtendedGoListCollection<ShoppingList> upsert(ShoppingList entry) {
+    _order.add(entry.id);
+    return super.upsert(entry);
   }
 
   @override
@@ -42,11 +48,11 @@ class ShoppingListCollection extends ExtendedGoListCollection<ShoppingList> {
   void moveListInOrder(int fromIndex, int toIndex) {
     if (fromIndex < toIndex) {
       // removing the item at fromIndex will shorten the list by 1.
-      fromIndex -= 1;
+      toIndex -= 1;
     }
-    String shoppingListIdAtfrom = _order.removeAt(fromIndex);
-    _order.insert(toIndex, shoppingListIdAtfrom);
-    setOrder(_order);
+    String shoppingListIdAtFrom = _order.removeAt(fromIndex);
+    _order.insert(toIndex, shoppingListIdAtFrom);
+    sort();
   }
 
   @override

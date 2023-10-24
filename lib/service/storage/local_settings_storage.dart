@@ -39,11 +39,11 @@ class LocalSettingsStorage{
     getStorage.write("shoppingListOrder", jsonEncode(shoppingListOrder));
   }
 
-  List<String> loadShoppingListOrder() {
-    if (!getStorage.hasData("shoppingListOrder")) {
-      return [];
+  List<String>? loadShoppingListOrder() {
+    if (getStorage.hasData("shoppingListOrder")) {
+      return List<String>.from(jsonDecode(getStorage.read("shoppingListOrder")));
     }
-    return List<String>.from(jsonDecode(getStorage.read("shoppingListOrder")));
+    return null;
   }
 
 }
