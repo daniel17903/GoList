@@ -13,9 +13,8 @@ class GoListCollection<T extends GoListModel> {
         (e) => e.deleted == true && e.modified.isBefore(tenDaysAgo));
   }
 
-  GoListCollection<T> sort([int Function(T, T)? compare]) {
+  void sort([int Function(T, T)? compare]) {
     _entries.sort(compare);
-    return this;
   }
 
   int length() {
@@ -71,10 +70,9 @@ class GoListCollection<T extends GoListModel> {
   List<T> get entries => _entries;
 
 
-  GoListCollection<T> upsert(T entry) {
+  void upsert(T entry) {
     _entries.removeWhere(GoListModel.equalsById(entry.id));
     _entries.add(entry);
-    return this;
   }
 
 }

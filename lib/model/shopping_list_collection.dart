@@ -22,9 +22,9 @@ class ShoppingListCollection extends ExtendedGoListCollection<ShoppingList> {
   }
 
   @override
-  ExtendedGoListCollection<ShoppingList> upsert(ShoppingList entry) {
+  void upsert(ShoppingList entry) {
     _order.add(entry.id);
-    return super.upsert(entry);
+    super.upsert(entry);
   }
 
   @override

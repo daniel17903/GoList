@@ -7,7 +7,7 @@ import 'package:go_list/model/item_collection.dart';
 import 'golist_model.dart';
 
 class RecentlyUsedItemCollection extends GoListCollection<Item> {
-  static const maxItems = 100;
+  static const maxItems = 1000;
 
   RecentlyUsedItemCollection([List<Item>? items]) : super(items ?? []);
 
@@ -52,19 +52,22 @@ class RecentlyUsedItemCollection extends GoListCollection<Item> {
   }
 
   @override
-  RecentlyUsedItemCollection sort([int Function(Item, Item)? compare]) {
+  void sort([int Function(Item, Item)? compare]) {
     super.sort(GoListModel.compareByModified);
-    return this;
   }
 
   @override
-  RecentlyUsedItemCollection upsert(Item entry) {
+  void upsert(Item entry) {
+    if(entry.name.isEmpty){
+      // Items can have an empty name, either if the user deleted it after
+      // creation or if the item only has an amount.
+      return;
+    }
     entries.removeWhere(GoListModel.equalsByName(entry));
     super.upsert(entry);
     sort();
     if (entries.length > maxItems) {
       entries.removeRange(maxItems - 1, max(entries.length, maxItems - 1));
     }
-    return this;
   }
 }

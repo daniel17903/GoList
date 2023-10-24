@@ -20,7 +20,7 @@ class ExtendedGoListCollection<T extends GoListModel>
   }
 
   @override
-  ExtendedGoListCollection<T> upsert(T entry) {
+  void upsert(T entry) {
     entries.removeWhere(GoListModel.equalsById(entry.id));
     _deletedEntries.removeWhere(GoListModel.equalsById(entry.id));
     if (entry.deleted) {
@@ -29,7 +29,6 @@ class ExtendedGoListCollection<T extends GoListModel>
       entries.add(entry);
     }
     sort();
-    return this;
   }
 
   @override
