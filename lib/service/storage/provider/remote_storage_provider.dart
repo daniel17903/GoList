@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/service/golist_client.dart';

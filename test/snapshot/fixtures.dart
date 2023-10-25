@@ -4,8 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/selected_shopping_list_state.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/service/items/input_to_item_parser.dart';
-import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:provider/provider.dart';
 
 Future<void> globalSetup(WidgetTester tester) async {
