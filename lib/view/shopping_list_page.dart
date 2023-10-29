@@ -32,9 +32,8 @@ class ShoppingListPage extends StatelessWidget {
             bottomNavigationBar: GoListBottomNavigationBar(
                 onMenuButtonTapped: () =>
                     _scaffoldKey.currentState?.openDrawer()),
-            body: SafeArea(
-                child: MainItemListViewer(
-                    parentWidth: MediaQuery.of(context).size.width)),
+            body: MainItemListViewer(
+                parentWidth: MediaQuery.of(context).size.width),
             drawer: const ShoppingListDrawer(),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,

@@ -51,4 +51,5 @@ void main() {
         findsNWidgets(originalNumberOfItems - 1));
     expect(find.byKey(Key(itemToDelete.id)), findsNothing);
   });
+
 }
