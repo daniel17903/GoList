@@ -46,7 +46,7 @@ void main() async {
       ..addScenario(
         widget: wrapWithShoppingListProvider(
           shoppingListWithRecentlyUsedItems,
-          const AddItemDialog(),
+          wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Renders recently used items',
       );
@@ -62,14 +62,14 @@ void main() async {
       ..addScenario(
         widget: wrapWithShoppingListProvider(
           shoppingListWithRecentlyUsedItems,
-          const AddItemDialog(),
+          wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Renders recently used items',
       )
       ..addScenario(
         widget: wrapWithShoppingListProvider(
           shoppingListWithRecentlyUsedItems,
-          const AddItemDialog(),
+          wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Previews an item with a not recently used name',
         onCreate: (scenarioWidgetKey) async {
@@ -84,7 +84,7 @@ void main() async {
       ..addScenario(
         widget: wrapWithShoppingListProvider(
           shoppingListWithRecentlyUsedItems,
-          const AddItemDialog(),
+          wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Previews an item with a partial recently used name',
         onCreate: (scenarioWidgetKey) async {
@@ -99,7 +99,7 @@ void main() async {
       ..addScenario(
         widget: wrapWithShoppingListProvider(
           shoppingListWithRecentlyUsedItems,
-          const AddItemDialog(),
+          wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Previews an item with a recently used name',
         onCreate: (scenarioWidgetKey) async {

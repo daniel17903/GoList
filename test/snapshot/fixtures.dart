@@ -36,10 +36,7 @@ Widget wrapWithMaterialApp(Widget widget) {
 Future<void> loadImages(WidgetTester tester) async {
   /// current workaround for flaky image asset testing.
   /// https://github.com/flutter/flutter/issues/38997
-  for (var element in [
-    ...find.byType(Image).evaluate(),
-    ...find.byType(AssetImage).evaluate()
-  ]) {
+  for (var element in find.byType(Image).evaluate()) {
     final Image widget = element.widget as Image;
     final ImageProvider image = widget.image;
     await precacheImage(image, element);
@@ -51,7 +48,7 @@ Future<void> pumpWithSelectedShoppingList(
     WidgetTester tester, Widget w, ShoppingList shoppingList,
     {withImages = true}) async {
   await pump(tester,
-      wrapWithMaterialApp(wrapWithShoppingListProvider(shoppingList, w)),
+      wrapWithShoppingListProvider(shoppingList, wrapWithMaterialApp(w)),
       withImages: withImages);
 }
 
@@ -62,10 +59,11 @@ Future<void> pumpWithGlobalAppState(WidgetTester tester, Widget w,
   globalAppState.setSelectedShoppingListId(selectedShoppingListId);
   await pump(
       tester,
-      wrapWithMaterialApp(wrapWithGlobalAppStateProvider(
+      wrapWithGlobalAppStateProvider(
           globalAppState,
           wrapWithShoppingListProvider(
-              shoppingLists.entryWithId(selectedShoppingListId)!, w))),
+              shoppingLists.entryWithId(selectedShoppingListId)!,
+              wrapWithMaterialApp(w))),
       withImages: true);
 }
 

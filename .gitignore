@@ -249,3 +249,4 @@ fabric.properties
 
 # don't check in golden failure output
 **/failures/*.png
+/test/snapshot/failures/
