@@ -24,7 +24,7 @@ void main() async {
 
   testWidgets('Opens the AddItemDialog when tapping the floating action button',
       (tester) async {
-    await globalSetup(tester);
+    await setViewSize(tester);
 
     await pumpWithSelectedShoppingList(
         tester, ShoppingListPage(), shoppingListWithRecentlyUsedItems);

@@ -15,7 +15,7 @@ void main() {
       parentWidth: 1000);
 
   testWidgets('Renders ShoppingListItems', (tester) async {
-    await globalSetup(tester);
+    await setViewSize(tester);
 
     var items = [
       ItemBuilder().withName("apple").withAmount("").build(),

@@ -6,8 +6,8 @@ import 'package:go_list/model/selected_shopping_list_state.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:provider/provider.dart';
 
-Future<void> globalSetup(WidgetTester tester) async {
-  tester.view.physicalSize = const Size(1080, 2220);
+Future<void> setViewSize(WidgetTester tester, {size = const Size(1080, 2220)}) async {
+  tester.view.physicalSize = size;
 }
 
 void mockPlugins() {
@@ -42,25 +42,28 @@ Future<void> loadImages(WidgetTester tester) async {
 }
 
 Future<void> pumpWithSelectedShoppingList(
-    WidgetTester tester, Widget w, ShoppingList shoppingList) async {
-  await pump(
-      tester,
-      wrapWithShoppingListProvider(shoppingList, w));
+    WidgetTester tester, Widget w, ShoppingList shoppingList,
+    {withImages = true}) async {
+  await pump(tester, wrapWithShoppingListProvider(shoppingList, w),
+      withImages: withImages);
 }
 
-ChangeNotifierProvider<SelectedShoppingListState> wrapWithShoppingListProvider(ShoppingList shoppingList, Widget w) {
+ChangeNotifierProvider<SelectedShoppingListState> wrapWithShoppingListProvider(
+    ShoppingList shoppingList, Widget w) {
   return ChangeNotifierProvider<SelectedShoppingListState>.value(
-        value: SelectedShoppingListState(shoppingList),
-        child: wrapWithMaterialApp(w));
+      value: SelectedShoppingListState(shoppingList),
+      child: wrapWithMaterialApp(w));
 }
 
 Future<void> pumpWrappedWithMaterialApp(WidgetTester tester, Widget w) async {
   await pump(tester, wrapWithMaterialApp(w));
 }
 
-Future<void> pump(WidgetTester tester, Widget w) async {
+Future<void> pump(WidgetTester tester, Widget w, {withImages = true}) async {
   await tester.runAsync(() async {
     await tester.pumpWidget(w);
-    await loadImages(tester);
+    if (withImages) {
+      await loadImages(tester);
+    }
   });
 }
