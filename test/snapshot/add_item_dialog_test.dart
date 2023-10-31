@@ -27,7 +27,7 @@ void main() async {
     await setViewSize(tester);
 
     await pumpWithSelectedShoppingList(
-        tester, ShoppingListPage(), shoppingListWithRecentlyUsedItems);
+        tester, const ShoppingListPage(), shoppingListWithRecentlyUsedItems);
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
 

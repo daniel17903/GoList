@@ -3,7 +3,7 @@ import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list/refreshable_scroll_view.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 
-const double horizontalPadding = 6;
+const double additionalHorizontalPadding = 6;
 const double spacing = 6;
 
 class ItemListViewer extends StatelessWidget {
@@ -11,7 +11,8 @@ class ItemListViewer extends StatelessWidget {
   final Widget? header;
   final Widget? footer;
   final bool darkBackground;
-  final double parentWidth;
+  final double horizontalPadding;
+
   final Widget body;
 
   const ItemListViewer(
@@ -21,7 +22,7 @@ class ItemListViewer extends StatelessWidget {
       this.onPullForRefresh,
       this.footer,
       required this.darkBackground,
-      required this.parentWidth})
+      this.horizontalPadding = 0})
       : super(key: key);
 
   double _calcItemBoxScaleFactor(double parentWidth) {
@@ -30,7 +31,7 @@ class ItemListViewer extends StatelessWidget {
     double widthForItems(int itemCount, double itemSize) {
       return itemCount * itemSize +
           (itemCount - 1) * spacing +
-          2 * horizontalPadding;
+          2 * additionalHorizontalPadding;
     }
 
     double size = defaultSize;
@@ -42,16 +43,18 @@ class ItemListViewer extends StatelessWidget {
   }
 
   double _calcPerfectWidth(BuildContext context) {
+    double parentWidth = MediaQuery.of(context).size.width - 2 * horizontalPadding;
+
     double itemBoxSize = _calcItemBoxScaleFactor(parentWidth) * defaultSize;
     double listWidth =
-        MediaQuery.of(context).size.width - 2 * horizontalPadding;
+        MediaQuery.of(context).size.width - 2 * additionalHorizontalPadding;
     int itemsPerRow = listWidth ~/ itemBoxSize;
     if (itemsPerRow * itemBoxSize + (itemsPerRow - 1) * spacing > listWidth) {
       itemsPerRow -= 1;
     }
     return itemsPerRow * itemBoxSize +
         (itemsPerRow - 1) * spacing +
-        2 * horizontalPadding;
+        2 * additionalHorizontalPadding;
   }
 
   @override
@@ -64,8 +67,8 @@ class ItemListViewer extends StatelessWidget {
             child: Container(
                 width: _calcPerfectWidth(context),
                 padding: const EdgeInsets.only(
-                    left: horizontalPadding,
-                    right: horizontalPadding,
+                    left: additionalHorizontalPadding,
+                    right: additionalHorizontalPadding,
                     top: 6,
                     bottom: 70),
                 child: Column(

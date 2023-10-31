@@ -11,8 +11,7 @@ void main() {
   generateShoppingListItemWidget(Item item) => ShoppingListItem(
       item: item,
       onItemTapped: (_) => {},
-      backgroundColor: GoListColors.itemBackground,
-      parentWidth: 1000);
+      backgroundColor: GoListColors.itemBackground);
 
   testWidgets('Renders ShoppingListItems', (tester) async {
     await setViewSize(tester);

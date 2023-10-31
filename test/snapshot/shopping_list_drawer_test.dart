@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/view/shopping_list_page.dart';
+import 'package:golden_toolkit/golden_toolkit.dart';
 
 import '../builders/shopping_list_builder.dart';
 import 'fixtures.dart';
@@ -24,16 +25,34 @@ void main() async {
     ]);
   });
 
-  testWidgets('Opens the ShoppingListDrawer when tapping the menu button',
+  testGoldens('Opens the ShoppingListDrawer when tapping the menu button',
       (tester) async {
-    await setViewSize(tester);
+    final builder = DeviceBuilder()
+      ..overrideDevicesForAllScenarios(devices: [
+        Device.phone,
+        Device.iphone11,
+        Device.tabletPortrait,
+        Device.tabletLandscape
+      ])
+      ..addScenario(
+        widget: wrapWithGlobalAppStateProvider(
+          shoppingListCollection,
+          shoppingList.id,
+          const ShoppingListPage(),
+        ),
+        name: 'Renders recently used items',
+        onCreate: (scenarioWidgetKey) async {
+          final finder = find.descendant(
+            of: find.byKey(scenarioWidgetKey),
+            matching: find.byIcon(Icons.menu),
+          );
+          await tester.tap(finder);
+          await tester.pumpAndSettle();
+        },
+      );
 
-    await pumpWithGlobalAppState(
-        tester, ShoppingListPage(), shoppingListCollection, shoppingList.id);
-    await tester.longPress(find.byIcon(Icons.menu));
-    await tester.pumpAndSettle();
+    await tester.pumpDeviceBuilder(builder);
 
-    await expectLater(find.byType(MaterialApp),
-        matchesGoldenFile('goldens/opened_shopping_list_drawer.png'));
+    await screenMatchesGolden(tester, 'opened_shopping_list_drawer');
   });
 }

@@ -9,10 +9,7 @@ import 'package:provider/provider.dart';
 import 'shopping_list_item/shopping_list_item_wrap.dart';
 
 class MainItemListViewer extends StatelessWidget {
-  final double parentWidth;
-
-  const MainItemListViewer({Key? key, required this.parentWidth})
-      : super(key: key);
+  const MainItemListViewer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +19,6 @@ class MainItemListViewer extends StatelessWidget {
           builder: (context, selectedShoppingListState, child) {
         return ItemListViewer(
           darkBackground: false,
-          parentWidth: parentWidth,
           onPullForRefresh: () =>
               Provider.of<SelectedShoppingListState>(context, listen: false)
                   .loadListFromStorage(),
@@ -46,7 +42,7 @@ class MainItemListViewer extends StatelessWidget {
               children: selectedShoppingListState
                   .selectedShoppingList.items.entries
                   .map((item) =>
-                      ShoppingListItem.forItem(item, context, parentWidth))
+                      ShoppingListItem.forItem(item, context))
                   .toList()),
         );
       }),

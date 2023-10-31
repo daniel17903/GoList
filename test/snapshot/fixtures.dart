@@ -54,16 +54,8 @@ Future<void> pumpWithSelectedShoppingList(
 
 Future<void> pumpWithGlobalAppState(WidgetTester tester, Widget w,
     ShoppingListCollection shoppingLists, String selectedShoppingListId) async {
-  var globalAppState = GlobalAppState();
-  globalAppState.setShoppingLists(shoppingLists);
-  globalAppState.setSelectedShoppingListId(selectedShoppingListId);
-  await pump(
-      tester,
-      wrapWithGlobalAppStateProvider(
-          globalAppState,
-          wrapWithShoppingListProvider(
-              shoppingLists.entryWithId(selectedShoppingListId)!,
-              wrapWithMaterialApp(w))),
+  await pump(tester,
+      wrapWithGlobalAppStateProvider(shoppingLists, selectedShoppingListId, w),
       withImages: true);
 }
 
@@ -74,9 +66,17 @@ ChangeNotifierProvider<SelectedShoppingListState> wrapWithShoppingListProvider(
 }
 
 ChangeNotifierProvider<GlobalAppState> wrapWithGlobalAppStateProvider(
-    GlobalAppState globalAppState, Widget w) {
+    ShoppingListCollection shoppingLists,
+    String selectedShoppingListId,
+    Widget w) {
+  var globalAppState = GlobalAppState();
+  globalAppState.setShoppingLists(shoppingLists);
+  globalAppState.setSelectedShoppingListId(selectedShoppingListId);
   return ChangeNotifierProvider<GlobalAppState>.value(
-      value: globalAppState, child: w);
+      value: globalAppState,
+      child: wrapWithShoppingListProvider(
+          shoppingLists.entryWithId(selectedShoppingListId)!,
+          wrapWithMaterialApp(w)));
 }
 
 Future<void> pumpWrappedWithMaterialApp(WidgetTester tester, Widget w) async {

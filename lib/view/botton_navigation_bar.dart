@@ -11,10 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class GoListBottomNavigationBar extends StatelessWidget {
-  const GoListBottomNavigationBar({Key? key, required this.onMenuButtonTapped})
-      : super(key: key);
-
-  final void Function() onMenuButtonTapped;
+  const GoListBottomNavigationBar({Key? key}) : super(key: key);
 
   void onShareList(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -32,7 +29,6 @@ class GoListBottomNavigationBar extends StatelessWidget {
         Share.share("${BackendUrl.httpUrl()}/join?token=$token",
             sharePositionOrigin:
                 Rect.fromLTWH(0, 0, size.width, size.height / 2));
-        print("${BackendUrl.httpUrl()}/join?token=$token");
       },
     ).catchError((_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -49,7 +45,7 @@ class GoListBottomNavigationBar extends StatelessWidget {
           IconButton(
               color: Colors.white,
               icon: const Icon(Icons.menu),
-              onPressed: onMenuButtonTapped),
+              onPressed: () => Scaffold.of(context).openDrawer()),
           const Spacer(),
           IconButton(
               onPressed: () => onShareList(context),

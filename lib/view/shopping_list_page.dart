@@ -8,9 +8,7 @@ import 'package:go_list/view/shopping_list/add_item_dialog/add_item_dialog.dart'
 import 'package:go_list/view/shopping_list/main_item_list_viewer.dart';
 
 class ShoppingListPage extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  ShoppingListPage({Key? key}) : super(key: key);
+  const ShoppingListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +23,11 @@ class ShoppingListPage extends StatelessWidget {
         )),
         child: Scaffold(
             backgroundColor: Colors.transparent,
-            key: _scaffoldKey,
             extendBody: true,
             resizeToAvoidBottomInset: false,
             // prevents resizing when opening keyboard
-            bottomNavigationBar: GoListBottomNavigationBar(
-                onMenuButtonTapped: () =>
-                    _scaffoldKey.currentState?.openDrawer()),
-            body: MainItemListViewer(
-                parentWidth: MediaQuery.of(context).size.width),
+            bottomNavigationBar: const GoListBottomNavigationBar(),
+            body: const MainItemListViewer(),
             drawer: const ShoppingListDrawer(),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
