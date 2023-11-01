@@ -102,7 +102,7 @@ void main() {
           'category': 'Category.beverages'
         }
       ],
-      'recently_used_items': [
+      'recentlyUsedItems': [
         {
           'id': 'id2',
           'deleted': false,
@@ -121,8 +121,7 @@ void main() {
           'amount': '1',
           'category': 'Category.beverages'
         },
-      ],
-      'device_count': 1
+      ]
     };
 
     test("generates a shopping list json", () async {
@@ -151,7 +150,7 @@ void main() {
             'category': 'Category.beverages'
           }
         ],
-        'recently_used_items': [
+        'recentlyUsedItems': [
           {
             'id': 'id',
             'deleted': false,
