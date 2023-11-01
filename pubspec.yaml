@@ -40,7 +40,7 @@ dependencies:
   flutter_platform_widgets: ^3.3.2
   flutter_launcher_icons: ^0.13.1
   get_storage: ^2.1.1
-  http: ^0.13.4
+  http: ^1.1.0
   uni_links: ^0.5.1
   share_plus: ^6.3.4
   web_socket_channel: ^2.1.0

@@ -13,7 +13,7 @@ class GlobalAppState extends ChangeNotifier {
     shoppingListOrder = LocalSettingsStorage().loadShoppingListOrder();
     setShoppingLists(ShoppingListStorage().loadShoppingListsFromLocalStorage());
     if (shoppingLists.length() == 0) {
-      upsertShoppingList(ShoppingList(name: "Einkaufsliste"));
+      upsertShoppingList(ShoppingList(name: "Einkaufsliste"));  // TODO
     }
     selectedShoppingListId =
         LocalSettingsStorage().loadSelectedShoppingListId() ??

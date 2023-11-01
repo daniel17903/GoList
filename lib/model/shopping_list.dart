@@ -8,7 +8,6 @@ import 'item.dart';
 class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
   late ItemCollection items;
   late RecentlyUsedItemCollection recentlyUsedItems;
-  late int deviceCount;
 
   ShoppingList(
       {required String name,
@@ -22,7 +21,6 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
     this.items = items ?? ItemCollection();
     this.recentlyUsedItems = recentlyUsedItems ??
         RecentlyUsedItemCollection.fromItemCollection(this.items);
-    this.deviceCount = deviceCount ?? 1;
     this.items.sort();
     this.recentlyUsedItems.sort();
   }
@@ -37,17 +35,15 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
                 : DateTime.fromMillisecondsSinceEpoch(json["modified"])) {
     items = ItemCollection.fromJson(json["items"]);
     recentlyUsedItems =
-        RecentlyUsedItemCollection.fromJson(json["recently_used_items"]);
-    deviceCount = json.containsKey("device_count") ? json["device_count"] : 1;
+        RecentlyUsedItemCollection.fromJson(json["recentlyUsedItems"]);
   }
 
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         'items': items.map((item) => item.toJson()).toList(),
-        'recently_used_items':
-            recentlyUsedItems.map((item) => item.toJson()).toList(),
-        'device_count': deviceCount
+        'recentlyUsedItems':
+            recentlyUsedItems.map((item) => item.toJson()).toList()
       };
 
   ShoppingList copyWith(
@@ -62,8 +58,7 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
         items: items ?? this.items,
         deleted: deleted ?? this.deleted,
         modified: modified ?? DateTime.now(),
-        id: id ?? this.id,
-        deviceCount: deviceCount ?? this.deviceCount);
+        id: id ?? this.id);
   }
 
   ShoppingList upsertItem(Item item) {
@@ -82,5 +77,4 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
   List<Item> itemsAsList() {
     return items.entries;
   }
-
 }

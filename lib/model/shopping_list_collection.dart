@@ -58,4 +58,9 @@ class ShoppingListCollection extends ExtendedGoListCollection<ShoppingList> {
         .sort((a, b) => _order.indexOf(a.id).compareTo(_order.indexOf(b.id)));
     return this;
   }
+
+  @override
+  ShoppingListCollection merge(ExtendedGoListCollection<ShoppingList> other) {
+    return super.merge(other) as ShoppingListCollection;
+  }
 }

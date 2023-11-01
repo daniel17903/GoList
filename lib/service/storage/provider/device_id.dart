@@ -9,8 +9,7 @@ class DeviceId {
     getStorage = GetStorage();
   }
 
-  Future<String> call() async {
-    await GetStorage.init();
+  String call() {
     String? deviceId;
     if (getStorage.hasData("deviceId")) {
       deviceId = getStorage.read("deviceId");

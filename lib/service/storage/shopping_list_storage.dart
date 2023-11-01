@@ -30,11 +30,17 @@ class ShoppingListStorage {
         loadShoppingListsFromLocalStorage();
     yield shoppingListsFromLocalStorage;
 
-    //GoListCollection<ShoppingList> shoppingListsFromRemoteStorage =
-    //await remoteStorageProvider.loadShoppingLists();
+    ShoppingListCollection shoppingListsFromRemoteStorage =
+        (await remoteStorageProvider.loadShoppingLists())
+            .merge(shoppingListsFromLocalStorage);
 
-    // TODO update storage if diff
-    //yield shoppingListsFromLocalStorage.merge(shoppingListsFromRemoteStorage);
+    // TODO return if no diff
+
+    // update local storage with changes from remote
+    shoppingListsFromRemoteStorage.entries
+        .forEach(localStorageProvider.upsertShoppingList);
+
+    yield shoppingListsFromRemoteStorage;
   }
 
   Stream<ShoppingList> loadShoppingList(String shoppingListId) async* {
@@ -42,14 +48,17 @@ class ShoppingListStorage {
         loadShoppingListFromLocalStorage(shoppingListId);
     yield shoppingListFromLocalStorage;
 
-    //ShoppingList shoppingListFromRemoteStorage = await remoteStorageProvider
-    //  .loadShoppingList(shoppingListId);
-    // TODO update storage if diff
-    //yield shoppingListFromLocalStorage.merge(shoppingListFromRemoteStorage)
+    ShoppingList shoppingListFromRemoteStorage =
+        (await remoteStorageProvider.loadShoppingList(shoppingListId))
+            .merge(shoppingListFromLocalStorage);
+    // TODO return if no diff
+    localStorageProvider.upsertShoppingList(shoppingListFromRemoteStorage);
+
+    yield shoppingListFromRemoteStorage;
   }
 
   Future<void> upsertShoppingList(ShoppingList shoppingList) async {
     localStorageProvider.upsertShoppingList(shoppingList);
-    //await remoteStorageProvider.upsertShoppingList(shoppingList);
+    await remoteStorageProvider.upsertShoppingList(shoppingList);
   }
 }

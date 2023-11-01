@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/global_app_state.dart';
-import 'package:go_list/service/backend_url.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:go_list/style/colors.dart';
@@ -26,7 +25,7 @@ class GoListBottomNavigationBar extends StatelessWidget {
         .then((responseJson) => responseJson["token"])
         .then(
       (token) {
-        Share.share("${BackendUrl.httpUrl()}/join?token=$token",
+        Share.share("${GoListClient.backendUrl}/join?token=$token",
             sharePositionOrigin:
                 Rect.fromLTWH(0, 0, size.width, size.height / 2));
       },

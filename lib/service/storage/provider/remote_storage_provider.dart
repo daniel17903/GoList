@@ -6,16 +6,19 @@ import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
 
-enum HttpMethod { get, post }
+enum HttpMethod { get, post, put }
 
 class RemoteStorageProvider extends StorageProvider {
-  final GoListClient goListClient = GoListClient();
+  final GoListClient goListClient;
+
+  RemoteStorageProvider({GoListClient? goListClient})
+      : goListClient = goListClient ?? GoListClient();
 
   @override
   Future<ShoppingListCollection> loadShoppingLists() async {
     try {
       final response = await goListClient.sendRequest(
-          endpoint: "/api/shoppinglists", httpMethod: HttpMethod.get);
+          endpoint: "/shopping-lists", httpMethod: HttpMethod.get);
 
       return ShoppingListCollection.fromJson(
           jsonDecode(utf8.decode(response.bodyBytes)));
@@ -25,22 +28,29 @@ class RemoteStorageProvider extends StorageProvider {
     }
   }
 
-  // TODO check if this also saves items
   @override
   Future<void> upsertShoppingList(ShoppingList shoppingList) async {
     try {
       await goListClient.sendRequest(
-          endpoint: "/api/shoppinglist",
-          httpMethod: HttpMethod.post,
-          body: shoppingList.toJson()..remove("items"));
+          endpoint: "/shopping-lists",
+          httpMethod: HttpMethod.put,
+          body: shoppingList.toJson());
     } catch (e) {
-      print("failed to save shopping list on server: $e");
+      print("failed to save shopping list ${shoppingList.id} on server: $e");
     }
   }
 
   @override
-  Future<ShoppingList> loadShoppingList(String shoppingListId) {
-    // TODO: implement loadShoppingList
-    throw UnimplementedError();
+  Future<ShoppingList> loadShoppingList(String shoppingListId) async {
+    try {
+      final response = await goListClient.sendRequest(
+          endpoint: "/shopping-lists/$shoppingListId",
+          httpMethod: HttpMethod.get);
+
+      return ShoppingList.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+    } catch (e) {
+      print("failed to load shopping list $shoppingListId from server: $e");
+      rethrow;
+    }
   }
 }
