@@ -84,7 +84,6 @@ class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
         name: name, iconName: iconName, amount: amount, category: category);
   }
 
-  @override
   T copy<T extends GoListModel>() {
     return Item(
         name: name,

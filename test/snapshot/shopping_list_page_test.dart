@@ -27,7 +27,7 @@ void main() async {
     await setViewSize(tester);
 
     await pumpWithSelectedShoppingList(
-        tester, ShoppingListPage(), shoppingList);
+        tester, const ShoppingListPage(), shoppingList);
 
     await expectLater(find.byType(MaterialApp),
         matchesGoldenFile('goldens/shopping_list_page.png'));
@@ -38,7 +38,7 @@ void main() async {
     await setViewSize(tester);
 
     await pumpWithSelectedShoppingList(
-        tester, ShoppingListPage(), shoppingList);
+        tester, const ShoppingListPage(), shoppingList);
     await tester.longPress(find.text(itemToEdit.name));
     await tester.pumpAndSettle();
 

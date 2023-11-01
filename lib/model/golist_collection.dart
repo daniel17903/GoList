@@ -25,11 +25,6 @@ class GoListCollection<T extends GoListModel> {
     return _entries[index];
   }
 
-  /*
-  GoListCollection<T> mapEntries(T Function(T) f) {
-    return copyWith(_entries.map(f).toList());
-  }*/
-
   T? first() {
     return _entries.first;
   }
@@ -37,11 +32,6 @@ class GoListCollection<T extends GoListModel> {
   Iterable map(Function(T) f) {
     return _entries.map(f);
   }
-
-  /*
-  GoListCollection<T> whereEntry(bool Function(T) test) {
-    return copyWith(_entries.where(test).toList());
-  }*/
 
   List<Map<String, dynamic>> toJson() {
     return _entries.map((e) => e.toJson()).toList();
