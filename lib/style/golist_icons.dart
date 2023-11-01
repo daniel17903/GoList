@@ -29,12 +29,16 @@ class GoListIcons {
     return existingAssets.contains(_iconPath(name));
   }
 
-  Widget getIconImageWidget(String name) {
+  Image getIconImageWidget(String name) {
     return Image.asset(
       _iconPath(
           _assetForIconWithNameExists(name) ? name : defaultIconAssetName),
       color: Colors.white,
       fit: BoxFit.contain,
     );
+  }
+
+  void precacheIconImage(String name, BuildContext context) {
+    precacheImage(getIconImageWidget(name).image, context);
   }
 }
