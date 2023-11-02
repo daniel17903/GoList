@@ -8,6 +8,7 @@ class GlobalAppState extends ChangeNotifier {
   late ShoppingListCollection shoppingLists;
   late String selectedShoppingListId;
   late List<String>? shoppingListOrder;
+  Function? connectionFailureCallback;
 
   GlobalAppState() {
     shoppingListOrder = LocalSettingsStorage().loadShoppingListOrder();
@@ -21,10 +22,11 @@ class GlobalAppState extends ChangeNotifier {
   }
 
   Future<void> loadListsFromStorageInBackground() async {
-    return ShoppingListStorage()
-        .loadShoppingLists()
-        .listen(setShoppingLists)
-        .asFuture();
+    return ShoppingListStorage().loadShoppingLists().listen(setShoppingLists).asFuture();
+  }
+
+  Future<void> loadListsFromRemoteStorage() async {
+    setShoppingLists(await ShoppingListStorage().loadShoppingLists().last);
   }
 
   setShoppingLists(ShoppingListCollection shoppingLists) {
