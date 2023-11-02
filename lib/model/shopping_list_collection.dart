@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:go_list/model/extended_golist_collection.dart';
 import 'package:go_list/model/golist_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
@@ -62,5 +63,13 @@ class ShoppingListCollection extends ExtendedGoListCollection<ShoppingList> {
   @override
   ShoppingListCollection merge(ExtendedGoListCollection<ShoppingList> other) {
     return super.merge(other) as ShoppingListCollection;
+  }
+
+  bool equals(ShoppingListCollection other) {
+    return entries.every((shoppingList) {
+      var otherShoppingList = other.entryWithId(shoppingList.id);
+      return otherShoppingList != null &&
+          otherShoppingList.equals(shoppingList);
+    });
   }
 }

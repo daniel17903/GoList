@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:go_list/model/golist_model.dart';
 import 'package:go_list/model/item_collection.dart';
 import 'package:go_list/model/mergeable.dart';
@@ -76,5 +77,9 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
 
   List<Item> itemsAsList() {
     return items.entries;
+  }
+
+  bool equals(ShoppingList other) {
+    return mapEquals(toJson(), other.toJson());
   }
 }

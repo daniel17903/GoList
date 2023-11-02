@@ -10,11 +10,16 @@ class GlobalAppState extends ChangeNotifier {
   late List<String>? shoppingListOrder;
   Function? connectionFailureCallback;
 
-  GlobalAppState(String defaultListName) {
+  GlobalAppState(Future<String> defaultName) {
     shoppingListOrder = LocalSettingsStorage().loadShoppingListOrder();
     setShoppingLists(ShoppingListStorage().loadShoppingListsFromLocalStorage());
     if (shoppingLists.length() == 0) {
-      upsertShoppingList(ShoppingList(name: defaultListName));
+      var defaultList = ShoppingList(name: "");
+      upsertShoppingList(defaultList);
+      defaultName.then((String value) {
+        defaultList.name = value;
+        upsertShoppingList(defaultList);
+      });
     }
     selectedShoppingListId =
         LocalSettingsStorage().loadSelectedShoppingListId() ??
