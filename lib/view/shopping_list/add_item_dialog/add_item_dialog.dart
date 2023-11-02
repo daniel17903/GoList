@@ -60,68 +60,72 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
   @override
   Widget build(BuildContext context) {
+    // SafeArea is necessary to have some margin at the top
     return SafeArea(
-      minimum: const EdgeInsets.only(
-          left: horizontalPadding, right: horizontalPadding, top: 45),
-      child: Material(
-        child: Column(children: [
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            color: GoListColors.addItemDialogBackground,
-            child: TextField(
-              autofocus: true,
-              cursorColor: Colors.white,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.what_to_buy,
-                hintStyle: const TextStyle(color: Colors.white),
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                focusedBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(color: Colors.white)),
-                border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(color: Colors.white)),
+      // Dialog is necessary to move up when keyboard opens
+      child: Dialog(
+        // Material is necessary for nice TextField
+        child: Material(
+          child: Column(children: [
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: GoListColors.addItemDialogBackground,
+              child: TextField(
+                autofocus: true,
+                cursorColor: Colors.white,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.what_to_buy,
+                  hintStyle: const TextStyle(color: Colors.white),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  focusedBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(color: Colors.white)),
+                  border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(color: Colors.white)),
+                ),
+                onSubmitted: (_) => addNewItemToList(previewItem),
+                textInputAction: TextInputAction.done,
+                onChanged: (searchText) {
+                  setState(() {
+                    _recentlyUsedItemsSorted.searchBy(searchText);
+                    bool previewItemMatchesFirstRecentlyUsedItem =
+                        _recentlyUsedItemsSorted.isNotEmpty() &&
+                            searchText ==
+                                _recentlyUsedItemsSorted.first()!.name;
+                    bool previewItemDidChange = previewItem?.name != searchText;
+                    if (searchText.isEmpty ||
+                        previewItemMatchesFirstRecentlyUsedItem) {
+                      previewItem = null;
+                    } else if (previewItemDidChange) {
+                      previewItem = InputToItemParser().parseInput(searchText);
+                    }
+                  });
+                },
               ),
-              onSubmitted: (_) => addNewItemToList(previewItem),
-              textInputAction: TextInputAction.done,
-              onChanged: (searchText) {
-                setState(() {
-                  _recentlyUsedItemsSorted.searchBy(searchText);
-                  bool previewItemMatchesFirstRecentlyUsedItem =
-                      _recentlyUsedItemsSorted.isNotEmpty() &&
-                          searchText == _recentlyUsedItemsSorted.first()!.name;
-                  bool previewItemDidChange = previewItem?.name != searchText;
-                  if (searchText.isEmpty ||
-                      previewItemMatchesFirstRecentlyUsedItem) {
-                    previewItem = null;
-                  } else if (previewItemDidChange) {
-                    previewItem = InputToItemParser().parseInput(searchText);
-                  }
-                });
-              },
             ),
-          ),
-          Expanded(
-              child: ItemListViewer(
-            darkBackground: true,
-            horizontalPadding: horizontalPadding,
-            body: ShoppingListItemWrap(
-                children: (previewItem == null
-                        ? _recentlyUsedItemsSorted
-                        : _recentlyUsedItemsSorted.prepend(previewItem!))
-                    .entries
-                    .map((item) => ShoppingListItem(
-                          backgroundColor:
-                              GoListColors.addItemDialogItemBackground,
-                          item: item,
-                          onItemTapped: addNewItemToList,
-                          horizontalPadding: horizontalPadding,
-                        ))
-                    .toList()),
-          ))
-        ]),
+            Expanded(
+                child: ItemListViewer(
+              darkBackground: true,
+              horizontalPadding: horizontalPadding,
+              body: ShoppingListItemWrap(
+                  children: (previewItem == null
+                          ? _recentlyUsedItemsSorted
+                          : _recentlyUsedItemsSorted.prepend(previewItem!))
+                      .entries
+                      .map((item) => ShoppingListItem(
+                            backgroundColor:
+                                GoListColors.addItemDialogItemBackground,
+                            item: item,
+                            onItemTapped: addNewItemToList,
+                            horizontalPadding: horizontalPadding,
+                          ))
+                      .toList()),
+            ))
+          ]),
+        ),
       ),
     );
   }

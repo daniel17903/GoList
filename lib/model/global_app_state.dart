@@ -13,16 +13,18 @@ class GlobalAppState extends ChangeNotifier {
     shoppingListOrder = LocalSettingsStorage().loadShoppingListOrder();
     setShoppingLists(ShoppingListStorage().loadShoppingListsFromLocalStorage());
     if (shoppingLists.length() == 0) {
-      upsertShoppingList(ShoppingList(name: "Einkaufsliste"));  // TODO
+      upsertShoppingList(ShoppingList(name: "Einkaufsliste")); // TODO
     }
     selectedShoppingListId =
         LocalSettingsStorage().loadSelectedShoppingListId() ??
             shoppingLists.first()!.id;
   }
 
-  GlobalAppState loadListsFromStorage() {
-    ShoppingListStorage().loadShoppingLists().listen(setShoppingLists);
-    return this;
+  Future<void> loadListsFromStorageInBackground() async {
+    return ShoppingListStorage()
+        .loadShoppingLists()
+        .listen(setShoppingLists)
+        .asFuture();
   }
 
   setShoppingLists(ShoppingListCollection shoppingLists) {
@@ -37,10 +39,6 @@ class GlobalAppState extends ChangeNotifier {
     shoppingLists.setOrder(shoppingListOrder);
     LocalSettingsStorage().saveShoppingListOrder(shoppingListOrder);
     notifyListeners();
-  }
-
-  getShoppingLists() {
-    return ShoppingListStorage().loadShoppingLists();
   }
 
   getSelectedShoppingList() {

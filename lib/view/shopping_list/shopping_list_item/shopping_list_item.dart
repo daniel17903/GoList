@@ -28,7 +28,7 @@ class ShoppingListItem extends StatefulWidget {
       bool? delayItemTap,
       void Function(Item)? onItemTappedLong,
       required this.backgroundColor,
-        this.horizontalPadding = 0})
+      this.horizontalPadding = 0})
       : super(key: Key(item.id)) {
     this.onItemTappedLong = onItemTappedLong ?? (_) => {};
     this.delayItemTap = delayItemTap ?? false;

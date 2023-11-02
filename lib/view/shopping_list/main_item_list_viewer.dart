@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/model/selected_shopping_list_state.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:go_list/view/dialog/edit_list_dialog.dart';
+import 'package:go_list/view/dialog/snack_bars.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 import 'package:provider/provider.dart';
@@ -20,8 +22,10 @@ class MainItemListViewer extends StatelessWidget {
         return ItemListViewer(
           darkBackground: false,
           onPullForRefresh: () =>
-              Provider.of<SelectedShoppingListState>(context, listen: false)
-                  .loadListFromStorage(),
+              Provider.of<GlobalAppState>(context, listen: false)
+                  .loadListsFromRemoteStorage()
+                  .catchError(
+                      (_) => SnackBars.showConnectionFailedSnackBar(context)),
           header: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -41,8 +45,7 @@ class MainItemListViewer extends StatelessWidget {
           body: ShoppingListItemWrap(
               children: selectedShoppingListState
                   .selectedShoppingList.items.entries
-                  .map((item) =>
-                      ShoppingListItem.forItem(item, context))
+                  .map((item) => ShoppingListItem.forItem(item, context))
                   .toList()),
         );
       }),

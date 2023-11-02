@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/model/selected_shopping_list_state.dart';
@@ -9,6 +10,7 @@ import 'package:go_list/service/golist_languages.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/service/storage/local_settings_storage.dart';
 import 'package:go_list/style/themed_app.dart';
+import 'package:go_list/view/dialog/snack_bars.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_links/uni_links.dart';
@@ -129,8 +131,13 @@ class _MyAppState extends State<GoListApp> {
     return MultiProvider(
       providers: [
         // provides the GlobalAppState
-        ChangeNotifierProvider<GlobalAppState>(
-            create: (_) => GlobalAppState().loadListsFromStorage()),
+        ChangeNotifierProvider<GlobalAppState>(create: (_) {
+          var globalAppState = GlobalAppState();
+          globalAppState.loadListsFromStorageInBackground().catchError((_) {
+            SnackBars.showConnectionFailedSnackBar(context);
+          });
+          return globalAppState;
+        }),
         // provides the SelectedShoppingListState based on the GlobalAppState
         ChangeNotifierProxyProvider<GlobalAppState, SelectedShoppingListState>(
             create: (BuildContext context) => SelectedShoppingListState(
@@ -139,11 +146,11 @@ class _MyAppState extends State<GoListApp> {
             update: (BuildContext context, GlobalAppState globalAppsSate,
                     SelectedShoppingListState? selectedShoppingListState) =>
                 SelectedShoppingListState(
-                    globalAppsSate.getSelectedShoppingList())),
+                    globalAppsSate.getSelectedShoppingList()))
       ],
       child: ThemedApp(
         locale: _locale,
-        child: ShoppingListPage(),
+        child: const ShoppingListPage(),
       ),
     );
   }
