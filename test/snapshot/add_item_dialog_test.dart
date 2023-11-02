@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/view/shopping_list/add_item_dialog/add_item_dialog.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
@@ -26,8 +27,11 @@ void main() async {
       (tester) async {
     await setViewSize(tester);
 
-    await pumpWithSelectedShoppingList(
-        tester, const ShoppingListPage(), shoppingListWithRecentlyUsedItems);
+    await pumpWithGlobalAppState(
+        tester,
+        const ShoppingListPage(),
+        ShoppingListCollection(entries: [shoppingListWithRecentlyUsedItems]),
+        shoppingListWithRecentlyUsedItems.id);
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
 

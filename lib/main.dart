@@ -10,7 +10,6 @@ import 'package:go_list/service/golist_languages.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/service/storage/local_settings_storage.dart';
 import 'package:go_list/style/themed_app.dart';
-import 'package:go_list/view/dialog/snack_bars.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_links/uni_links.dart';
@@ -132,10 +131,9 @@ class _MyAppState extends State<GoListApp> {
       providers: [
         // provides the GlobalAppState
         ChangeNotifierProvider<GlobalAppState>(create: (_) {
-          var globalAppState = GlobalAppState();
-          globalAppState.loadListsFromStorageInBackground().catchError((_) {
-            SnackBars.showConnectionFailedSnackBar(context);
-          });
+          var globalAppState =
+              GlobalAppState(AppLocalizations.of(context)!.default_name);
+          globalAppState.loadListsFromStorageInBackground();
           return globalAppState;
         }),
         // provides the SelectedShoppingListState based on the GlobalAppState

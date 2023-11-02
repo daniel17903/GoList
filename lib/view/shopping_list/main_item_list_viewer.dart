@@ -15,6 +15,10 @@ class MainItemListViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<GlobalAppState>(context, listen: false)
+        .registerConnectionFailureCallback(
+            () => SnackBars.showConnectionFailedSnackBar(context));
+
     // SafeArea is required for the android toolbar not to overlap the title
     return SafeArea(
       child: Consumer<SelectedShoppingListState>(
@@ -23,9 +27,7 @@ class MainItemListViewer extends StatelessWidget {
           darkBackground: false,
           onPullForRefresh: () =>
               Provider.of<GlobalAppState>(context, listen: false)
-                  .loadListsFromRemoteStorage()
-                  .catchError(
-                      (_) => SnackBars.showConnectionFailedSnackBar(context)),
+                  .loadListsFromRemoteStorage(),
           header: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

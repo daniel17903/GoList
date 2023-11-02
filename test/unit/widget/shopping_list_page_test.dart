@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 
@@ -22,8 +23,8 @@ void main() {
   });
 
   testWidgets('Renders names and amounts of all items', (tester) async {
-    await pumpWithSelectedShoppingList(
-        tester, ShoppingListPage(), shoppingList);
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection(entries: [shoppingList]), shoppingList.id);
 
     expect(find.byType(ShoppingListItem),
         findsNWidgets(shoppingList.items.length()));
@@ -38,8 +39,8 @@ void main() {
   });
 
   testWidgets('Deletes an item', (tester) async {
-    await pumpWithSelectedShoppingList(tester, ShoppingListPage(), shoppingList,
-        withImages: false);
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection(entries: [shoppingList]), shoppingList.id);
 
     var originalNumberOfItems = shoppingList.items.length();
     var itemToDelete = shoppingList.items.get(2);
@@ -51,5 +52,4 @@ void main() {
         findsNWidgets(originalNumberOfItems - 1));
     expect(find.byKey(Key(itemToDelete.id)), findsNothing);
   });
-
 }

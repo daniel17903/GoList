@@ -10,11 +10,11 @@ class GlobalAppState extends ChangeNotifier {
   late List<String>? shoppingListOrder;
   Function? connectionFailureCallback;
 
-  GlobalAppState() {
+  GlobalAppState(String defaultListName) {
     shoppingListOrder = LocalSettingsStorage().loadShoppingListOrder();
     setShoppingLists(ShoppingListStorage().loadShoppingListsFromLocalStorage());
     if (shoppingLists.length() == 0) {
-      upsertShoppingList(ShoppingList(name: "Einkaufsliste")); // TODO
+      upsertShoppingList(ShoppingList(name: defaultListName));
     }
     selectedShoppingListId =
         LocalSettingsStorage().loadSelectedShoppingListId() ??
@@ -22,11 +22,22 @@ class GlobalAppState extends ChangeNotifier {
   }
 
   Future<void> loadListsFromStorageInBackground() async {
-    return ShoppingListStorage().loadShoppingLists().listen(setShoppingLists).asFuture();
+    ShoppingListStorage()
+        .loadShoppingLists()
+        .listen(setShoppingLists)
+        .onError((_) => connectionFailureCallback!());
   }
 
   Future<void> loadListsFromRemoteStorage() async {
-    setShoppingLists(await ShoppingListStorage().loadShoppingLists().last);
+    try {
+      setShoppingLists(await ShoppingListStorage().loadShoppingLists().last);
+    } catch (_) {
+      connectionFailureCallback!();
+    }
+  }
+
+  registerConnectionFailureCallback(Function connectionFailureCallback) {
+    this.connectionFailureCallback = connectionFailureCallback;
   }
 
   setShoppingLists(ShoppingListCollection shoppingLists) {

@@ -69,7 +69,7 @@ ChangeNotifierProvider<GlobalAppState> wrapWithGlobalAppStateProvider(
     ShoppingListCollection shoppingLists,
     String selectedShoppingListId,
     Widget w) {
-  var globalAppState = GlobalAppState();
+  var globalAppState = GlobalAppState("Einkaufsliste");
   globalAppState.setShoppingLists(shoppingLists);
   globalAppState.setSelectedShoppingListId(selectedShoppingListId);
   return ChangeNotifierProvider<GlobalAppState>.value(

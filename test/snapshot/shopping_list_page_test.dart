@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 
 import '../builders/item_builder.dart';
@@ -26,8 +27,8 @@ void main() async {
   testWidgets('Renders a ShoppingListPage with items', (tester) async {
     await setViewSize(tester);
 
-    await pumpWithSelectedShoppingList(
-        tester, const ShoppingListPage(), shoppingList);
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection(entries: [shoppingList]), shoppingList.id);
 
     await expectLater(find.byType(MaterialApp),
         matchesGoldenFile('goldens/shopping_list_page.png'));
@@ -37,8 +38,8 @@ void main() async {
       (tester) async {
     await setViewSize(tester);
 
-    await pumpWithSelectedShoppingList(
-        tester, const ShoppingListPage(), shoppingList);
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection(entries: [shoppingList]), shoppingList.id);
     await tester.longPress(find.text(itemToEdit.name));
     await tester.pumpAndSettle();
 
