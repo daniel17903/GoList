@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/model/shopping_list_collection.dart';
+import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 
@@ -16,7 +16,7 @@ void main() async {
     shoppingList =
         ShoppingListBuilder().withName("selected shopping list").build();
 
-    shoppingListCollection = ShoppingListCollection(entries: [
+    shoppingListCollection = ShoppingListCollection([
       shoppingList,
       ShoppingListBuilder().withName("Other List 1").build(),
       ShoppingListBuilder().withName("Other List 2").build(),

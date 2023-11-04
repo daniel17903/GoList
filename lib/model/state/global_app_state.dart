@@ -1,19 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/model/shopping_list_collection.dart';
+import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/service/storage/local_settings_storage.dart';
 import 'package:go_list/service/storage/shopping_list_storage.dart';
 
 class GlobalAppState extends ChangeNotifier {
   late ShoppingListCollection shoppingLists;
   late String selectedShoppingListId;
-  late List<String>? shoppingListOrder;
+  late List<String> shoppingListOrder;
   Function? connectionFailureCallback;
 
   GlobalAppState(Future<String> defaultName) {
-    shoppingListOrder = LocalSettingsStorage().loadShoppingListOrder();
-    setShoppingLists(ShoppingListStorage().loadShoppingListsFromLocalStorage());
-    if (shoppingLists.length() == 0) {
+    shoppingListOrder = LocalSettingsStorage().loadShoppingListOrder() ?? [];
+    shoppingLists = ShoppingListStorage().loadShoppingListsFromLocalStorage();
+    shoppingLists.setOrder(shoppingListOrder);
+    if (shoppingLists.length == 0) {
       var defaultList = ShoppingList(name: "");
       upsertShoppingList(defaultList);
       defaultName.then((String value) {
@@ -46,11 +47,12 @@ class GlobalAppState extends ChangeNotifier {
   }
 
   setShoppingLists(ShoppingListCollection shoppingLists) {
-    this.shoppingLists = shoppingLists;
-    if (shoppingListOrder != null) {
-      this.shoppingLists.setOrder(shoppingListOrder!);
+    if (shoppingListOrder.length < shoppingLists.length) {}
+    if (!this.shoppingLists.equals(shoppingLists)) {
+      this.shoppingLists = shoppingLists;
+      this.shoppingLists.setOrder(shoppingListOrder);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   setShoppingListOrder(List<String> shoppingListOrder) {
@@ -81,7 +83,7 @@ class GlobalAppState extends ChangeNotifier {
   }
 
   void updateListOrder(int oldIndex, int newIndex) {
-    shoppingLists.moveListInOrder(oldIndex, newIndex);
+    shoppingLists.moveEntryInOrder(oldIndex, newIndex);
     LocalSettingsStorage().saveShoppingListOrder(shoppingLists.order);
     notifyListeners();
   }

@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class GoListModel {
@@ -30,6 +31,9 @@ abstract class GoListModel {
     return b;
   }
 
+  bool modifiedAtLeastNDaysBefore(int days) =>
+      modified.isBefore(DateTime.now().subtract(Duration(days: days)));
+
   @override
   bool operator ==(Object other) =>
       other is GoListModel &&
@@ -50,4 +54,10 @@ abstract class GoListModel {
     return (e) =>
         e.name.trim().toLowerCase() == other.name.trim().toLowerCase();
   }
+
+  bool equals(GoListModel other) {
+    return mapEquals(toJson(), other.toJson());
+  }
+
+  GoListModel merge(GoListModel other);
 }

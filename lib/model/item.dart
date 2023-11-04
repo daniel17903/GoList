@@ -1,10 +1,9 @@
 import 'package:go_list/model/golist_model.dart';
-import 'package:go_list/model/mergeable.dart';
 import 'package:go_list/service/items/category.dart';
 import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 
-class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
+class Item extends GoListModel implements Comparable<Item> {
   late String iconName;
   late String? amount;
   late Category category;
@@ -19,14 +18,12 @@ class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
       DateTime? modified})
       : super(name: name, id: id, deleted: deleted, modified: modified);
 
-  Item.fromJson(Map<String, dynamic> json)
+  Item.fromJson(dynamic json)
       : super(
             name: json['name'],
             deleted: json["deleted"],
             id: json["id"],
-            modified: json["modified"] is String
-                ? DateTime.parse(json["modified"])
-                : DateTime.fromMillisecondsSinceEpoch(json["modified"])) {
+            modified: DateTime.parse(json["modified"])) {
     iconName = json["iconName"];
     amount = json["amount"];
     category = json.containsKey("category")
@@ -36,10 +33,6 @@ class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
 
   Item.fromInput(String name, this.amount) : super(name: name) {
     findMapping();
-  }
-
-  Item copyAsRecentlyUsedItem() {
-    return Item(name: name, iconName: iconName, category: category);
   }
 
   void findMapping() {
@@ -74,11 +67,6 @@ class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
     return toJson().toString();
   }
 
-  @override
-  Item merge(Item other) {
-    return lastModified(this, other);
-  }
-
   Item newFromTemplate() {
     return Item(
         name: name, iconName: iconName, amount: amount, category: category);
@@ -92,5 +80,19 @@ class Item extends GoListModel implements Comparable<Item>, MergeAble<Item> {
         category: category,
         deleted: deleted,
         modified: modified) as T;
+  }
+
+  @override
+  GoListModel merge(GoListModel other) {
+    return modified.isAfter(other.modified) ? this : other;
+  }
+
+  Item copyForRecentlyUsed() {
+    return Item(
+        name: name,
+        amount: "",
+        iconName: iconName,
+        category: category,
+        deleted: false);
   }
 }

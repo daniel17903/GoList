@@ -1,12 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'package:go_list/model/collections/item_collection.dart';
+import 'package:go_list/model/collections/recently_used_item_collection.dart';
 import 'package:go_list/model/golist_model.dart';
-import 'package:go_list/model/item_collection.dart';
-import 'package:go_list/model/mergeable.dart';
-import 'package:go_list/model/recently_used_item_collection.dart';
 
 import 'item.dart';
 
-class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
+class ShoppingList extends GoListModel {
   late ItemCollection items;
   late RecentlyUsedItemCollection recentlyUsedItems;
 
@@ -16,14 +14,11 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
       RecentlyUsedItemCollection? recentlyUsedItems,
       bool? deleted,
       DateTime? modified,
-      String? id,
-      int? deviceCount})
+      String? id})
       : super(name: name, modified: modified, deleted: deleted, id: id) {
-    this.items = items ?? ItemCollection();
+    this.items = items ?? ItemCollection([]);
     this.recentlyUsedItems = recentlyUsedItems ??
-        RecentlyUsedItemCollection.fromItemCollection(this.items);
-    this.items.sort();
-    this.recentlyUsedItems.sort();
+        RecentlyUsedItemCollection(this.items.copyForRecentlyUsed());
   }
 
   ShoppingList.fromJson(dynamic json)
@@ -31,9 +26,7 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
             id: json["id"],
             name: json["name"],
             deleted: json["deleted"],
-            modified: json["modified"] is String
-                ? DateTime.parse(json["modified"])
-                : DateTime.fromMillisecondsSinceEpoch(json["modified"])) {
+            modified: DateTime.parse(json["modified"])) {
     items = ItemCollection.fromJson(json["items"]);
     recentlyUsedItems =
         RecentlyUsedItemCollection.fromJson(json["recentlyUsedItems"]);
@@ -42,9 +35,8 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        'items': items.map((item) => item.toJson()).toList(),
-        'recentlyUsedItems':
-            recentlyUsedItems.map((item) => item.toJson()).toList()
+        'items': items.toJson(),
+        'recentlyUsedItems': recentlyUsedItems.toJson()
       };
 
   ShoppingList copyWith(
@@ -62,24 +54,35 @@ class ShoppingList extends GoListModel implements MergeAble<ShoppingList> {
         id: id ?? this.id);
   }
 
-  ShoppingList upsertItem(Item item) {
+  void upsertItem(Item item) {
     items.upsert(item);
-    recentlyUsedItems.upsert(item.copyAsRecentlyUsedItem());
-    return this;
+    recentlyUsedItems.upsert(item.copyForRecentlyUsed());
+    items.sort();
   }
 
   @override
-  ShoppingList merge(ShoppingList other) {
-    ShoppingList merged = lastModified(this, other);
-    merged.items = items.merge(other.items);
-    return merged;
+  GoListModel merge(GoListModel other) {
+    ShoppingList lastUpdatedShoppingList =
+        lastModified(this, other as ShoppingList);
+    return ShoppingList(
+        name: lastUpdatedShoppingList.name,
+        items: items.merge(other.items),
+        recentlyUsedItems: recentlyUsedItems.merge(other.recentlyUsedItems),
+        deleted: lastUpdatedShoppingList.deleted,
+        modified: lastUpdatedShoppingList.modified);
   }
 
   List<Item> itemsAsList() {
     return items.entries;
   }
 
-  bool equals(ShoppingList other) {
-    return mapEquals(toJson(), other.toJson());
+  @override
+  bool equals(GoListModel other) {
+    return other is ShoppingList &&
+        other.id == id &&
+        other.name == name &&
+        other.deleted == deleted &&
+        items.equals(other.items) &&
+        recentlyUsedItems.equals(other.recentlyUsedItems);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_list/model/item.dart';
-import 'package:go_list/model/selected_shopping_list_state.dart';
+import 'package:go_list/model/state/selected_shopping_list_state.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/style/golist_icons.dart';
 import 'package:go_list/view/dialog/edit_item_dialog.dart';

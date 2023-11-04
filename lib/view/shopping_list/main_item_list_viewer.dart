@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/model/global_app_state.dart';
-import 'package:go_list/model/selected_shopping_list_state.dart';
+import 'package:go_list/model/state/global_app_state.dart';
+import 'package:go_list/model/state/selected_shopping_list_state.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:go_list/view/dialog/edit_list_dialog.dart';
 import 'package:go_list/view/dialog/snack_bars.dart';
@@ -47,6 +47,7 @@ class MainItemListViewer extends StatelessWidget {
           body: ShoppingListItemWrap(
               children: selectedShoppingListState
                   .selectedShoppingList.items.entries
+                  .where((item) => item.deleted == false)
                   .map((item) => ShoppingListItem.forItem(item, context))
                   .toList()),
         );

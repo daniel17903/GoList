@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_list/model/golist_collection.dart';
+import 'package:go_list/model/collections/golist_collection.dart';
+import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/model/shopping_list_collection.dart';
 
 import '../../builders/item_builder.dart';
 import '../../builders/shopping_list_builder.dart';
@@ -17,9 +17,9 @@ void main() {
       ShoppingList list2 = ShoppingListBuilder().withItems([item2]).build();
 
       ShoppingListCollection goListCollection1 =
-          ShoppingListCollection(entries: [list1]);
+          ShoppingListCollection([list1]);
       ShoppingListCollection goListCollection2 =
-          ShoppingListCollection(entries: [list2]);
+          ShoppingListCollection([list2]);
 
       GoListCollection<ShoppingList> mergedGoListCollection1 =
           goListCollection1.merge(goListCollection2);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/model/shopping_list_collection.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 
@@ -24,10 +24,10 @@ void main() {
 
   testWidgets('Renders names and amounts of all items', (tester) async {
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection(entries: [shoppingList]), shoppingList.id);
+        ShoppingListCollection([shoppingList]), shoppingList.id);
 
     expect(find.byType(ShoppingListItem),
-        findsNWidgets(shoppingList.items.length()));
+        findsNWidgets(shoppingList.items.length));
     shoppingList.itemsAsList().forEach((item) {
       var widgetFinder = find.byKey(Key(item.id));
       expect(find.descendant(of: widgetFinder, matching: find.text(item.name)),
@@ -40,12 +40,13 @@ void main() {
 
   testWidgets('Deletes an item', (tester) async {
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection(entries: [shoppingList]), shoppingList.id);
+        ShoppingListCollection([shoppingList]), shoppingList.id);
 
-    var originalNumberOfItems = shoppingList.items.length();
+    var originalNumberOfItems = shoppingList.items.length;
     var itemToDelete = shoppingList.items.get(2);
 
     await tester.tap(find.byKey(Key(itemToDelete.id)));
+    await tester.pumpAndSettle();
     await tester.pumpAndSettle();
 
     expect(find.byType(ShoppingListItem),

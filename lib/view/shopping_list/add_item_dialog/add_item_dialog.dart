@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_list/model/collections/recently_used_item_collection.dart';
 import 'package:go_list/model/item.dart';
-import 'package:go_list/model/recently_used_item_collection.dart';
-import 'package:go_list/model/selected_shopping_list_state.dart';
+import 'package:go_list/model/state/selected_shopping_list_state.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
@@ -75,7 +75,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 cursorColor: Colors.white,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.what_to_buy,
+                  hintText: AppLocalizations.of(context).what_to_buy,
                   hintStyle: const TextStyle(color: Colors.white),
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
@@ -92,9 +92,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                   setState(() {
                     _recentlyUsedItemsSorted.searchBy(searchText);
                     bool previewItemMatchesFirstRecentlyUsedItem =
-                        _recentlyUsedItemsSorted.isNotEmpty() &&
-                            searchText ==
-                                _recentlyUsedItemsSorted.first()!.name;
+                        searchText == _recentlyUsedItemsSorted.first()?.name;
                     bool previewItemDidChange = previewItem?.name != searchText;
                     if (searchText.isEmpty ||
                         previewItemMatchesFirstRecentlyUsedItem) {
@@ -111,11 +109,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
               darkBackground: true,
               horizontalPadding: horizontalPadding,
               body: ShoppingListItemWrap(
-                  children: (previewItem == null
-                          ? _recentlyUsedItemsSorted
-                          : _recentlyUsedItemsSorted.prepend(previewItem!))
-                      .entries
-                      .map((item) => ShoppingListItem(
+                  children: _recentlyUsedItemsSorted
+                      .optionalPrepend(previewItem)
+                      .items
+                      .map<ShoppingListItem>((item) => ShoppingListItem(
                             backgroundColor:
                                 GoListColors.addItemDialogItemBackground,
                             item: item,

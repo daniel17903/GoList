@@ -3,19 +3,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:go_list/model/global_app_state.dart';
-import 'package:go_list/model/selected_shopping_list_state.dart';
+import 'package:go_list/model/state/global_app_state.dart';
+import 'package:go_list/model/state/selected_shopping_list_state.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/view/app/themed_app.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:provider/provider.dart';
 
-import 'model/locale_state.dart';
+import 'model/state/locale_state.dart';
 
 void main() async {
   await Future.wait([GetStorage.init(), InputToItemParser().init()]);
 
-  runApp(ThemedApp(
+  runApp(ChangeNotifierProvider<LocaleState>(
+    create: (context) => LocaleState(),
     child: MultiProvider(providers: [
       // provides the GlobalAppState
       ChangeNotifierProvider<GlobalAppState>(create: (context) {
@@ -35,6 +36,6 @@ void main() async {
                   SelectedShoppingListState? selectedShoppingListState) =>
               SelectedShoppingListState(
                   globalAppsSate.getSelectedShoppingList()))
-    ], child: const ShoppingListPage()),
+    ], builder: (context, child) => const ThemedApp(child: ShoppingListPage())),
   ));
 }

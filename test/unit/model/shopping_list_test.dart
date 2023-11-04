@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_list/model/collections/recently_used_item_collection.dart';
 import 'package:go_list/model/item.dart';
-import 'package:go_list/model/recently_used_item_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/items/category.dart';
 
@@ -16,8 +16,8 @@ void main() {
       ShoppingList list1 = ShoppingListBuilder().withItems([item1]).build();
       ShoppingList list2 = ShoppingListBuilder().withItems([item2]).build();
 
-      ShoppingList mergedList1 = list1.merge(list2);
-      ShoppingList mergedList2 = list2.merge(list1);
+      ShoppingList mergedList1 = list1.merge(list2) as ShoppingList;
+      ShoppingList mergedList2 = list2.merge(list1) as ShoppingList;
 
       expect(mergedList1.itemsAsList(), unorderedEquals([item1, item2]));
       expect(mergedList2.itemsAsList(), unorderedEquals([item1, item2]));
@@ -49,8 +49,8 @@ void main() {
       ShoppingList list2 =
           ShoppingListBuilder().withItems([item1, item4, item5]).build();
 
-      ShoppingList mergedList1 = list1.merge(list2);
-      ShoppingList mergedList2 = list2.merge(list1);
+      ShoppingList mergedList1 = list1.merge(list2) as ShoppingList;
+      ShoppingList mergedList2 = list2.merge(list1) as ShoppingList;
 
       expect(mergedList1.itemsAsList(), unorderedEquals([item2, item4, item5]));
       expect(mergedList1.itemsAsList(),
@@ -130,54 +130,7 @@ void main() {
 
     test("parses a shopping list from json", () async {
       ShoppingList shoppingListFromJson = ShoppingList.fromJson(json);
-      expect(shoppingListFromJson, list);
-    });
-
-    test("parses a shopping list from json with time as ms", () async {
-      ShoppingList shoppingListFromJson = ShoppingList.fromJson(const {
-        'id': 'id',
-        'deleted': false,
-        'modified': 1683059350203,
-        'name': 'name',
-        'items': [
-          {
-            'id': 'id',
-            'deleted': false,
-            'modified': 1683059350203,
-            'name': 'name1',
-            'iconName': 'iconName',
-            'amount': '1',
-            'category': 'Category.beverages'
-          }
-        ],
-        'recentlyUsedItems': [
-          {
-            'id': 'id',
-            'deleted': false,
-            'modified': 1683059350203,
-            'name': 'name1',
-            'iconName': 'iconName',
-            'amount': '1',
-            'category': 'Category.beverages'
-          }
-        ]
-      });
-      List<Item> expectedItems = [
-        ItemBuilder()
-            .withId("id")
-            .withModified(DateTime.fromMillisecondsSinceEpoch(1683059350203))
-            .withName("name1")
-            .withIconName("iconName")
-            .build()
-      ];
-      ShoppingList expectedShoppingList = ShoppingListBuilder()
-          .withId("id")
-          .withModified(DateTime.fromMillisecondsSinceEpoch(1683059350203))
-          .withName("name")
-          .withItems(expectedItems)
-          .withRecentlyUsedItems(expectedItems)
-          .build();
-      expect(shoppingListFromJson, expectedShoppingList);
+      expect(shoppingListFromJson.equals(list), isTrue);
     });
   });
 
@@ -215,7 +168,7 @@ void main() {
           ]));
 
       expect(
-          shoppingList.recentlyUsedItems.entries.map((e) => e.name),
+          shoppingList.recentlyUsedItems.map((e) => e.name),
           orderedEquals([
             itemWitMidSortedCategory.name,
             itemWithLowerSortedCategory.name,
@@ -240,7 +193,7 @@ void main() {
       shoppingList.upsertItem(itemWithExistingName);
 
       expect(
-          shoppingList.recentlyUsedItems.entries.map((e) => e.name),
+          shoppingList.recentlyUsedItems.map((e) => e.name),
           orderedEquals([
             firstItem.name,
             secondItem.name,
@@ -254,7 +207,7 @@ void main() {
       shoppingList.upsertItem(
           ItemBuilder().withName(i.toString()).withId(i.toString()).build());
     }
-    expect(shoppingList.recentlyUsedItems.entries.length,
+    expect(shoppingList.recentlyUsedItems.length,
         RecentlyUsedItemCollection.maxItems);
   });
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_list/model/global_app_state.dart';
+import 'package:go_list/model/state/global_app_state.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
@@ -42,7 +42,7 @@ class ShoppingListDrawer extends StatelessWidget {
                   ReorderableListView.builder(
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
-                      itemCount: globalAppState.shoppingLists.length(),
+                      itemCount: globalAppState.shoppingLists.length,
                       prototypeItem: const MyListsHeaderTile(),
                       footer: const CreateNewListTile(),
                       itemBuilder: (BuildContext context, int index) {
@@ -77,7 +77,7 @@ class ShoppingListDrawer extends StatelessWidget {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(AppLocalizations.of(context)!.settings,
+                      Text(AppLocalizations.of(context).settings,
                           style: const TextStyle(
                               fontSize: 16, color: Colors.white)),
                       const Icon(Icons.settings, color: Colors.white),

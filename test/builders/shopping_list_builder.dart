@@ -1,23 +1,23 @@
+import 'package:go_list/model/collections/item_collection.dart';
+import 'package:go_list/model/collections/recently_used_item_collection.dart';
 import 'package:go_list/model/item.dart';
-import 'package:go_list/model/item_collection.dart';
-import 'package:go_list/model/recently_used_item_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:uuid/uuid.dart';
 
 class ShoppingListBuilder {
   String _id = const Uuid().v4();
   String _name = "name";
-  ItemCollection _items = ItemCollection();
+  ItemCollection _items = ItemCollection([]);
   RecentlyUsedItemCollection _recentlyUsedItems = RecentlyUsedItemCollection();
   DateTime _modified = DateTime(2020, 1, 1);
 
   withItems(List<Item> items) {
-    _items = ItemCollection(entries: items);
+    _items = ItemCollection(items);
     return this;
   }
 
   withRecentlyUsedItems(List<Item> recentlyUsedItems) {
-    _recentlyUsedItems = RecentlyUsedItemCollection(recentlyUsedItems);
+    _recentlyUsedItems = RecentlyUsedItemCollection(ItemCollection(recentlyUsedItems));
     return this;
   }
 

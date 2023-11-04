@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/model/shopping_list_collection.dart';
+import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 
@@ -51,11 +51,11 @@ class ShoppingListStorage {
 
     ShoppingList shoppingListFromRemoteStorage =
         (await remoteStorageProvider.loadShoppingList(shoppingListId))
-            .merge(shoppingListFromLocalStorage);
+            .merge(shoppingListFromLocalStorage) as ShoppingList;
 
     if (!shoppingListFromRemoteStorage.equals(shoppingListFromLocalStorage)) {
-      var merged =
-          shoppingListFromRemoteStorage.merge(shoppingListFromLocalStorage);
+      var merged = shoppingListFromRemoteStorage
+          .merge(shoppingListFromLocalStorage) as ShoppingList;
       localStorageProvider.upsertShoppingList(merged);
       yield merged;
     }

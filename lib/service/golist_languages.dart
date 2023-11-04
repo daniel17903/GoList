@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:go_list/main.dart';
-import 'package:go_list/model/locale_state.dart';
+import 'package:go_list/model/state/locale_state.dart';
 import 'package:go_list/service/storage/local_settings_storage.dart';
 import 'package:provider/provider.dart';
 

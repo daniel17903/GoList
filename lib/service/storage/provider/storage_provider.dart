@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/model/shopping_list_collection.dart';
+import 'package:go_list/model/collections/shopping_list_collection.dart';
 
 abstract class StorageProvider {
   FutureOr<ShoppingListCollection> loadShoppingLists();

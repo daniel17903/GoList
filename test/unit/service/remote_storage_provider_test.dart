@@ -54,7 +54,7 @@ void main() {
     var loadedShoppingLists = await RemoteStorageProvider(
             goListClient: GoListClient(client: client, deviceId: deviceId))
         .loadShoppingLists();
-    expect(loadedShoppingLists.length(), 1);
+    expect(loadedShoppingLists.length, 1);
     expect(loadedShoppingLists.first()!.toJson(), shoppingListJson);
   });
 

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:go_list/style/colors.dart';
-import 'package:go_list/view/botton_navigation_bar.dart';
+import 'package:go_list/view/bottom_navigation_bar.dart';
 import 'package:go_list/view/drawer/shopping_list_drawer.dart';
 import 'package:go_list/view/shopping_list/add_item_dialog/add_item_dialog.dart';
 import 'package:go_list/view/shopping_list/main_item_list_viewer.dart';

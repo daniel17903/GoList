@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/shopping_list_storage.dart';
 
-import 'item.dart';
+import '../item.dart';
 
 class SelectedShoppingListState extends ChangeNotifier {
   late ShoppingList selectedShoppingList;
@@ -21,7 +21,8 @@ class SelectedShoppingListState extends ChangeNotifier {
 
   void deleteItem(Item item){
     item.deleted = true;
-    upsertItem(item);
+    ShoppingListStorage().upsertShoppingList(selectedShoppingList);
+    notifyListeners();
   }
 
   void upsertItem(Item item) {
