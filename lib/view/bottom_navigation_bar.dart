@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/state/global_app_state.dart';
 import 'package:go_list/service/golist_client.dart';
-import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -17,13 +14,7 @@ class GoListBottomNavigationBar extends StatelessWidget {
     String selectedShoppingListId =
         Provider.of<GlobalAppState>(context, listen: false)
             .selectedShoppingListId;
-    GoListClient()
-        .sendRequest(
-            endpoint: "/api/shoppinglist/$selectedShoppingListId/token",
-            httpMethod: HttpMethod.post)
-        .then((response) => jsonDecode(utf8.decode(response.bodyBytes)))
-        .then((responseJson) => responseJson["token"])
-        .then(
+    GoListClient().createTokenToShareList(selectedShoppingListId).then(
       (token) {
         Share.share("${GoListClient.backendUrl}/join?token=$token",
             sharePositionOrigin:
@@ -31,7 +22,7 @@ class GoListBottomNavigationBar extends StatelessWidget {
       },
     ).catchError((_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context)!.failed_to_share_list)));
+          content: Text(AppLocalizations.of(context).failed_to_share_list)));
     });
   }
 

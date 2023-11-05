@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:go_list/model/collections/shopping_list_collection.dart';
+import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/provider/device_id.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:http/http.dart';
@@ -18,7 +20,7 @@ class GoListClient {
       : client = client ?? Client(),
         deviceId = deviceId ?? DeviceId()();
 
-  Future<Response> sendRequest(
+  Future<Response> _sendRequest(
       {required String endpoint,
       required HttpMethod httpMethod,
       Object? body}) async {
@@ -49,6 +51,36 @@ class GoListClient {
           "$httpMethod '$uri' failed, response code was ${response.statusCode}");
     }
     return response;
+  }
+
+  Future<String> createTokenToShareList(String shoppingListId) {
+    return _sendRequest(
+            endpoint: "/tokens",
+            httpMethod: HttpMethod.post,
+            body: {"shopping_list_id": shoppingListId})
+        .then((response) => jsonDecode(utf8.decode(response.bodyBytes)))
+        .then((responseJson) => responseJson["token"]);
+  }
+
+  Future<ShoppingList> getShoppingList(String shoppingListId) {
+    return _sendRequest(
+            endpoint: "/shopping-lists/$shoppingListId",
+            httpMethod: HttpMethod.get)
+        .then((response) =>
+            ShoppingList.fromJson(jsonDecode(utf8.decode(response.bodyBytes))));
+  }
+
+  Future<ShoppingListCollection> getShoppingLists() {
+    return _sendRequest(endpoint: "/shopping-lists", httpMethod: HttpMethod.get)
+        .then((response) => ShoppingListCollection.fromJson(
+            jsonDecode(utf8.decode(response.bodyBytes))));
+  }
+
+  Future<void> upsertShoppingList(ShoppingList shoppingList) async {
+    await _sendRequest(
+        endpoint: "/shopping-lists",
+        httpMethod: HttpMethod.put,
+        body: shoppingList.toJson());
   }
 
   WebSocketChannel listenForChanges(String shoppingListId) {
