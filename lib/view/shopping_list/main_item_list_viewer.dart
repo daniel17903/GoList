@@ -27,7 +27,7 @@ class MainItemListViewer extends StatelessWidget {
           darkBackground: false,
           onPullForRefresh: () =>
               Provider.of<GlobalAppState>(context, listen: false)
-                  .loadListsFromRemoteStorage(),
+                  .loadListsFromStorage(),
           header: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

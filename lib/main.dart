@@ -24,7 +24,7 @@ void main() async {
         var globalAppState = GlobalAppState(AppLocalizations.delegate
             .load(Provider.of<LocaleState>(context, listen: false).locale)
             .then((value) => value.default_name));
-        globalAppState.loadListsFromStorageInBackground();
+        globalAppState.loadListsFromStorage();
         return globalAppState;
       }),
       // provides the SelectedShoppingListState based on the GlobalAppState

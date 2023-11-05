@@ -11,14 +11,6 @@ class SelectedShoppingListState extends ChangeNotifier {
 
   SelectedShoppingListState(this.selectedShoppingList);
 
-  Future<ShoppingList> loadListFromStorage() async {
-    selectedShoppingList = await ShoppingListStorage()
-        .loadShoppingList(selectedShoppingList.id)
-        .last;
-    notifyListeners();
-    return selectedShoppingList;
-  }
-
   void deleteItem(Item item){
     item.deleted = true;
     ShoppingListStorage().upsertShoppingList(selectedShoppingList);

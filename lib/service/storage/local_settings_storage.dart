@@ -13,8 +13,8 @@ class LocalSettingsStorage{
     return _singleton;
   }
 
-  void saveSelectedListIndex(int index) {
-    getStorage.write("selectedList", index);
+  void saveSelectedShoppingListId(String selectedShoppingListId) {
+    getStorage.write("selectedShoppingListId", selectedShoppingListId);
   }
 
   String? loadSelectedShoppingListId() {

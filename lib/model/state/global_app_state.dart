@@ -27,19 +27,12 @@ class GlobalAppState extends ChangeNotifier {
             shoppingLists.first()!.id;
   }
 
-  Future<void> loadListsFromStorageInBackground() async {
-    ShoppingListStorage()
+  Future<void> loadListsFromStorage() async {
+    await ShoppingListStorage()
         .loadShoppingLists()
         .listen(setShoppingLists)
-        .onError((_) => connectionFailureCallback!());
-  }
-
-  Future<void> loadListsFromRemoteStorage() async {
-    try {
-      setShoppingLists(await ShoppingListStorage().loadShoppingLists().last);
-    } catch (_) {
-      connectionFailureCallback!();
-    }
+        .asFuture()
+        .onError((e, s) => connectionFailureCallback!());
   }
 
   registerConnectionFailureCallback(Function connectionFailureCallback) {
@@ -67,6 +60,7 @@ class GlobalAppState extends ChangeNotifier {
 
   void setSelectedShoppingListId(String selectedShoppingListId) {
     this.selectedShoppingListId = selectedShoppingListId;
+    LocalSettingsStorage().saveSelectedShoppingListId(selectedShoppingListId);
     notifyListeners();
   }
 
