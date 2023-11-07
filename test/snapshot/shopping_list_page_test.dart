@@ -7,7 +7,7 @@ import 'package:go_list/view/shopping_list_page.dart';
 
 import '../builders/item_builder.dart';
 import '../builders/shopping_list_builder.dart';
-import 'fixtures.dart';
+import '../fixtures.dart';
 
 void main() async {
   late ShoppingList shoppingList;
@@ -28,7 +28,7 @@ void main() async {
     await setViewSize(tester);
 
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection([shoppingList]), shoppingList.id);
+        ShoppingListCollection([shoppingList]), shoppingList);
 
     await expectLater(find.byType(MaterialApp),
         matchesGoldenFile('goldens/shopping_list_page.png'));
@@ -39,7 +39,7 @@ void main() async {
     await setViewSize(tester);
 
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection([shoppingList]), shoppingList.id);
+        ShoppingListCollection([shoppingList]), shoppingList);
     await tester.longPress(find.text(itemToEdit.name));
     await tester.pumpAndSettle();
 

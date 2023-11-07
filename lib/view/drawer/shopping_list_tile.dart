@@ -19,10 +19,10 @@ class ShoppingListTile extends StatelessWidget {
     showPlatformDialog(
         context: context,
         builder: (BuildContext context) => PlatformAlertDialog(
-              title: Text(AppLocalizations.of(context)!.confirm_delete_list),
+              title: Text(AppLocalizations.of(context).confirm_delete_list),
               actions: <Widget>[
                 PlatformDialogAction(
-                  child: Text(AppLocalizations.of(context)!.cancel),
+                  child: Text(AppLocalizations.of(context).cancel),
                   onPressed: () => Navigator.pop(context),
                 ),
                 PlatformDialogAction(

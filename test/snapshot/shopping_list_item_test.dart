@@ -5,7 +5,7 @@ import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item_wrap.dart';
 
 import '../builders/item_builder.dart';
-import 'fixtures.dart';
+import '../fixtures.dart';
 
 void main() {
   generateShoppingListItemWidget(Item item) => ShoppingListItem(

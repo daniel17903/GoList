@@ -8,7 +8,7 @@ import 'package:golden_toolkit/golden_toolkit.dart';
 
 import '../builders/item_builder.dart';
 import '../builders/shopping_list_builder.dart';
-import 'fixtures.dart';
+import '../fixtures.dart';
 
 void main() async {
   late ShoppingList shoppingListWithRecentlyUsedItems;
@@ -31,7 +31,7 @@ void main() async {
         tester,
         const ShoppingListPage(),
         ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
-        shoppingListWithRecentlyUsedItems.id);
+        shoppingListWithRecentlyUsedItems);
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
 
@@ -48,7 +48,8 @@ void main() async {
         Device.tabletLandscape
       ])
       ..addScenario(
-        widget: wrapWithShoppingListProvider(
+        widget: wrapWithGlobalAppStateProvider(
+          ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
           shoppingListWithRecentlyUsedItems,
           wrapWithMaterialApp(const AddItemDialog()),
         ),
@@ -64,14 +65,16 @@ void main() async {
     final builder = DeviceBuilder()
       ..overrideDevicesForAllScenarios(devices: [Device.phone])
       ..addScenario(
-        widget: wrapWithShoppingListProvider(
+        widget: wrapWithGlobalAppStateProvider(
+          ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
           shoppingListWithRecentlyUsedItems,
           wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Renders recently used items',
       )
       ..addScenario(
-        widget: wrapWithShoppingListProvider(
+        widget: wrapWithGlobalAppStateProvider(
+          ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
           shoppingListWithRecentlyUsedItems,
           wrapWithMaterialApp(const AddItemDialog()),
         ),
@@ -86,7 +89,8 @@ void main() async {
         },
       )
       ..addScenario(
-        widget: wrapWithShoppingListProvider(
+        widget: wrapWithGlobalAppStateProvider(
+          ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
           shoppingListWithRecentlyUsedItems,
           wrapWithMaterialApp(const AddItemDialog()),
         ),
@@ -101,7 +105,8 @@ void main() async {
         },
       )
       ..addScenario(
-        widget: wrapWithShoppingListProvider(
+        widget: wrapWithGlobalAppStateProvider(
+          ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
           shoppingListWithRecentlyUsedItems,
           wrapWithMaterialApp(const AddItemDialog()),
         ),

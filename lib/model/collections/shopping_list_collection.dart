@@ -1,4 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:go_list/model/collections/golist_collection.dart';
+import 'package:go_list/model/golist_model.dart';
 import 'package:go_list/model/shopping_list.dart';
 
 class ShoppingListCollection extends GoListCollection<ShoppingList> {
@@ -6,6 +8,7 @@ class ShoppingListCollection extends GoListCollection<ShoppingList> {
 
   ShoppingListCollection(super.entries, [List<String>? order])
       : _order = order ?? entries.map((e) => e.id).toList() {
+    fixOrder();
     sortByOrder();
   }
 
@@ -27,8 +30,18 @@ class ShoppingListCollection extends GoListCollection<ShoppingList> {
     super.sort((a, b) => _order.indexOf(a.id).compareTo(_order.indexOf(b.id)));
   }
 
+  void fixOrder() {
+    // remove ids not in list from order
+    _order.removeWhere((id) => !containsEntryWithId(id));
+    // remove duplicates
+    _order = _order.toSet().toList();
+    // add missing ids
+    _order.addAll(entries.map((e) => e.id).whereNot(_order.contains));
+  }
+
   void setOrder(List<String> order) {
     _order = order;
+    fixOrder();
     sortByOrder();
   }
 
@@ -44,8 +57,16 @@ class ShoppingListCollection extends GoListCollection<ShoppingList> {
 
   @override
   ShoppingList removeAt(int index) {
-    _order.removeAt(index);
+    _order.remove(entries[index].id);
     return super.removeAt(index);
+  }
+
+  @override
+  void removeEntryWithId(String id) {
+    int indexToRemove = entries.indexWhere(GoListModel.equalsById(id));
+    if (indexToRemove != -1) {
+      removeAt(indexToRemove);
+    }
   }
 
   @override

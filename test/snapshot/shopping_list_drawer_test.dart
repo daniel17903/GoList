@@ -6,7 +6,7 @@ import 'package:go_list/view/shopping_list_page.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 
 import '../builders/shopping_list_builder.dart';
-import 'fixtures.dart';
+import '../fixtures.dart';
 
 void main() async {
   late ShoppingListCollection shoppingListCollection;
@@ -37,7 +37,7 @@ void main() async {
       ..addScenario(
         widget: wrapWithGlobalAppStateProvider(
           shoppingListCollection,
-          shoppingList.id,
+          shoppingList,
           const ShoppingListPage(),
         ),
         name: 'Renders recently used items',

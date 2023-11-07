@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_list/model/state/global_app_state.dart';
-import 'package:go_list/model/state/selected_shopping_list_state.dart';
+import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:go_list/view/dialog/edit_list_dialog.dart';
 import 'package:go_list/view/dialog/snack_bars.dart';
@@ -21,17 +20,15 @@ class MainItemListViewer extends StatelessWidget {
 
     // SafeArea is required for the android toolbar not to overlap the title
     return SafeArea(
-      child: Consumer<SelectedShoppingListState>(
-          builder: (context, selectedShoppingListState, child) {
+      child:
+          Consumer<GlobalAppState>(builder: (context, globalAppState, child) {
         return ItemListViewer(
           darkBackground: false,
-          onPullForRefresh: () =>
-              Provider.of<GlobalAppState>(context, listen: false)
-                  .loadListsFromStorage(),
+          onPullForRefresh: () => globalAppState.loadListsFromStorage(),
           header: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(selectedShoppingListState.selectedShoppingList.name,
+              Text(globalAppState.selectedShoppingList.name,
                   style: const TextStyle(color: Colors.white, fontSize: 22)),
               IconButton(
                 icon: const Icon(Icons.edit),
@@ -39,14 +36,12 @@ class MainItemListViewer extends StatelessWidget {
                 onPressed: () => DialogUtils.showSmallAlertDialog(
                     context: context,
                     contentBuilder: (_) => EditListDialog(
-                        shoppingList:
-                            selectedShoppingListState.selectedShoppingList)),
+                        shoppingList: globalAppState.selectedShoppingList)),
               )
             ],
           ),
           body: ShoppingListItemWrap(
-              children: selectedShoppingListState
-                  .selectedShoppingList.items.entries
+              children: globalAppState.selectedShoppingList.items.entries
                   .where((item) => item.deleted == false)
                   .map((item) => ShoppingListItem.forItem(item, context))
                   .toList()),

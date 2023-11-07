@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:go_list/model/state/global_app_state.dart';
+import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
 import 'package:provider/provider.dart';

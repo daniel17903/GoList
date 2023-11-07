@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/collections/recently_used_item_collection.dart';
 import 'package:go_list/model/item.dart';
-import 'package:go_list/model/state/selected_shopping_list_state.dart';
+import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
@@ -45,14 +45,14 @@ class _AddItemDialogState extends State<AddItemDialog> {
   void initState() {
     super.initState();
     _recentlyUsedItemsSorted =
-        Provider.of<SelectedShoppingListState>(context, listen: false)
+        Provider.of<GlobalAppState>(context, listen: false)
             .selectedShoppingList
             .recentlyUsedItems;
   }
 
   void addNewItemToList(Item? item) {
     if (item != null) {
-      Provider.of<SelectedShoppingListState>(context, listen: false)
+      Provider.of<GlobalAppState>(context, listen: false)
           .upsertItem(item.newFromTemplate());
       Navigator.pop(context);
     }

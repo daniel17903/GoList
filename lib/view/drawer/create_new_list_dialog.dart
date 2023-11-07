@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_list/model/state/global_app_state.dart';
+import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:provider/provider.dart';
@@ -31,16 +31,16 @@ class _CreateNewListDialogState extends State<CreateNewListDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.create_new_list),
+      title: Text(AppLocalizations.of(context).create_new_list),
       content: TextFormField(
           controller: _newListNameInputController,
           decoration: InputDecoration(
-            labelText: AppLocalizations.of(context)!.name,
+            labelText: AppLocalizations.of(context).name,
           )),
       actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text(AppLocalizations.of(context).cancel),
         ),
         TextButton(
           onPressed: () {
@@ -50,7 +50,7 @@ class _CreateNewListDialogState extends State<CreateNewListDialog> {
                 .upsertShoppingList(
                     ShoppingList(name: _newListNameInputController.text));
           },
-          child: Text(AppLocalizations.of(context)!.save),
+          child: Text(AppLocalizations.of(context).save),
         ),
       ],
     );

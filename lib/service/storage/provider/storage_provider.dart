@@ -9,4 +9,6 @@ abstract class StorageProvider {
   FutureOr<ShoppingList> loadShoppingList(String shoppingListId);
 
   FutureOr<void> upsertShoppingList(ShoppingList shoppingList);
+
+  FutureOr<void> deleteShoppingList(String shoppingListId);
 }

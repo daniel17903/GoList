@@ -5,13 +5,12 @@ import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
 
-enum HttpMethod { get, post, put }
+enum HttpMethod { get, post, put, delete }
 
 class RemoteStorageProvider extends StorageProvider {
   final GoListClient goListClient;
 
-  RemoteStorageProvider({GoListClient? goListClient})
-      : goListClient = goListClient ?? GoListClient();
+  RemoteStorageProvider(this.goListClient);
 
   @override
   Future<ShoppingListCollection> loadShoppingLists() async {
@@ -29,6 +28,15 @@ class RemoteStorageProvider extends StorageProvider {
       await goListClient.upsertShoppingList(shoppingList);
     } catch (e) {
       print("failed to save shopping list ${shoppingList.id} on server: $e");
+    }
+  }
+
+  @override
+  Future<void> deleteShoppingList(String shoppingListId) async {
+    try {
+      await goListClient.deleteShoppingList(shoppingListId);
+    } catch (e) {
+      print("failed to delete shopping list $shoppingListId on server: $e");
     }
   }
 

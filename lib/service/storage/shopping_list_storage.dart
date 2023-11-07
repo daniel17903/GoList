@@ -1,21 +1,16 @@
 import 'dart:async';
 
-import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/model/collections/shopping_list_collection.dart';
+import 'package:go_list/model/settings.dart';
+import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 
 class ShoppingListStorage {
-  static final ShoppingListStorage _singleton = ShoppingListStorage._internal();
+  final LocalStorageProvider localStorageProvider;
+  final RemoteStorageProvider remoteStorageProvider;
 
-  final localStorageProvider = LocalStorageProvider();
-  final remoteStorageProvider = RemoteStorageProvider();
-
-  ShoppingListStorage._internal();
-
-  factory ShoppingListStorage() {
-    return _singleton;
-  }
+  ShoppingListStorage(this.localStorageProvider, this.remoteStorageProvider);
 
   ShoppingListCollection loadShoppingListsFromLocalStorage() {
     return localStorageProvider.loadShoppingLists();
@@ -65,4 +60,18 @@ class ShoppingListStorage {
     localStorageProvider.upsertShoppingList(shoppingList);
     await remoteStorageProvider.upsertShoppingList(shoppingList);
   }
+
+  void saveSettings(Settings settings) {
+    localStorageProvider.saveSettings(settings);
+  }
+
+  Settings? loadSettings() {
+    return localStorageProvider.loadSettings();
+  }
+
+  Future<void> deleteShoppingList(String shoppingListId) async {
+    localStorageProvider.deleteShoppingList(shoppingListId);
+    await remoteStorageProvider.deleteShoppingList(shoppingListId);
+  }
+
 }

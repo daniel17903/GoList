@@ -13,6 +13,7 @@ import 'remote_storage_provider_test.mocks.dart';
 @GenerateMocks([http.Client])
 void main() {
   late MockClient client;
+  late GoListClient goListClient;
   const deviceId = "deviceId";
   const shoppingListJson = {
     "id": "id",
@@ -43,7 +44,11 @@ void main() {
     ]
   };
 
-  setUp(() => client = MockClient());
+  setUp(() {
+    client = MockClient();
+    goListClient = GoListClient(client);
+    goListClient.deviceId = deviceId;
+  });
 
   test("Loads shopping lists", () async {
     when(client.get(Uri.parse("${GoListClient.backendUrl}/shopping-lists"),
@@ -51,9 +56,8 @@ void main() {
         .thenAnswer((_) async =>
             http.Response('[${json.encode(shoppingListJson)}]', 200));
 
-    var loadedShoppingLists = await RemoteStorageProvider(
-            goListClient: GoListClient(client: client, deviceId: deviceId))
-        .loadShoppingLists();
+    var loadedShoppingLists =
+        await RemoteStorageProvider(goListClient).loadShoppingLists();
     expect(loadedShoppingLists.length, 1);
     expect(loadedShoppingLists.first()!.toJson(), shoppingListJson);
   });
@@ -68,15 +72,13 @@ void main() {
         })).thenAnswer(
         (_) async => http.Response(json.encode(shoppingListJson), 200));
 
-    var loadedShoppingList = await RemoteStorageProvider(
-            goListClient: GoListClient(client: client, deviceId: deviceId))
+    var loadedShoppingList = await RemoteStorageProvider(goListClient)
         .loadShoppingList(shoppingListJson["id"] as String);
     expect(loadedShoppingList.toJson(), shoppingListJson);
   });
 
   test("Upserts a shopping list", () async {
-    await RemoteStorageProvider(
-            goListClient: GoListClient(client: client, deviceId: deviceId))
+    await RemoteStorageProvider(goListClient)
         .upsertShoppingList(ShoppingList.fromJson(shoppingListJson));
 
     verify(client.put(Uri.parse("${GoListClient.backendUrl}/shopping-lists"),

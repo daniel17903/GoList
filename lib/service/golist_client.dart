@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/service/storage/provider/device_id.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:http/http.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -14,11 +13,9 @@ class GoListClient {
       String.fromEnvironment("API_KEY", defaultValue: "123");
 
   final Client client;
-  final String deviceId;
+  String deviceId = "";
 
-  GoListClient({Client? client, String? deviceId})
-      : client = client ?? Client(),
-        deviceId = deviceId ?? DeviceId()();
+  GoListClient([Client? client]) : client = client ?? Client();
 
   Future<Response> _sendRequest(
       {required String endpoint,
@@ -42,6 +39,8 @@ class GoListClient {
           break;
         case HttpMethod.put:
           response = await client.put(uri, body: jsonBody, headers: headers);
+        case HttpMethod.delete:
+          response = await client.delete(uri, body: jsonBody, headers: headers);
       }
     } catch (e) {
       throw Exception("$httpMethod request to '$endpoint' failed: $e");
@@ -60,6 +59,13 @@ class GoListClient {
             body: {"shopping_list_id": shoppingListId})
         .then((response) => jsonDecode(utf8.decode(response.bodyBytes)))
         .then((responseJson) => responseJson["token"]);
+  }
+
+  Future<ShoppingList> joinListWithToken(String token) {
+    return _sendRequest(
+            endpoint: "/tokens/join/$token", httpMethod: HttpMethod.post)
+        .then((response) =>
+            ShoppingList.fromJson(jsonDecode(utf8.decode(response.bodyBytes))));
   }
 
   Future<ShoppingList> getShoppingList(String shoppingListId) {
@@ -81,6 +87,12 @@ class GoListClient {
         endpoint: "/shopping-lists",
         httpMethod: HttpMethod.put,
         body: shoppingList.toJson());
+  }
+
+  Future<void> deleteShoppingList(String shoppingListId) async {
+    await _sendRequest(
+        endpoint: "/shopping-lists/$shoppingListId",
+        httpMethod: HttpMethod.delete);
   }
 
   WebSocketChannel listenForChanges(String shoppingListId) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/item.dart';
-import 'package:go_list/model/state/selected_shopping_list_state.dart';
+import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/view/platform_widgets/golist_platform_text_form_field.dart';
 import 'package:provider/provider.dart';
 
@@ -43,30 +43,30 @@ class _EditItemDialogState extends State<EditItemDialog> {
   @override
   Widget build(BuildContext context) {
     return PlatformAlertDialog(
-      title: Text(AppLocalizations.of(context)!.edit_item),
+      title: Text(AppLocalizations.of(context).edit_item),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           GoListPlatformTextFormField(
               controller: nameTextInputController,
-              labelText: AppLocalizations.of(context)!.name),
+              labelText: AppLocalizations.of(context).name),
           GoListPlatformTextFormField(
               controller: amountInputController,
-              labelText: AppLocalizations.of(context)!.amount)
+              labelText: AppLocalizations.of(context).amount)
         ],
       ),
       actions: <Widget>[
         PlatformDialogAction(
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text(AppLocalizations.of(context).cancel),
           onPressed: () => Navigator.pop(context),
         ),
         PlatformDialogAction(
-            child: Text(AppLocalizations.of(context)!.save),
+            child: Text(AppLocalizations.of(context).save),
             onPressed: () {
               Navigator.pop(context);
               widget.item.setName(nameTextInputController.text);
               widget.item.amount = amountInputController.text;
-              Provider.of<SelectedShoppingListState>(context, listen: false)
+              Provider.of<GlobalAppState>(context, listen: false)
                   .upsertItem(widget.item);
             })
       ],

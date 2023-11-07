@@ -9,7 +9,7 @@ class CreateNewListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
         leading: const Icon(Icons.add),
-        title: Text(AppLocalizations.of(context)!.create_new_list),
+        title: Text(AppLocalizations.of(context).create_new_list),
         onTap: () => CreateNewListDialog.show(context));
   }
 }
