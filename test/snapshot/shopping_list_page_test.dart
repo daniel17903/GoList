@@ -46,4 +46,17 @@ void main() async {
     await expectLater(find.byType(MaterialApp),
         matchesGoldenFile('goldens/opened_edit_item_dialog.png'));
   });
+
+  testWidgets('Opens the EditListDialog when tapping the edit icon',
+      (tester) async {
+    await setViewSize(tester);
+
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection([shoppingList]), shoppingList);
+    await tester.tap(find.byIcon(Icons.edit));
+    await tester.pumpAndSettle();
+
+    await expectLater(find.byType(MaterialApp),
+        matchesGoldenFile('goldens/opened_edit_list_dialog.png'));
+  });
 }

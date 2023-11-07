@@ -118,4 +118,28 @@ void main() {
             matching: find.text("new list name")),
         findsOneWidget);
   });
+
+  testWidgets('Edits a lists name', (tester) async {
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection([shoppingList]), shoppingList);
+
+    // open the edit dialog
+    await tester.tap(find.byIcon(Icons.edit));
+    await tester.pumpAndSettle();
+
+    // insert new list name and click save in dialog
+    await tester.enterText(
+        find.descendant(
+            of: find.byType(AlertDialog), matching: find.byType(TextFormField)),
+        "new list name");
+    await tester.tap(find.text("Save"));
+    await tester.pumpAndSettle();
+
+    // expect the new list name to be shown
+    expect(
+        find.descendant(
+            of: find.byType(ItemListViewer),
+            matching: find.text("new list name")),
+        findsOneWidget);
+  });
 }
