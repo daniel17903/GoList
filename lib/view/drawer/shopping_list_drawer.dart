@@ -49,15 +49,7 @@ class ShoppingListDrawer extends StatelessWidget {
                         ShoppingList shoppingList =
                             globalAppState.shoppingLists.get(index);
                         return ShoppingListTile(
-                          shoppingListName: shoppingList.name,
-                          key: Key(shoppingList.id),
-                          onTap: () {
-                            globalAppState
-                                .setSelectedShoppingListId(shoppingList.id);
-                            Navigator.pop(context);
-                          },
-                          onDelete: () =>
-                              globalAppState.deleteShoppingList(shoppingList.id),
+                          shoppingList,
                         );
                       },
                       onReorder: (int oldIndex, int newIndex) =>

@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:go_list/model/global_app_state.dart';
+import 'package:go_list/model/shopping_list.dart';
+import 'package:provider/provider.dart';
 
 class ShoppingListTile extends StatelessWidget {
-  final String shoppingListName;
-  final Function onTap;
-  final Function onDelete;
+  final ShoppingList shoppingList;
 
-  const ShoppingListTile(
-      {Key? key,
-      required this.shoppingListName,
-      required this.onTap,
-      required this.onDelete})
-      : super(key: key);
+  ShoppingListTile(this.shoppingList) : super(key: Key(shoppingList.id));
 
-  void _showAlertDialog(
-      {required Function onConfirmed, required BuildContext context}) {
+  void _showAlertDialog(BuildContext context) {
     showPlatformDialog(
         context: context,
         builder: (BuildContext context) => PlatformAlertDialog(
@@ -29,7 +24,8 @@ class ShoppingListTile extends StatelessWidget {
                   child: const Text('OK'),
                   onPressed: () {
                     Navigator.pop(context);
-                    onConfirmed();
+                    Provider.of<GlobalAppState>(context, listen: false)
+                        .deleteShoppingList(shoppingList.id);
                   },
                 )
               ],
@@ -40,12 +36,15 @@ class ShoppingListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.list),
-      title: Text(shoppingListName),
-      onTap: () => onTap(),
+      title: Text(shoppingList.name),
+      onTap: () {
+        Provider.of<GlobalAppState>(context, listen: false)
+            .setSelectedShoppingListId(shoppingList.id);
+        Navigator.pop(context);
+      },
       trailing: IconButton(
         icon: const Icon(Icons.delete),
-        onPressed: () =>
-            _showAlertDialog(onConfirmed: onDelete, context: context),
+        onPressed: () => _showAlertDialog(context),
       ),
     );
   }
