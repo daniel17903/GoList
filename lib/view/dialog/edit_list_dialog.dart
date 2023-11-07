@@ -35,22 +35,22 @@ class _EditListDialogState extends State<EditListDialog> {
   @override
   Widget build(BuildContext context) {
     return PlatformAlertDialog(
-      title: Text(AppLocalizations.of(context)!.edit_list),
+      title: Text(AppLocalizations.of(context).edit_list),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           GoListPlatformTextFormField(
               controller: _nameTextInputController,
-              labelText: AppLocalizations.of(context)!.name)
+              labelText: AppLocalizations.of(context).name)
         ],
       ),
       actions: <Widget>[
         PlatformDialogAction(
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text(AppLocalizations.of(context).cancel),
           onPressed: () => Navigator.pop(context),
         ),
         PlatformDialogAction(
-            child: Text(AppLocalizations.of(context)!.save),
+            child: Text(AppLocalizations.of(context).save),
             onPressed: () {
               widget.shoppingList.name = _nameTextInputController.text;
               Provider.of<GlobalAppState>(context, listen: false)

@@ -58,7 +58,8 @@ class GoListClient {
             httpMethod: HttpMethod.post,
             body: {"shopping_list_id": shoppingListId})
         .then((response) => jsonDecode(utf8.decode(response.bodyBytes)))
-        .then((responseJson) => responseJson["token"]);
+        .then((responseJson) => responseJson["token"])
+        .then((token) => "$backendUrl/join?token=$token");
   }
 
   Future<ShoppingList> joinListWithToken(String token) {

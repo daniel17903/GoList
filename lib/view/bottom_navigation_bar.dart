@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/global_app_state.dart';
-import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -15,9 +14,12 @@ class GoListBottomNavigationBar extends StatelessWidget {
         Provider.of<GlobalAppState>(context, listen: false)
             .selectedShoppingList
             .id;
-    GoListClient().createTokenToShareList(selectedShoppingListId).then(
-      (token) {
-        Share.share("${GoListClient.backendUrl}/join?token=$token",
+    Provider.of<GlobalAppState>(context, listen: false)
+        .goListClient
+        .createTokenToShareList(selectedShoppingListId)
+        .then(
+      (tokenUrl) {
+        Share.share(tokenUrl,
             sharePositionOrigin:
                 Rect.fromLTWH(0, 0, size.width, size.height / 2));
       },
