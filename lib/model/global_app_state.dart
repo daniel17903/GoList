@@ -28,7 +28,9 @@ class GlobalAppState extends ChangeNotifier {
 
     // load settings or create default
     Settings? settingsFromStorage = shoppingListStorage.loadSettings();
-    if (settingsFromStorage == null) {
+    if (settingsFromStorage == null ||
+        !shoppingLists
+            .containsEntryWithId(settingsFromStorage.selectedShoppingListId)) {
       settings = Settings(
           selectedShoppingListId: shoppingLists.first()?.id ?? "",
           shoppingListOrder: shoppingLists.order);
@@ -41,6 +43,8 @@ class GlobalAppState extends ChangeNotifier {
     goListClient.deviceId = settings.deviceId;
     InputToItemParser().init(languageCode);
     _initWithDefaultListIfEmpty();
+    _listenForChangesInSelectedShoppingList();
+    notifyListeners();
   }
 
   ShoppingList? _initWithDefaultListIfEmpty() {
@@ -94,6 +98,19 @@ class GlobalAppState extends ChangeNotifier {
     settings.selectedShoppingListId = selectedShoppingListId;
     shoppingListStorage.saveSettings(settings);
     notifyListeners();
+    _listenForChangesInSelectedShoppingList();
+  }
+
+  void _listenForChangesInSelectedShoppingList() {
+    shoppingListStorage
+        .listenForChanges(settings.selectedShoppingListId)
+        .listen((shoppingList) {
+          print(settings.selectedShoppingListId);
+          print(shoppingLists.map((s) => s.id));
+      shoppingLists.upsert(shoppingList);
+          print(shoppingLists.map((s) => s.id));
+      notifyListeners();
+    });
   }
 
   void deleteShoppingList(String shoppingListId) {

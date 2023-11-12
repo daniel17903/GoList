@@ -12,6 +12,7 @@ class GoListClient {
   static const String apiKey =
       String.fromEnvironment("API_KEY", defaultValue: "123");
 
+  WebSocketChannel? webSocketChannel;
   final Client client;
   String deviceId = "";
 
@@ -21,11 +22,9 @@ class GoListClient {
       {required String endpoint,
       required HttpMethod httpMethod,
       Object? body}) async {
-    Map<String, String> headers = {"api-key": apiKey, "user-id": deviceId};
     String? jsonBody;
     if (body != null) {
       jsonBody = json.encode(body);
-      headers["Content-Type"] = "application/json";
     }
     Uri uri = Uri.parse("$backendUrl$endpoint");
     Response response;
@@ -96,10 +95,24 @@ class GoListClient {
         httpMethod: HttpMethod.delete);
   }
 
-  WebSocketChannel listenForChanges(String shoppingListId) {
-    WebSocketChannel webSocketChannel = WebSocketChannel.connect(
-        Uri.parse("$backendUrl/api/shoppinglist/$shoppingListId/listen"));
-    webSocketChannel.sink.add(deviceId);
-    return webSocketChannel;
+  Map<String, String> get headers => {
+        "api-key": apiKey,
+        "user-id": deviceId,
+        "Content-Type": "application/json"
+      };
+
+  Stream<ShoppingList> listenForChanges(String shoppingListId) {
+    if (webSocketChannel != null) {
+      webSocketChannel?.sink.close();
+    }
+    print("listen for changes: " + shoppingListId);
+    webSocketChannel = WebSocketChannel.connect(
+        Uri.parse("ws://10.0.2.2:8000/shopping-lists/$shoppingListId/listen"));
+    print("sending " + headers.toString());
+    webSocketChannel!.sink.add(json.encode(headers));
+    return webSocketChannel!.stream.map((shoppingListJson) {
+      print(jsonDecode(shoppingListJson));
+      return ShoppingList.fromJson(jsonDecode(shoppingListJson));
+    });
   }
 }

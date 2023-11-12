@@ -31,6 +31,10 @@ class RemoteStorageProvider extends StorageProvider {
     }
   }
 
+  Stream<ShoppingList> listenForChanges(String shoppingListId) {
+    return goListClient.listenForChanges(shoppingListId);
+  }
+
   @override
   Future<void> deleteShoppingList(String shoppingListId) async {
     try {

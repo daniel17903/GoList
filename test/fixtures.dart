@@ -8,9 +8,17 @@ import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
 import 'get_storage_mock.dart';
+
+class GoListClientMock extends Mock implements GoListClient {
+  @override
+  Stream<ShoppingList> listenForChanges(String shoppingListId) {
+    return const Stream.empty();
+  }
+}
 
 Future<void> setViewSize(WidgetTester tester,
     {size = const Size(1080, 2220)}) async {
@@ -60,27 +68,27 @@ Future<void> loadImages(WidgetTester tester) async {
   }
 }
 
-Future<void> pumpWithGlobalAppState(
-    WidgetTester tester,
-    Widget w,
-    ShoppingListCollection shoppingLists,
-    ShoppingList selectedShoppingList) async {
-  await pump(tester,
-      wrapWithGlobalAppStateProvider(shoppingLists, selectedShoppingList, w),
+Future<void> pumpWithGlobalAppState(WidgetTester tester, Widget w,
+    ShoppingListCollection shoppingLists, ShoppingList selectedShoppingList,
+    [GoListClient? goListClient]) async {
+  await pump(
+      tester,
+      wrapWithGlobalAppStateProvider(
+          shoppingLists, selectedShoppingList, w, goListClient),
       withImages: true);
 }
 
 ChangeNotifierProvider<GlobalAppState> wrapWithGlobalAppStateProvider(
     ShoppingListCollection shoppingLists,
     ShoppingList selectedShoppingList,
-    Widget w) {
-  var goListClient = GoListClient();
+    Widget w,
+    [GoListClient? goListClient]) {
+  GoListClient goListClientOrDefault = goListClient ?? GoListClientMock();
   var globalAppState = GlobalAppState(
-      goListClient: goListClient,
-      localStorageProvider: LocalStorageProvider(MockStorage()),
-      remoteStorageProvider: RemoteStorageProvider(goListClient));
-  globalAppState.setShoppingLists(shoppingLists);
-  globalAppState.setSelectedShoppingListId(selectedShoppingList.id);
+      goListClient: goListClientOrDefault,
+      localStorageProvider: LocalStorageProvider(
+          MockStorage.withShoppingListCollection(shoppingLists)),
+      remoteStorageProvider: RemoteStorageProvider(goListClientOrDefault));
   return ChangeNotifierProvider<GlobalAppState>.value(
       value: globalAppState, child: wrapWithMaterialApp(w));
 }

@@ -65,6 +65,7 @@ class ShoppingList extends GoListModel {
     ShoppingList lastUpdatedShoppingList =
         lastModified(this, other as ShoppingList);
     return ShoppingList(
+        id: lastUpdatedShoppingList.id,
         name: lastUpdatedShoppingList.name,
         items: items.merge(other.items),
         recentlyUsedItems: recentlyUsedItems.merge(other.recentlyUsedItems),

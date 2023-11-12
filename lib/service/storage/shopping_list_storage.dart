@@ -29,31 +29,27 @@ class ShoppingListStorage {
         (await remoteStorageProvider.loadShoppingLists());
 
     if (!shoppingListsFromRemoteStorage.equals(shoppingListsFromLocalStorage)) {
-      var merged =
+      ShoppingListCollection merged =
           shoppingListsFromLocalStorage.merge(shoppingListsFromRemoteStorage);
 
       // update local storage with changes from remote
       merged.entries.forEach(localStorageProvider.upsertShoppingList);
+      merged.entries.forEach(remoteStorageProvider.upsertShoppingList);
 
       yield merged;
     }
   }
 
-  Stream<ShoppingList> loadShoppingList(String shoppingListId) async* {
-    ShoppingList shoppingListFromLocalStorage =
-        loadShoppingListFromLocalStorage(shoppingListId);
-    yield shoppingListFromLocalStorage;
-
-    ShoppingList shoppingListFromRemoteStorage =
-        (await remoteStorageProvider.loadShoppingList(shoppingListId))
-            .merge(shoppingListFromLocalStorage) as ShoppingList;
-
-    if (!shoppingListFromRemoteStorage.equals(shoppingListFromLocalStorage)) {
-      var merged = shoppingListFromRemoteStorage
-          .merge(shoppingListFromLocalStorage) as ShoppingList;
-      localStorageProvider.upsertShoppingList(merged);
-      yield merged;
-    }
+  Stream<ShoppingList> listenForChanges(String shoppingListId) {
+    return remoteStorageProvider
+        .listenForChanges(shoppingListId)
+        .map((shoppingList) {
+      ShoppingList mergedWithLocal =
+          loadShoppingListFromLocalStorage(shoppingList.id).merge(shoppingList)
+              as ShoppingList;
+      localStorageProvider.upsertShoppingList(mergedWithLocal);
+      return mergedWithLocal;
+    });
   }
 
   Future<void> upsertShoppingList(ShoppingList shoppingList) async {
@@ -73,5 +69,4 @@ class ShoppingListStorage {
     localStorageProvider.deleteShoppingList(shoppingListId);
     await remoteStorageProvider.deleteShoppingList(shoppingListId);
   }
-
 }

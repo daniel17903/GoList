@@ -1,18 +1,28 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/collections/shopping_list_collection.dart';
+import 'package:go_list/model/item.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/view/drawer/create_new_list_tile.dart';
 import 'package:go_list/view/drawer/shopping_list_drawer.dart';
 import 'package:go_list/view/drawer/shopping_list_tile.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 import 'package:go_list/view/shopping_list_page.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import '../../builders/item_builder.dart';
 import '../../builders/shopping_list_builder.dart';
 import '../../fixtures.dart';
+import 'shopping_list_page_test.mocks.dart';
 
+class MockStream extends Mock implements Stream<ShoppingList> {}
+
+@GenerateMocks([GoListClient])
 void main() {
   late ShoppingList shoppingList;
 
@@ -141,5 +151,46 @@ void main() {
             of: find.byType(ItemListViewer),
             matching: find.text("new list name")),
         findsOneWidget);
+  });
+
+  testWidgets('Updates with a shopping list received via websocket',
+      (tester) async {
+    await setViewSize(tester);
+    Item newItemFromStream = ItemBuilder().withName("new item").build();
+    ShoppingListBuilder builder = ShoppingListBuilder();
+    List<Item> items = [
+      ItemBuilder().withName("item a").build(),
+      ItemBuilder().withName("item b").build(),
+    ];
+    ShoppingList initialShoppingList = builder.withItems(items).build();
+    ShoppingList updatedShoppingList = builder.withItems([
+      ItemBuilder().withId(items[0].id).withName("updated").build(),
+      ItemBuilder().withId(items[1].id).withDeleted(true).build(),
+      newItemFromStream
+    ]).build();
+
+    GoListClient goListClientMock = MockGoListClient();
+    StreamController<ShoppingList> streamController = StreamController();
+
+    when(goListClientMock.listenForChanges(initialShoppingList.id))
+        .thenAnswer((_) {
+      streamController = StreamController();
+      return streamController.stream;
+    });
+
+    await pumpWithGlobalAppState(
+        tester,
+        const ShoppingListPage(),
+        ShoppingListCollection([initialShoppingList]),
+        initialShoppingList,
+        goListClientMock);
+    await tester.pumpAndSettle();
+
+    streamController.add(updatedShoppingList);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(Key(items[0].id)), findsOneWidget);
+    expect(find.byKey(Key(items[1].id)), findsNothing);
+    expect(find.byKey(Key(newItemFromStream.id)), findsOneWidget);
   });
 }

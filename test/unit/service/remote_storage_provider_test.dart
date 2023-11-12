@@ -51,10 +51,13 @@ void main() {
   });
 
   test("Loads shopping lists", () async {
-    when(client.get(Uri.parse("${GoListClient.backendUrl}/shopping-lists"),
-            headers: {"api-key": GoListClient.apiKey, "user-id": deviceId}))
-        .thenAnswer((_) async =>
-            http.Response('[${json.encode(shoppingListJson)}]', 200));
+    when(client
+        .get(Uri.parse("${GoListClient.backendUrl}/shopping-lists"), headers: {
+      "api-key": GoListClient.apiKey,
+      "user-id": deviceId,
+      "Content-Type": "application/json"
+    })).thenAnswer(
+        (_) async => http.Response('[${json.encode(shoppingListJson)}]', 200));
 
     var loadedShoppingLists =
         await RemoteStorageProvider(goListClient).loadShoppingLists();
@@ -68,7 +71,8 @@ void main() {
             "${GoListClient.backendUrl}/shopping-lists/${shoppingListJson["id"]}"),
         headers: {
           "api-key": GoListClient.apiKey,
-          "user-id": deviceId
+          "user-id": deviceId,
+          "Content-Type": "application/json"
         })).thenAnswer(
         (_) async => http.Response(json.encode(shoppingListJson), 200));
 
