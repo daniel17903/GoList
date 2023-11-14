@@ -22,7 +22,5 @@
     "what_to_buy": "What do you want to buy?",
     "settings": "Settings",
 
-    "failed_to_load_list": "Failed to load the list",
-    "failed_to_share_list": "Failed to share the list",
-    "failed_to_open_list": "Failed to open the list"
+    "connection_failed": "GoList is offline"
 }

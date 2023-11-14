@@ -22,7 +22,5 @@
   "what_to_buy": "Was möchtest du einkaufen?",
   "settings": "Einstellungen",
 
-  "failed_to_load_list": "Laden der Liste fehlgeschlagen",
-  "failed_to_share_list": "Teilen der Liste fehlgeschlagen",
-  "failed_to_open_list": "Öffnen der Liste fehlgeschlagen"
+  "connection_failed": "GoList ist offline"
 }

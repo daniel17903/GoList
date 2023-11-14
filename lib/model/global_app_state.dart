@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/model/settings.dart';
@@ -9,14 +12,13 @@ import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:go_list/service/storage/shopping_list_storage.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GlobalAppState extends ChangeNotifier {
   final GoListClient goListClient;
   late final ShoppingListStorage shoppingListStorage;
   late ShoppingListCollection shoppingLists;
   late Settings settings;
-  Function? connectionFailureCallback;
+  Function connectionFailureCallback = () => {};
 
   GlobalAppState(
       {required this.goListClient,
@@ -69,9 +71,7 @@ class GlobalAppState extends ChangeNotifier {
         .listen(setShoppingLists)
         .asFuture()
         .onError((e, s) {
-      if (connectionFailureCallback != null) {
-        connectionFailureCallback!();
-      }
+      connectionFailureCallback();
     });
   }
 
@@ -102,15 +102,17 @@ class GlobalAppState extends ChangeNotifier {
   }
 
   void _listenForChangesInSelectedShoppingList() {
-    shoppingListStorage
-        .listenForChanges(settings.selectedShoppingListId)
-        .listen((shoppingList) {
-          print(settings.selectedShoppingListId);
-          print(shoppingLists.map((s) => s.id));
-      shoppingLists.upsert(shoppingList);
-          print(shoppingLists.map((s) => s.id));
-      notifyListeners();
-    });
+    try {
+      shoppingListStorage
+          .listenForChanges(settings.selectedShoppingListId)
+          .listen((shoppingList) {
+        shoppingLists.upsert(shoppingList);
+        notifyListeners();
+      });
+    } on SocketException catch (e) {
+      print("failed to listen for changes: $e");
+      connectionFailureCallback();
+    }
   }
 
   void deleteShoppingList(String shoppingListId) {

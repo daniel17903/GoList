@@ -8,7 +8,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class GoListClient {
   static const String backendUrl = String.fromEnvironment("BACKEND_URL",
-      defaultValue: "http://10.0.2.2:8000");
+      defaultValue: "http://192.168.178.58:8000");
   static const String apiKey =
       String.fromEnvironment("API_KEY", defaultValue: "123");
 
@@ -107,7 +107,7 @@ class GoListClient {
     }
     print("listen for changes: " + shoppingListId);
     webSocketChannel = WebSocketChannel.connect(
-        Uri.parse("ws://10.0.2.2:8000/shopping-lists/$shoppingListId/listen"));
+        Uri.parse("ws://192.168.178.58:8000/shopping-lists/$shoppingListId/listen"));
     print("sending " + headers.toString());
     webSocketChannel!.sink.add(json.encode(headers));
     return webSocketChannel!.stream.map((shoppingListJson) {

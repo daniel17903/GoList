@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/style/colors.dart';
+import 'package:go_list/view/dialog/snack_bars.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -23,9 +23,9 @@ class GoListBottomNavigationBar extends StatelessWidget {
             sharePositionOrigin:
                 Rect.fromLTWH(0, 0, size.width, size.height / 2));
       },
-    ).catchError((_) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context).failed_to_share_list)));
+    ).catchError((e) {
+      print("Failed to share list: $e");
+      SnackBars.showConnectionFailedSnackBar(context);
     });
   }
 
