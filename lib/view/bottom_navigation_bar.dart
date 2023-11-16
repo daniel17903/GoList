@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class GoListBottomNavigationBar extends StatelessWidget {
-  const GoListBottomNavigationBar({Key? key}) : super(key: key);
+  const GoListBottomNavigationBar({super.key});
 
   void onShareList(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
