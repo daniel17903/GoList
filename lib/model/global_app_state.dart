@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -18,7 +19,9 @@ class GlobalAppState extends ChangeNotifier {
   late final ShoppingListStorage shoppingListStorage;
   late ShoppingListCollection shoppingLists;
   late Settings settings;
-  Function connectionFailureCallback = () => {};
+  bool showConnectionFailure = false;
+  late Function connectionFailureCallback;
+  StreamSubscription<ShoppingList>? streamSubscription;
 
   GlobalAppState(
       {required this.goListClient,
@@ -40,6 +43,11 @@ class GlobalAppState extends ChangeNotifier {
     } else {
       settings = settingsFromStorage;
     }
+
+    connectionFailureCallback = () {
+      // show as soon as callback is registered
+      showConnectionFailure = true;
+    };
 
     shoppingLists.setOrder(settings.shoppingListOrder);
     goListClient.deviceId = settings.deviceId;
@@ -73,10 +81,15 @@ class GlobalAppState extends ChangeNotifier {
         .onError((e, s) {
       connectionFailureCallback();
     });
+    _listenForChangesInSelectedShoppingList();
   }
 
   registerConnectionFailureCallback(Function connectionFailureCallback) {
     this.connectionFailureCallback = connectionFailureCallback;
+    if (showConnectionFailure) {
+      showConnectionFailure = false;
+      this.connectionFailureCallback();
+    }
   }
 
   setShoppingLists(ShoppingListCollection shoppingLists) {
@@ -98,20 +111,38 @@ class GlobalAppState extends ChangeNotifier {
     settings.selectedShoppingListId = selectedShoppingListId;
     shoppingListStorage.saveSettings(settings);
     notifyListeners();
-    _listenForChangesInSelectedShoppingList();
+    _listenForChangesInSelectedShoppingList(forceReconnect: true);
   }
 
-  void _listenForChangesInSelectedShoppingList() {
+  void _listenForChangesInSelectedShoppingList(
+      {forceReconnect = false, retries = 0}) async {
+    onError(e) {
+      print("failed to listen for changes: $e");
+      streamSubscription = null;
+      if (retries == 0) {
+        connectionFailureCallback();
+      }
+    }
+
     try {
-      shoppingListStorage
-          .listenForChanges(settings.selectedShoppingListId)
+      if (forceReconnect) {
+        await streamSubscription?.cancel();
+        streamSubscription = null;
+      }
+      if (streamSubscription != null || retries > 5) return;
+      streamSubscription = (await shoppingListStorage
+              .listenForChanges(settings.selectedShoppingListId))
           .listen((shoppingList) {
         shoppingLists.upsert(shoppingList);
         notifyListeners();
       });
+      streamSubscription!.onDone(() {
+        streamSubscription = null;
+        _listenForChangesInSelectedShoppingList(retries: retries + 1);
+      });
+      streamSubscription!.onError(onError);
     } on SocketException catch (e) {
-      print("failed to listen for changes: $e");
-      connectionFailureCallback();
+      onError(e);
     }
   }
 

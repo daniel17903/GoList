@@ -9,14 +9,14 @@ class ShoppingList extends GoListModel {
   late RecentlyUsedItemCollection recentlyUsedItems;
 
   ShoppingList(
-      {required String name,
+      {required super.name,
       ItemCollection? items,
       RecentlyUsedItemCollection? recentlyUsedItems,
-      bool? deleted,
-      DateTime? modified,
-      String? id})
-      : super(name: name, modified: modified, deleted: deleted, id: id) {
+      super.deleted,
+      super.modified,
+      super.id}) {
     this.items = items ?? ItemCollection([]);
+    this.items.sort();
     this.recentlyUsedItems = recentlyUsedItems ??
         RecentlyUsedItemCollection(this.items.copyForRecentlyUsed());
   }
@@ -28,6 +28,7 @@ class ShoppingList extends GoListModel {
             deleted: json["deleted"],
             modified: DateTime.parse(json["modified"])) {
     items = ItemCollection.fromJson(json["items"]);
+    items.sort();
     recentlyUsedItems =
         RecentlyUsedItemCollection.fromJson(json["recentlyUsedItems"]);
   }

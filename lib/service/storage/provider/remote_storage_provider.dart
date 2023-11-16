@@ -31,7 +31,7 @@ class RemoteStorageProvider extends StorageProvider {
     }
   }
 
-  Stream<ShoppingList> listenForChanges(String shoppingListId) {
+  Future<Stream<ShoppingList>> listenForChanges(String shoppingListId) {
     return goListClient.listenForChanges(shoppingListId);
   }
 

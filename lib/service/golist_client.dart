@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:go_list/model/collections/shopping_list_collection.dart';
@@ -101,18 +102,27 @@ class GoListClient {
         "Content-Type": "application/json"
       };
 
-  Stream<ShoppingList> listenForChanges(String shoppingListId) {
-    if (webSocketChannel != null) {
-      webSocketChannel?.sink.close();
-    }
-    print("listen for changes: " + shoppingListId);
-    webSocketChannel = WebSocketChannel.connect(
-        Uri.parse("ws://192.168.178.58:8000/shopping-lists/$shoppingListId/listen"));
-    print("sending " + headers.toString());
-    webSocketChannel!.sink.add(json.encode(headers));
-    return webSocketChannel!.stream.map((shoppingListJson) {
-      print(jsonDecode(shoppingListJson));
-      return ShoppingList.fromJson(jsonDecode(shoppingListJson));
+  Future<Stream<ShoppingList>> listenForChanges(String shoppingListId) async {
+    // see https://github.com/dart-lang/http/issues/551
+    Stream<ShoppingList>? stream =
+        await runZonedGuarded<Future<Stream<ShoppingList>>>(() async {
+      if (webSocketChannel != null) {
+        webSocketChannel?.sink.close();
+      }
+      webSocketChannel = WebSocketChannel.connect(Uri.parse(
+          "ws://192.168.178.58:8000/shopping-lists/$shoppingListId/listen"));
+      webSocketChannel!.sink.add(json.encode(headers));
+      return webSocketChannel!.stream.map((shoppingListJson) {
+        return ShoppingList.fromJson(jsonDecode(shoppingListJson));
+      });
+    }, (error, stack) {
+      print(error);
+      print(stack);
+      throw Exception('Failed to connect to websocket');
     });
+    if (stream == null) {
+      throw Exception("Failed to connect to websocket");
+    }
+    return stream;
   }
 }

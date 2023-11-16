@@ -40,9 +40,8 @@ class ShoppingListStorage {
     }
   }
 
-  Stream<ShoppingList> listenForChanges(String shoppingListId) {
-    return remoteStorageProvider
-        .listenForChanges(shoppingListId)
+  Future<Stream<ShoppingList>> listenForChanges(String shoppingListId) async {
+    return (await remoteStorageProvider.listenForChanges(shoppingListId))
         .map((shoppingList) {
       ShoppingList mergedWithLocal =
           loadShoppingListFromLocalStorage(shoppingList.id).merge(shoppingList)

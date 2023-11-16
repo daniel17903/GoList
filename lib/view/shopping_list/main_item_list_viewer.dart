@@ -10,13 +10,16 @@ import 'package:provider/provider.dart';
 import 'shopping_list_item/shopping_list_item_wrap.dart';
 
 class MainItemListViewer extends StatelessWidget {
-  const MainItemListViewer({Key? key}) : super(key: key);
+  const MainItemListViewer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<GlobalAppState>(context, listen: false)
-        .registerConnectionFailureCallback(
-            () => SnackBars.showConnectionFailedSnackBar(context));
+    // because SnackBar cannot be shown during build
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      Provider.of<GlobalAppState>(context, listen: false)
+          .registerConnectionFailureCallback(
+              () => SnackBars.showConnectionFailedSnackBar(context));
+    });
 
     // SafeArea is required for the android toolbar not to overlap the title
     return SafeArea(
