@@ -9,14 +9,13 @@ class Item extends GoListModel implements Comparable<Item> {
   late Category category;
 
   Item(
-      {String? id,
-      required String name,
+      {super.id,
+      required super.name,
       required this.iconName,
       this.amount,
       required this.category,
-      bool? deleted,
-      DateTime? modified})
-      : super(name: name, id: id, deleted: deleted, modified: modified);
+      super.deleted,
+      super.modified});
 
   Item.fromJson(dynamic json)
       : super(

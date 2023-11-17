@@ -15,8 +15,8 @@ import 'get_storage_mock.dart';
 
 class GoListClientMock extends Mock implements GoListClient {
   @override
-  Stream<ShoppingList> listenForChanges(String shoppingListId) {
-    return const Stream.empty();
+  Future<Stream<ShoppingList>> listenForChanges(String shoppingListId) {
+    return Future.value(const Stream.empty());
   }
 }
 

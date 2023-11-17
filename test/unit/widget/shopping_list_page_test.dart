@@ -175,7 +175,7 @@ void main() {
     when(goListClientMock.listenForChanges(initialShoppingList.id))
         .thenAnswer((_) {
       streamController = StreamController();
-      return streamController.stream;
+      return Future.value(streamController.stream);
     });
 
     await pumpWithGlobalAppState(
