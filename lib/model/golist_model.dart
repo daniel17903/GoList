@@ -5,14 +5,15 @@ import 'package:uuid/uuid.dart';
 abstract class GoListModel {
   late String id;
   late DateTime modified;
-  late bool deleted;
-  late String name;
+  late bool _deleted;
+  late String _name;
 
   GoListModel(
-      {required this.name, String? id, DateTime? modified, bool? deleted}) {
+      {required String name, String? id, DateTime? modified, bool? deleted}) {
     this.id = id ?? const Uuid().v4();
     this.modified = modified ?? DateTime.now();
-    this.deleted = deleted ?? false;
+    _name = name;
+    _deleted = deleted ?? false;
   }
 
   GoListModel.fromJson(Map<String, dynamic> json);
@@ -57,6 +58,20 @@ abstract class GoListModel {
 
   bool equals(GoListModel other) {
     return mapEquals(toJson(), other.toJson());
+  }
+
+  bool get deleted => _deleted;
+
+  set deleted(bool deleted) {
+    modified = DateTime.now();
+    _deleted = deleted;
+  }
+
+  String get name => _name;
+
+  set name(String name) {
+    modified = DateTime.now();
+    _name = name;
   }
 
   GoListModel merge(GoListModel other);

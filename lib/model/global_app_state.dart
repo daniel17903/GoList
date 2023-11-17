@@ -175,7 +175,7 @@ class GlobalAppState extends ChangeNotifier {
       shoppingLists.entryWithId(settings.selectedShoppingListId)!;
 
   void deleteItem(Item item) {
-    item.deleted = true;
+    selectedShoppingList.deleteItem(item);
     shoppingListStorage.upsertShoppingList(selectedShoppingList);
     notifyListeners();
   }

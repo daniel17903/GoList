@@ -55,8 +55,15 @@ class ShoppingList extends GoListModel {
         id: id ?? this.id);
   }
 
+
+  void deleteItem(Item item) {
+    item.deleted = true;
+    modified = DateTime.now();
+  }
+
   void upsertItem(Item item) {
     items.upsert(item);
+    modified = DateTime.now();
     recentlyUsedItems.upsert(item.copyForRecentlyUsed());
     items.sort();
   }

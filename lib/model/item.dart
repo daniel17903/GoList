@@ -4,18 +4,21 @@ import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 
 class Item extends GoListModel implements Comparable<Item> {
-  late String iconName;
-  late String? amount;
-  late Category category;
+  late String _iconName;
+  late String? _amount;
+  late Category _category;
 
   Item(
       {super.id,
       required super.name,
-      required this.iconName,
-      this.amount,
-      required this.category,
+      required iconName,
+      amount,
+      required category,
       super.deleted,
-      super.modified});
+      super.modified})
+      : _iconName = iconName,
+        _amount = amount,
+        _category = category;
 
   Item.fromJson(dynamic json)
       : super(
@@ -23,21 +26,23 @@ class Item extends GoListModel implements Comparable<Item> {
             deleted: json["deleted"],
             id: json["id"],
             modified: DateTime.parse(json["modified"])) {
-    iconName = json["iconName"];
-    amount = json["amount"];
-    category = json.containsKey("category")
+    _iconName = json["iconName"];
+    _amount = json["amount"];
+    _category = json.containsKey("category")
         ? categoryFromString(json["category"])
         : Category.other;
   }
 
-  Item.fromInput(String name, this.amount) : super(name: name) {
+  Item.fromInput(String name, String? amount)
+      : _amount = amount,
+        super(name: name) {
     findMapping();
   }
 
   void findMapping() {
     IconMapping iconMapping = InputToItemParser().findMappingForName(name);
-    iconName = iconMapping.assetFileName;
-    category = iconMapping.category;
+    _iconName = iconMapping.assetFileName;
+    _category = iconMapping.category;
   }
 
   void setName(String name) {
@@ -93,5 +98,26 @@ class Item extends GoListModel implements Comparable<Item> {
         iconName: iconName,
         category: category,
         deleted: false);
+  }
+
+  Category get category => _category;
+
+  set category(Category value) {
+    modified = DateTime.now();
+    _category = value;
+  }
+
+  String? get amount => _amount;
+
+  set amount(String? value) {
+    modified = DateTime.now();
+    _amount = value;
+  }
+
+  String get iconName => _iconName;
+
+  set iconName(String value) {
+    modified = DateTime.now();
+    _iconName = value;
   }
 }

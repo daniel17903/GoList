@@ -1,14 +1,19 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/model/settings.dart';
 import 'package:go_list/model/shopping_list.dart';
-import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
 
 class LocalStorageProvider implements StorageProvider {
   final GetStorage getStorage;
+  static const String _containerName = "v1";
 
   LocalStorageProvider([GetStorage? getStorage])
-      : getStorage = getStorage ?? GetStorage();
+      : getStorage = getStorage ?? GetStorage(_containerName);
+
+  static Future<void> init() {
+    return GetStorage.init(_containerName);
+  }
 
   @override
   ShoppingListCollection loadShoppingLists() {

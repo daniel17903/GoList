@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
@@ -10,7 +9,7 @@ import 'package:go_list/view/shopping_list_page.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  await GetStorage.init();
+  await LocalStorageProvider.init();
 
   runApp(ChangeNotifierProvider<GlobalAppState>(
       create: (context) {
