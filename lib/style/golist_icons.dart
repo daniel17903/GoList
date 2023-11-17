@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 class GoListIcons {
   static const String defaultIconAssetName = "default";
-  List<String> existingAssets = [];
+  late Future<List<String>> existingAssetsFuture;
 
   static final GoListIcons _instance = GoListIcons._internal();
 
@@ -14,31 +14,39 @@ class GoListIcons {
   }
 
   GoListIcons._internal() {
-    rootBundle
+    existingAssetsFuture = rootBundle
         .loadString('AssetManifest.json')
-        .then((manifestContent) => json.decode(manifestContent).keys.toList())
-        .then((assetEntriesInManifest) =>
-            existingAssets = assetEntriesInManifest);
+        .then(jsonDecode)
+        .then((assetEntriesInManifest) => assetEntriesInManifest.keys.toList());
   }
 
   String _iconPath(String name) {
     return "assets/icons/$name.png";
   }
 
-  bool _assetForIconWithNameExists(String name) {
-    return existingAssets.contains(_iconPath(name));
+  Future<bool> _assetForIconWithNameExists(String name) async {
+    return existingAssetsFuture
+        .then((existingAssets) => existingAssets.contains(_iconPath(name)));
   }
 
-  Image getIconImageWidget(String name) {
-    return Image.asset(
-      _iconPath(
-          _assetForIconWithNameExists(name) ? name : defaultIconAssetName),
-      color: Colors.white,
-      fit: BoxFit.contain,
-    );
-  }
+  Widget getIconImageWidget(String name) {
+    return FutureBuilder<bool>(
+        future: _assetForIconWithNameExists(name),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          String existingImageAssetName = defaultIconAssetName;
+          if (snapshot.hasData) {
+            existingImageAssetName =
+                snapshot.data! ? name : defaultIconAssetName;
+          } else if (snapshot.hasError) {
+            existingImageAssetName = defaultIconAssetName;
+            print("Error loading item image: ${snapshot.error}");
+          }
 
-  void precacheIconImage(String name, BuildContext context) {
-    precacheImage(getIconImageWidget(name).image, context);
+          return Image.asset(
+            _iconPath(existingImageAssetName),
+            color: Colors.white,
+            fit: BoxFit.contain,
+          );
+        });
   }
 }

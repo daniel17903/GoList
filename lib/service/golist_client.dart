@@ -117,7 +117,6 @@ class GoListClient {
       });
     }, (error, stack) {
       print(error);
-      print(stack);
       throw Exception('Failed to connect to websocket');
     });
     if (stream == null) {

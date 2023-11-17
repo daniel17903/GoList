@@ -13,7 +13,7 @@ import 'package:go_list/view/shopping_list/main_item_list_viewer.dart';
 import 'package:provider/provider.dart';
 
 class ShoppingListPage extends StatefulWidget {
-  const ShoppingListPage({Key? key}) : super(key: key);
+  const ShoppingListPage({super.key});
 
   @override
   State<ShoppingListPage> createState() => _ShoppingListPageState();
@@ -38,7 +38,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         try {
           var globalAppState =
-          Provider.of<GlobalAppState>(context, listen: false);
+              Provider.of<GlobalAppState>(context, listen: false);
           var joinedShoppingList = await globalAppState.goListClient
               .joinListWithToken(uri.queryParameters["token"]!);
           // this will add the shopping list to the state and make it the selected list
@@ -61,17 +61,15 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery
-        .of(context)
-        .size;
+    Size screenSize = MediaQuery.of(context).size;
     double radiusUnit = min(screenSize.height, screenSize.width);
     return Container(
         decoration: BoxDecoration(
             gradient: RadialGradient(
-              radius: screenSize.height / radiusUnit, // 2.0 = screen height
-              center: Alignment.bottomCenter, // behind the fab
-              colors: GoListColors.backgroundGradientColors,
-            )),
+          radius: screenSize.height / radiusUnit, // 2.0 = screen height
+          center: Alignment.bottomCenter, // behind the fab
+          colors: GoListColors.backgroundGradientColors,
+        )),
         child: Scaffold(
             backgroundColor: Colors.transparent,
             extendBody: true,
@@ -81,7 +79,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
             body: const MainItemListViewer(),
             drawer: const ShoppingListDrawer(),
             floatingActionButtonLocation:
-            FloatingActionButtonLocation.centerDocked,
+                FloatingActionButtonLocation.centerDocked,
             floatingActionButton: FloatingActionButton(
                 backgroundColor: GoListColors.appBarColor,
                 onPressed: () => AddItemDialog.show(context: context),

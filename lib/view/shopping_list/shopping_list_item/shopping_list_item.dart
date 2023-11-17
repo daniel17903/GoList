@@ -58,12 +58,6 @@ class _ShoppingListItemState extends State<ShoppingListItem> {
     animationController = ItemAnimationController();
   }
 
-  @override
-  void didChangeDependencies() {
-    GoListIcons().precacheIconImage(widget.item.iconName, context);
-    super.didChangeDependencies();
-  }
-
   double _initialScaleFactor(BuildContext context) {
     double minSize = 90;
 
