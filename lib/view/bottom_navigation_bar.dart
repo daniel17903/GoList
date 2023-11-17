@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/style/colors.dart';
-import 'package:go_list/view/dialog/snack_bars.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -25,7 +25,8 @@ class GoListBottomNavigationBar extends StatelessWidget {
       },
     ).catchError((e) {
       print("Failed to share list: $e");
-      SnackBars.showConnectionFailedSnackBar(context);
+      Provider.of<GlobalAppState>(context, listen: false)
+          .showConnectionFailure();
     });
   }
 
@@ -40,6 +41,24 @@ class GoListBottomNavigationBar extends StatelessWidget {
               icon: const Icon(Icons.menu),
               onPressed: () => Scaffold.of(context).openDrawer()),
           const Spacer(),
+          Tooltip(
+            triggerMode: TooltipTriggerMode.tap,
+            textStyle: const TextStyle(fontSize: 16, color: Colors.white),
+            message: "${AppLocalizations.of(context).connection_failed} ☹️",
+            child: Consumer<GlobalAppState>(
+              builder: (context, globalAppState, child) => Visibility(
+                visible: globalAppState.shouldShowConnectionFailure,
+                child: const Icon(
+                  Icons.cloud_off,
+                  color: GoListColors.yellow,
+                  size: 30,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
           IconButton(
               onPressed: () => onShareList(context),
               icon: const Icon(Icons.share),

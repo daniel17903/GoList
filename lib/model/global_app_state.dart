@@ -19,9 +19,9 @@ class GlobalAppState extends ChangeNotifier {
   late final ShoppingListStorage shoppingListStorage;
   late ShoppingListCollection shoppingLists;
   late Settings settings;
-  bool showConnectionFailure = false;
-  late Function connectionFailureCallback;
-  StreamSubscription<ShoppingList>? streamSubscription;
+  StreamSubscription<ShoppingList>? _streamSubscription;
+  bool shouldShowConnectionFailure = false;
+  Timer? _showConnectionFailureTimer;
 
   GlobalAppState(
       {required this.goListClient,
@@ -43,11 +43,6 @@ class GlobalAppState extends ChangeNotifier {
     } else {
       settings = settingsFromStorage;
     }
-
-    connectionFailureCallback = () {
-      // show as soon as callback is registered
-      showConnectionFailure = true;
-    };
 
     shoppingLists.setOrder(settings.shoppingListOrder);
     goListClient.deviceId = settings.deviceId;
@@ -79,17 +74,21 @@ class GlobalAppState extends ChangeNotifier {
         .listen(setShoppingLists)
         .asFuture()
         .onError((e, s) {
-      connectionFailureCallback();
+      showConnectionFailure();
     });
     _listenForChangesInSelectedShoppingList();
   }
 
-  registerConnectionFailureCallback(Function connectionFailureCallback) {
-    this.connectionFailureCallback = connectionFailureCallback;
-    if (showConnectionFailure) {
-      showConnectionFailure = false;
-      this.connectionFailureCallback();
-    }
+  void showConnectionFailure() {
+    shouldShowConnectionFailure = true;
+    print("shouldShowConnectionFailure $shouldShowConnectionFailure");
+    notifyListeners();
+    _showConnectionFailureTimer?.cancel();
+    _showConnectionFailureTimer = Timer(const Duration(seconds: 5), () {
+      shouldShowConnectionFailure = false;
+      print("shouldShowConnectionFailure $shouldShowConnectionFailure");
+      notifyListeners();
+    });
   }
 
   setShoppingLists(ShoppingListCollection shoppingLists) {
@@ -118,29 +117,29 @@ class GlobalAppState extends ChangeNotifier {
       {forceReconnect = false, retries = 0}) async {
     onError(e) {
       print("failed to listen for changes: $e");
-      streamSubscription = null;
+      _streamSubscription = null;
       if (retries == 0) {
-        connectionFailureCallback();
+        showConnectionFailure();
       }
     }
 
     try {
       if (forceReconnect) {
-        await streamSubscription?.cancel();
-        streamSubscription = null;
+        await _streamSubscription?.cancel();
+        _streamSubscription = null;
       }
-      if (streamSubscription != null || retries > 5) return;
-      streamSubscription = (await shoppingListStorage
+      if (_streamSubscription != null || retries > 5) return;
+      _streamSubscription = (await shoppingListStorage
               .listenForChanges(settings.selectedShoppingListId))
           .listen((shoppingList) {
         shoppingLists.upsert(shoppingList);
         notifyListeners();
       });
-      streamSubscription!.onDone(() {
-        streamSubscription = null;
+      _streamSubscription!.onDone(() {
+        _streamSubscription = null;
         _listenForChangesInSelectedShoppingList(retries: retries + 1);
       });
-      streamSubscription!.onError(onError);
+      _streamSubscription!.onError(onError);
     } on SocketException catch (e) {
       onError(e);
     }

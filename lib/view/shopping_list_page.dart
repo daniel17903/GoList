@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/bottom_navigation_bar.dart';
-import 'package:go_list/view/dialog/snack_bars.dart';
 import 'package:go_list/view/drawer/shopping_list_drawer.dart';
 import 'package:go_list/view/shopping_list/add_item_dialog/add_item_dialog.dart';
 import 'package:go_list/view/shopping_list/main_item_list_viewer.dart';
@@ -36,18 +35,16 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
   Future<void> handleUri(Uri? uri) async {
     if (uri != null && uri.queryParameters.containsKey("token")) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        GlobalAppState globalAppState =
+            Provider.of<GlobalAppState>(context, listen: false);
         try {
-          var globalAppState =
-              Provider.of<GlobalAppState>(context, listen: false);
           var joinedShoppingList = await globalAppState.goListClient
               .joinListWithToken(uri.queryParameters["token"]!);
           // this will add the shopping list to the state and make it the selected list
           globalAppState.upsertShoppingList(joinedShoppingList);
         } catch (e) {
           print("failed to join list: $e");
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            SnackBars.showConnectionFailedSnackBar(context);
-          });
+          globalAppState.showConnectionFailure();
         }
       });
     }

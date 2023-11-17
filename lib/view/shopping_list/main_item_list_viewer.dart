@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:go_list/view/dialog/edit_list_dialog.dart';
-import 'package:go_list/view/dialog/snack_bars.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 import 'package:provider/provider.dart';
@@ -14,13 +13,6 @@ class MainItemListViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // because SnackBar cannot be shown during build
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      Provider.of<GlobalAppState>(context, listen: false)
-          .registerConnectionFailureCallback(
-              () => SnackBars.showConnectionFailedSnackBar(context));
-    });
-
     // SafeArea is required for the android toolbar not to overlap the title
     return SafeArea(
       child:
