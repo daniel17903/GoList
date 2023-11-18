@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:get_storage/get_storage.dart';
 import 'package:go_list/model/collections/shopping_list_collection.dart';
+import 'package:go_list/model/item.dart';
 import 'package:go_list/model/settings.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/service/golist_languages.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class LocalStorageProvider implements StorageProvider {
   final GetStorage getStorage;
@@ -13,6 +18,61 @@ class LocalStorageProvider implements StorageProvider {
 
   static Future<void> init() {
     return GetStorage.init(_containerName);
+  }
+
+  Future<ShoppingListCollection?> migrateFromPreviousVersion(
+      [GetStorage? customGetStorage]) async {
+    await GetStorage.init();
+    GetStorage oldGetStorage = customGetStorage ?? GetStorage();
+    if (oldGetStorage.hasData("shoppingLists") &&
+        !oldGetStorage.hasData("migrated")) {
+      List<dynamic> shoppingListsInOldFormat =
+          oldGetStorage.read("shoppingLists");
+      for (var shoppingListInOldFormat in shoppingListsInOldFormat) {
+        shoppingListInOldFormat["modified"] =
+            DateTime.fromMillisecondsSinceEpoch(
+                    shoppingListInOldFormat["modified"])
+                .toIso8601String();
+        shoppingListInOldFormat.remove("device_count");
+        var recentlyUsedItems = [];
+        for (var item in shoppingListInOldFormat["items"]) {
+          item["modified"] =
+              DateTime.fromMillisecondsSinceEpoch(item["modified"])
+                  .toIso8601String();
+          recentlyUsedItems
+              .add(Item.fromJson(item).copyForRecentlyUsed().toJson());
+        }
+        shoppingListInOldFormat["recentlyUsedItems"] = recentlyUsedItems;
+      }
+
+      ShoppingListCollection shoppingListCollection =
+          ShoppingListCollection.fromJson(shoppingListsInOldFormat);
+      getStorage.write("shoppingLists", shoppingListCollection.toJson());
+
+      // migrate settings
+      String selectedShoppingListId = shoppingListCollection
+          .entries[oldGetStorage.read("selectedList") ?? 0].id;
+      String? shoppingListOrderJsonString =
+          oldGetStorage.read("shoppingListOrder");
+      List<String> shoppingListOrder = shoppingListOrderJsonString != null
+          ? (jsonDecode(shoppingListOrderJsonString) as List<dynamic>)
+              .map((e) => e.toString())
+              .toList()
+          : shoppingListCollection.order;
+      String deviceId = oldGetStorage.read("deviceId") ?? const Uuid().v4();
+      String? language = oldGetStorage.read("language") ??
+          GoListLanguages.platformLanguageOrDefault();
+      Settings settings = Settings(
+          selectedShoppingListId: selectedShoppingListId,
+          shoppingListOrder: shoppingListOrder,
+          deviceId: deviceId,
+          language: language);
+      saveSettings(settings);
+
+      oldGetStorage.write("migrated", true);
+      return shoppingListCollection;
+    }
+    return null;
   }
 
   @override

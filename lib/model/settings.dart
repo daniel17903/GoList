@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'dart:core';
 import 'dart:ui';
 
+import 'package:go_list/service/golist_languages.dart';
 import 'package:uuid/uuid.dart';
 
 class Settings {
@@ -13,20 +13,20 @@ class Settings {
   Settings(
       {required this.selectedShoppingListId,
       required this.shoppingListOrder,
-      this.language = "en",
+      String? language,
       String? deviceId})
-      : deviceId = deviceId ?? const Uuid().v4();
+      : deviceId = deviceId ?? const Uuid().v4(),
+        language = language ?? GoListLanguages.platformLanguageOrDefault();
 
   Settings.fromJson(dynamic json)
       : selectedShoppingListId = json["selectedShoppingListId"],
-        shoppingListOrder =
-            List<String>.from(jsonDecode(json["shoppingListOrder"])),
+        shoppingListOrder = List<String>.from(json["shoppingListOrder"]),
         language = json["language"],
         deviceId = json["deviceId"];
 
   Map<String, dynamic> toJson() => {
         'selectedShoppingListId': selectedShoppingListId,
-        'shoppingListOrder': jsonEncode(shoppingListOrder),
+        'shoppingListOrder': shoppingListOrder,
         'language': language,
         'deviceId': deviceId
       };

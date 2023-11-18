@@ -10,13 +10,15 @@ import 'package:provider/provider.dart';
 
 void main() async {
   await LocalStorageProvider.init();
+  LocalStorageProvider localStorageProvider = LocalStorageProvider();
+  await localStorageProvider.migrateFromPreviousVersion();
 
   runApp(ChangeNotifierProvider<GlobalAppState>(
       create: (context) {
         final goListClient = GoListClient();
         final globalAppState = GlobalAppState(
             goListClient: goListClient,
-            localStorageProvider: LocalStorageProvider(),
+            localStorageProvider: localStorageProvider,
             remoteStorageProvider: RemoteStorageProvider(goListClient));
         globalAppState.loadListsFromStorage();
         return globalAppState;
