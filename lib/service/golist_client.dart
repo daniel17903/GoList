@@ -8,10 +8,13 @@ import 'package:http/http.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class GoListClient {
-  static const String backendUrl = String.fromEnvironment("BACKEND_URL",
-      defaultValue: "http://192.168.178.58:8000");
-  static const String originalBackendUrl = String.fromEnvironment("ORIGINAL_BACKEND_URL",
-      defaultValue: "http://192.168.178.58:8000");
+  static const String backend =
+      String.fromEnvironment("BACKEND", defaultValue: "192.168.178.58:8000");
+  static const String originalBackend = String.fromEnvironment(
+      "ORIGINAL_BACKEND",
+      defaultValue: "192.168.178.58:8000");
+  static const String environment =
+      String.fromEnvironment("ENV", defaultValue: "dev");
   static const String apiKey =
       String.fromEnvironment("API_KEY", defaultValue: "123");
 
@@ -21,6 +24,10 @@ class GoListClient {
 
   GoListClient([Client? client]) : client = client ?? Client();
 
+  String get httpProtocol => environment != "dev" ? "https" : "http";
+
+  String get wsProtocol => environment != "dev" ? "wss" : "ws";
+
   Future<Response> _sendRequest(
       {required String endpoint,
       required HttpMethod httpMethod,
@@ -29,7 +36,7 @@ class GoListClient {
     if (body != null) {
       jsonBody = json.encode(body);
     }
-    Uri uri = Uri.parse("$backendUrl$endpoint");
+    Uri uri = Uri.parse("$httpProtocol://$backend$endpoint");
     Response response;
     try {
       switch (httpMethod) {
@@ -55,6 +62,8 @@ class GoListClient {
   }
 
   Future<String> createTokenToShareList(String shoppingListId) {
+    print(httpProtocol);
+    print(environment);
     return _sendRequest(
             endpoint: "/tokens",
             httpMethod: HttpMethod.post,
@@ -63,7 +72,7 @@ class GoListClient {
         .then((responseJson) => responseJson["token"])
         // this must be the original backend url because only this one opens the app
         // the new backend url is only used as a temporary second api during the migration
-        .then((token) => "$originalBackendUrl/join?token=$token");
+        .then((token) => "$httpProtocol://$originalBackend/join?token=$token");
   }
 
   Future<ShoppingList> joinListWithToken(String token) {
@@ -114,7 +123,7 @@ class GoListClient {
         webSocketChannel?.sink.close();
       }
       webSocketChannel = WebSocketChannel.connect(Uri.parse(
-          "ws://192.168.178.58:8000/shopping-lists/$shoppingListId/listen"));
+          "$wsProtocol://$backend/shopping-lists/$shoppingListId/listen"));
       webSocketChannel!.sink.add(json.encode(headers));
       return webSocketChannel!.stream.map((shoppingListJson) {
         return ShoppingList.fromJson(jsonDecode(shoppingListJson));

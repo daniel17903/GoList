@@ -79,7 +79,11 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: FloatingActionButton(
                 backgroundColor: GoListColors.appBarColor,
+                shape: const CircleBorder(),
                 onPressed: () => AddItemDialog.show(context: context),
-                child: const Icon(Icons.add))));
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ))));
   }
 }

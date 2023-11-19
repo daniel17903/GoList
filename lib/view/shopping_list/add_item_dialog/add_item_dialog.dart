@@ -11,7 +11,7 @@ import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item
 import 'package:provider/provider.dart';
 
 class AddItemDialog extends StatefulWidget {
-  const AddItemDialog({Key? key}) : super(key: key);
+  const AddItemDialog({super.key});
 
   @override
   State<AddItemDialog> createState() => _AddItemDialogState();

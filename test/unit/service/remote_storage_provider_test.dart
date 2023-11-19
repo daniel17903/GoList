@@ -52,7 +52,7 @@ void main() {
 
   test("Loads shopping lists", () async {
     when(client
-        .get(Uri.parse("${GoListClient.backendUrl}/shopping-lists"), headers: {
+        .get(Uri.parse("${GoListClient.backend}/shopping-lists"), headers: {
       "api-key": GoListClient.apiKey,
       "user-id": deviceId,
       "Content-Type": "application/json"
@@ -68,7 +68,7 @@ void main() {
   test("Loads shopping list", () async {
     when(client.get(
         Uri.parse(
-            "${GoListClient.backendUrl}/shopping-lists/${shoppingListJson["id"]}"),
+            "${GoListClient.backend}/shopping-lists/${shoppingListJson["id"]}"),
         headers: {
           "api-key": GoListClient.apiKey,
           "user-id": deviceId,
@@ -85,7 +85,7 @@ void main() {
     await RemoteStorageProvider(goListClient)
         .upsertShoppingList(ShoppingList.fromJson(shoppingListJson));
 
-    verify(client.put(Uri.parse("${GoListClient.backendUrl}/shopping-lists"),
+    verify(client.put(Uri.parse("${GoListClient.backend}/shopping-lists"),
             headers: {
               "api-key": GoListClient.apiKey,
               "user-id": deviceId,

@@ -35,7 +35,10 @@ class GoListBottomNavigationBar extends StatelessWidget {
     return BottomAppBar(
         color: GoListColors.appBarColor,
         shape: const CircularNotchedRectangle(),
-        child: Row(children: <Widget>[
+        height: 50,
+        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
           IconButton(
               color: Colors.white,
               icon: const Icon(Icons.menu),
