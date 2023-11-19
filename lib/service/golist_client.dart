@@ -10,6 +10,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class GoListClient {
   static const String backendUrl = String.fromEnvironment("BACKEND_URL",
       defaultValue: "http://192.168.178.58:8000");
+  static const String originalBackendUrl = String.fromEnvironment("ORIGINAL_BACKEND_URL",
+      defaultValue: "http://192.168.178.58:8000");
   static const String apiKey =
       String.fromEnvironment("API_KEY", defaultValue: "123");
 
@@ -59,7 +61,9 @@ class GoListClient {
             body: {"shopping_list_id": shoppingListId})
         .then((response) => jsonDecode(utf8.decode(response.bodyBytes)))
         .then((responseJson) => responseJson["token"])
-        .then((token) => "$backendUrl/join?token=$token");
+        // this must be the original backend url because only this one opens the app
+        // the new backend url is only used as a temporary second api during the migration
+        .then((token) => "$originalBackendUrl/join?token=$token");
   }
 
   Future<ShoppingList> joinListWithToken(String token) {

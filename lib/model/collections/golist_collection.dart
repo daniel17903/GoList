@@ -22,10 +22,6 @@ abstract class GoListCollection<T extends GoListModel> {
     }).toList();
   }
 
-  void removeEntriesDeletedSinceTenDays() {
-    removeWhere((e) => e.deleted == true && e.modifiedAtLeastNDaysBefore(10));
-  }
-
   void removeWhere(bool Function(T) shouldBeRemoved) {
     entries.removeWhere(shouldBeRemoved);
   }

@@ -13,11 +13,15 @@ class ShoppingListStorage {
   ShoppingListStorage(this.localStorageProvider, this.remoteStorageProvider);
 
   ShoppingListCollection loadShoppingListsFromLocalStorage() {
-    return localStorageProvider.loadShoppingLists();
+    ShoppingListCollection shoppingListsFromLocalStorage =  localStorageProvider.loadShoppingLists();
+    shoppingListsFromLocalStorage.removeDeletedItemsNotModifiedSinceTenDays();
+    return shoppingListsFromLocalStorage;
   }
 
   ShoppingList loadShoppingListFromLocalStorage(String shoppingListId) {
-    return localStorageProvider.loadShoppingList(shoppingListId);
+    ShoppingList shoppingListsFromLocalStorage = localStorageProvider.loadShoppingList(shoppingListId);
+    shoppingListsFromLocalStorage.items.removeItemsDeletedSinceTenDays();
+    return shoppingListsFromLocalStorage;
   }
 
   Stream<ShoppingListCollection> loadShoppingLists() async* {
@@ -27,6 +31,7 @@ class ShoppingListStorage {
 
     ShoppingListCollection shoppingListsFromRemoteStorage =
         (await remoteStorageProvider.loadShoppingLists());
+    shoppingListsFromRemoteStorage.removeDeletedItemsNotModifiedSinceTenDays();
 
     if (!shoppingListsFromRemoteStorage.equals(shoppingListsFromLocalStorage)) {
       ShoppingListCollection merged =

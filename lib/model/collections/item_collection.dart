@@ -25,6 +25,11 @@ class ItemCollection extends GoListCollection<Item> {
     }
   }
 
+  void removeItemsDeletedSinceTenDays() {
+    removeWhere((e) => e.deleted == true && e.modifiedAtLeastNDaysBefore(10));
+  }
+
+
   void prepend(Item item) {
     entries.insert(0, item);
   }
