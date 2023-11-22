@@ -16,4 +16,6 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
       - name: Run Unit Tests
-        run: flutter test
+        run: |
+          export TZ=CET
+          flutter test
