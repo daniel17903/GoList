@@ -8,11 +8,11 @@ class GoListColors {
 
   static const Color settingsButtonBackground = Color(0xCE327955);
 
-  static const Color sharedDevicesTextBackground = Color(0x50000000);
-
   static const Color appBarColor = Color(0xff005382);
 
   static const Color yellow = Color(0xfff6f294);
+
+  static const Color grey = Color(0xff898989);
 
   static const backgroundGradientColors = [
     Color(0xffe4b2d2),

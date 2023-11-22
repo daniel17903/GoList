@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/style/colors.dart';
 import 'package:provider/provider.dart';
 
 class ShoppingListTile extends StatelessWidget {
@@ -35,15 +36,21 @@ class ShoppingListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.list),
-      title: Text(shoppingList.name),
+      leading: const Icon(
+        Icons.list,
+        color: GoListColors.grey,
+      ),
+      title: Text(
+        shoppingList.name,
+        style: const TextStyle(letterSpacing: 0),
+      ),
       onTap: () {
         Provider.of<GlobalAppState>(context, listen: false)
             .setSelectedShoppingListId(shoppingList.id);
         Navigator.pop(context);
       },
       trailing: IconButton(
-        icon: const Icon(Icons.delete),
+        icon: const Icon(Icons.delete, color: GoListColors.grey),
         onPressed: () => _showAlertDialog(context),
       ),
     );

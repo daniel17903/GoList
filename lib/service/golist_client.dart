@@ -62,8 +62,6 @@ class GoListClient {
   }
 
   Future<String> createTokenToShareList(String shoppingListId) {
-    print(httpProtocol);
-    print(environment);
     return _sendRequest(
             endpoint: "/tokens",
             httpMethod: HttpMethod.post,

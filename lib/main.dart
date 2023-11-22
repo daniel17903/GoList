@@ -35,7 +35,9 @@ void main() async {
                           locale: globalAppState.locale,
                           title: 'GoList',
                           home: child),
-                      child: const ShoppingListPage(),
+                      child: const DefaultTextStyle(
+                          style: TextStyle(height: 1.15, letterSpacing: 10),
+                          child: ShoppingListPage()),
                     )),
           )));
 }
