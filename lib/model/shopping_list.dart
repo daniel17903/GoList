@@ -1,65 +1,97 @@
-import 'package:flutter/cupertino.dart';
+import 'package:go_list/model/collections/item_collection.dart';
+import 'package:go_list/model/collections/recently_used_item_collection.dart';
 import 'package:go_list/model/golist_model.dart';
-import 'package:go_list/model/list_of.dart';
 
 import 'item.dart';
 
-@immutable
 class ShoppingList extends GoListModel {
-  late final String name;
-  late final ListOf<Item> items;
-  late final int  deviceCount;
+  late ItemCollection items;
+  late RecentlyUsedItemCollection recentlyUsedItems;
 
   ShoppingList(
-      {required this.name,
-      ListOf<Item>? items,
-      bool? deleted,
-      int? modified,
-      String? id,
-      int? deviceCount})
-      : super(modified: modified, deleted: deleted, id: id) {
-    this.items = items ?? ListOf<Item>([]);
-    this.deviceCount = deviceCount ?? 1;
+      {required super.name,
+      ItemCollection? items,
+      RecentlyUsedItemCollection? recentlyUsedItems,
+      super.deleted,
+      super.modified,
+      super.id}) {
+    this.items = items ?? ItemCollection([]);
+    this.items.sort();
+    this.recentlyUsedItems = recentlyUsedItems ??
+        RecentlyUsedItemCollection(this.items.copyForRecentlyUsed());
   }
 
-  ShoppingList.fromJson(Map<String, dynamic> json)
+  ShoppingList.fromJson(dynamic json)
       : super(
             id: json["id"],
+            name: json["name"],
             deleted: json["deleted"],
-            modified: json["modified"]) {
-    name = json['name'];
-    items = ListOf<Item>(
-        json["items"].map<Item>((element) => Item.fromJson(element)).toList());
-    deviceCount = json.containsKey("device_count") ? json["device_count"] : 1;
+            modified: DateTime.parse(json["modified"])) {
+    items = ItemCollection.fromJson(json["items"]);
+    items.sort();
+    recentlyUsedItems =
+        RecentlyUsedItemCollection.fromJson(json["recentlyUsedItems"]);
   }
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'items': items.map((item) => item.toJson()).toList(),
-        'deleted': deleted,
-        'modified': modified,
-        'device_count': deviceCount
+        ...super.toJson(),
+        'items': items.toJson(),
+        'recentlyUsedItems': recentlyUsedItems.toJson()
       };
 
   ShoppingList copyWith(
       {String? name,
-      ListOf<Item>? items,
+      ItemCollection? items,
       bool? deleted,
-      int? modified,
+      DateTime? modified,
       String? id,
       int? deviceCount}) {
     return ShoppingList(
         name: name ?? this.name,
         items: items ?? this.items,
         deleted: deleted ?? this.deleted,
-        modified: modified ?? DateTime.now().millisecondsSinceEpoch,
-        id: id ?? this.id,
-        deviceCount: deviceCount ?? this.deviceCount);
+        modified: modified ?? DateTime.now(),
+        id: id ?? this.id);
   }
 
-  ShoppingList withItems(ListOf<Item> updatedItems) {
-    return copyWith(items: items.updateWith(updatedItems));
+
+  void deleteItem(Item item) {
+    item.deleted = true;
+    modified = DateTime.now();
+  }
+
+  void upsertItem(Item item) {
+    items.upsert(item);
+    modified = DateTime.now();
+    recentlyUsedItems.upsert(item.copyForRecentlyUsed());
+    items.sort();
+  }
+
+  @override
+  GoListModel merge(GoListModel other) {
+    ShoppingList lastUpdatedShoppingList =
+        lastModified(this, other as ShoppingList);
+    return ShoppingList(
+        id: lastUpdatedShoppingList.id,
+        name: lastUpdatedShoppingList.name,
+        items: items.merge(other.items),
+        recentlyUsedItems: recentlyUsedItems.merge(other.recentlyUsedItems),
+        deleted: lastUpdatedShoppingList.deleted,
+        modified: lastUpdatedShoppingList.modified);
+  }
+
+  List<Item> itemsAsList() {
+    return items.entries;
+  }
+
+  @override
+  bool equals(GoListModel other) {
+    return other is ShoppingList &&
+        other.id == id &&
+        other.name == name &&
+        other.deleted == deleted &&
+        items.equals(other.items) &&
+        recentlyUsedItems.equals(other.recentlyUsedItems);
   }
 }

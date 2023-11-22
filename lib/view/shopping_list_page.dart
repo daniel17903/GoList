@@ -1,17 +1,60 @@
+import 'dart:async';
 import 'dart:math';
 
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
-import 'package:go_list/view/botton_navigation_bar.dart';
-import 'package:go_list/view/dialog/search_dialog.dart';
-import 'package:go_list/view/shopping_list/shopping_list_widget.dart';
+import 'package:go_list/model/global_app_state.dart';
+import 'package:go_list/style/colors.dart';
+import 'package:go_list/view/bottom_navigation_bar.dart';
 import 'package:go_list/view/drawer/shopping_list_drawer.dart';
+import 'package:go_list/view/shopping_list/add_item_dialog/add_item_dialog.dart';
+import 'package:go_list/view/shopping_list/main_item_list_viewer.dart';
+import 'package:provider/provider.dart';
 
-import 'dialog/dialog_utils.dart';
+class ShoppingListPage extends StatefulWidget {
+  const ShoppingListPage({super.key});
 
-class ShoppingListPage extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
+  State<ShoppingListPage> createState() => _ShoppingListPageState();
+}
 
-  ShoppingListPage({Key? key}) : super(key: key);
+class _ShoppingListPageState extends State<ShoppingListPage> {
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _appLinks = AppLinks();
+    // Check initial link if app was in cold state (terminated)
+    _appLinks.getInitialAppLink().then(handleUri);
+    // Handle link when app is in warm state (front or background)
+    _linkSubscription = _appLinks.uriLinkStream.listen(handleUri);
+  }
+
+  Future<void> handleUri(Uri? uri) async {
+    if (uri != null && uri.queryParameters.containsKey("token")) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        GlobalAppState globalAppState =
+            Provider.of<GlobalAppState>(context, listen: false);
+        try {
+          var joinedShoppingList = await globalAppState.goListClient
+              .joinListWithToken(uri.queryParameters["token"]!);
+          // this will add the shopping list to the state and make it the selected list
+          globalAppState.upsertShoppingList(joinedShoppingList);
+        } catch (e) {
+          print("failed to join list: $e");
+          globalAppState.showConnectionFailure();
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,30 +65,25 @@ class ShoppingListPage extends StatelessWidget {
             gradient: RadialGradient(
           radius: screenSize.height / radiusUnit, // 2.0 = screen height
           center: Alignment.bottomCenter, // behind the fab
-          colors: const <Color>[
-            Color(0xffe4b2d2),
-            Color(0xffbde5ee),
-            Color(0xffd8e8af),
-            Color(0xfff6f294),
-            Color(0xff005382),
-          ],
+          colors: GoListColors.backgroundGradientColors,
         )),
         child: Scaffold(
             backgroundColor: Colors.transparent,
-            key: _scaffoldKey,
             extendBody: true,
             resizeToAvoidBottomInset: false,
             // prevents resizing when opening keyboard
-            bottomNavigationBar: GoListBottomNavigationBar(
-                onMenuButtonTapped: () =>
-                    _scaffoldKey.currentState?.openDrawer()),
-            body: const SafeArea(child: ShoppingListWidget()),
+            bottomNavigationBar: const GoListBottomNavigationBar(),
+            body: const MainItemListViewer(),
             drawer: const ShoppingListDrawer(),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: FloatingActionButton(
-                onPressed: () => DialogUtils.showLargeAnimatedDialog(
-                    context: context, child: const SearchDialog()),
-                child: const Icon(Icons.add))));
+                backgroundColor: GoListColors.appBarColor,
+                shape: const CircleBorder(),
+                onPressed: () => AddItemDialog.show(context: context),
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ))));
   }
 }

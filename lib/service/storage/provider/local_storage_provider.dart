@@ -1,75 +1,121 @@
 import 'dart:convert';
 
 import 'package:get_storage/get_storage.dart';
+import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/model/item.dart';
-import 'package:go_list/model/list_of.dart';
+import 'package:go_list/model/settings.dart';
 import 'package:go_list/model/shopping_list.dart';
+import 'package:go_list/service/golist_languages.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class LocalStorageProvider implements StorageProvider {
-  final getStorage = GetStorage();
+  final GetStorage getStorage;
+  static const String _containerName = "v1";
 
-  @override
-  ListOf<ShoppingList> loadShoppingLists() {
-    if (getStorage.hasData("shoppingLists")) {
-      ListOf<ShoppingList> shoppingLists =
-          ListOf(getStorage.read("shoppingLists").map<ShoppingList>((element) {
-        if (element is ShoppingList) {
-          return element;
+  LocalStorageProvider([GetStorage? getStorage])
+      : getStorage = getStorage ?? GetStorage(_containerName);
+
+  static Future<void> init() {
+    return GetStorage.init(_containerName);
+  }
+
+  Future<ShoppingListCollection?> migrateFromPreviousVersion(
+      [GetStorage? customGetStorage]) async {
+    await GetStorage.init();
+    GetStorage oldGetStorage = customGetStorage ?? GetStorage();
+    if (oldGetStorage.hasData("shoppingLists") &&
+        !oldGetStorage.hasData("migrated")) {
+      List<dynamic> shoppingListsInOldFormat =
+          oldGetStorage.read("shoppingLists");
+      for (var shoppingListInOldFormat in shoppingListsInOldFormat) {
+        shoppingListInOldFormat["modified"] =
+            DateTime.fromMillisecondsSinceEpoch(
+                    shoppingListInOldFormat["modified"])
+                .toIso8601String();
+        shoppingListInOldFormat.remove("device_count");
+        var recentlyUsedItems = [];
+        for (var item in shoppingListInOldFormat["items"]) {
+          item["modified"] =
+              DateTime.fromMillisecondsSinceEpoch(item["modified"])
+                  .toIso8601String();
+          recentlyUsedItems
+              .add(Item.fromJson(item).copyForRecentlyUsed().toJson());
         }
-        return ShoppingList.fromJson(element);
-      }).toList());
-      return shoppingLists;
-    }
-    return ListOf([]);
-  }
+        shoppingListInOldFormat["recentlyUsedItems"] = recentlyUsedItems;
+      }
 
-  @override
-  void saveItems(ShoppingList shoppingListToUpdate, ListOf<Item> items) {
-    getStorage.write(
-        "shoppingLists",
-        loadShoppingLists()
-            .updateEntry(shoppingListToUpdate,
-                transform: (e) => e.withItems(items))
-            .toJson());
-  }
+      ShoppingListCollection shoppingListCollection =
+          ShoppingListCollection.fromJson(shoppingListsInOldFormat);
+      getStorage.write("shoppingLists", shoppingListCollection.toJson());
 
-  @override
-  void saveList(ShoppingList updatedShoppingList) {
-    getStorage.write("shoppingLists",
-        loadShoppingLists().updateEntry(updatedShoppingList).toJson());
-  }
+      // migrate settings
+      String selectedShoppingListId = shoppingListCollection
+          .entries[oldGetStorage.read("selectedList") ?? 0].id;
+      String? shoppingListOrderJsonString =
+          oldGetStorage.read("shoppingListOrder");
+      List<String> shoppingListOrder = shoppingListOrderJsonString != null
+          ? (jsonDecode(shoppingListOrderJsonString) as List<dynamic>)
+              .map((e) => e.toString())
+              .toList()
+          : shoppingListCollection.order;
+      String deviceId = oldGetStorage.read("deviceId") ?? const Uuid().v4();
+      String? language = oldGetStorage.read("language") ??
+          GoListLanguages.platformLanguageOrDefault();
+      Settings settings = Settings(
+          selectedShoppingListId: selectedShoppingListId,
+          shoppingListOrder: shoppingListOrder,
+          deviceId: deviceId,
+          language: language);
+      saveSettings(settings);
 
-  void saveSelectedListIndex(int index) {
-    getStorage.write("selectedList", index);
-  }
-
-  int loadSelectedListIndex() {
-    if (getStorage.hasData("selectedList")) {
-      return getStorage.read("selectedList");
-    }
-    return 0;
-  }
-
-  void saveSelectedLanguage(String language) {
-    getStorage.write("language", language);
-  }
-
-  String? loadSelectedLanguage() {
-    if (getStorage.hasData("language")) {
-      return getStorage.read("language");
+      oldGetStorage.write("migrated", true);
+      return shoppingListCollection;
     }
     return null;
   }
 
-  void saveShoppingListOrder(List<String> shoppingListOrder) {
-    getStorage.write("shoppingListOrder", jsonEncode(shoppingListOrder));
+  @override
+  ShoppingListCollection loadShoppingLists() {
+    if (getStorage.hasData("shoppingLists")) {
+      return ShoppingListCollection.fromJson(getStorage.read("shoppingLists"));
+    }
+    return ShoppingListCollection([]);
   }
 
-  List<String> loadShoppingListOrder() {
-    if (!getStorage.hasData("shoppingListOrder")) {
-      return [];
+  @override
+  void upsertShoppingList(ShoppingList shoppingList) {
+    ShoppingListCollection shoppingLists = loadShoppingLists();
+    shoppingLists.upsert(shoppingList);
+    getStorage.write("shoppingLists", shoppingLists.toJson());
+  }
+
+  @override
+  void deleteShoppingList(String shoppingListId) {
+    ShoppingListCollection shoppingLists = loadShoppingLists();
+    shoppingLists.removeEntryWithId(shoppingListId);
+    getStorage.write("shoppingLists", shoppingLists.toJson());
+  }
+
+  @override
+  ShoppingList loadShoppingList(String shoppingListId) {
+    ShoppingListCollection shoppingLists = loadShoppingLists();
+    ShoppingList? shoppingList = shoppingLists.entryWithId(shoppingListId);
+    if (shoppingList == null) {
+      throw Exception(
+          "Shopping list with id $shoppingListId does not exist in local storage.");
     }
-    return List<String>.from(jsonDecode(getStorage.read("shoppingListOrder")));
+    return shoppingList;
+  }
+
+  void saveSettings(Settings settings) {
+    getStorage.write("settings", settings.toJson());
+  }
+
+  Settings? loadSettings() {
+    if (!getStorage.hasData("settings")) {
+      return null;
+    }
+    return Settings.fromJson(getStorage.read("settings"));
   }
 }

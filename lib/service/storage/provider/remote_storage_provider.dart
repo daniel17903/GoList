@@ -1,33 +1,21 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:go_list/model/item.dart';
-import 'package:go_list/model/list_of.dart';
+import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/service/storage/provider/storage_provider.dart';
 
-enum HttpMethod { get, post }
+enum HttpMethod { get, post, put, delete }
 
 class RemoteStorageProvider extends StorageProvider {
-  final GoListClient goListClient = GoListClient();
+  final GoListClient goListClient;
+
+  RemoteStorageProvider(this.goListClient);
 
   @override
-  Future<ListOf<ShoppingList>> loadShoppingLists() async {
+  Future<ShoppingListCollection> loadShoppingLists() async {
     try {
-      final response = await goListClient.sendRequest(
-          endpoint: "/api/shoppinglists", httpMethod: HttpMethod.get);
-
-      ListOf<ShoppingList> shoppingLists = ListOf(
-          jsonDecode(utf8.decode(response.bodyBytes))
-              .map<ShoppingList>((element) {
-        if (element is ShoppingList) {
-          return element;
-        }
-        return ShoppingList.fromJson(element);
-      }).toList());
-
-      return shoppingLists;
+      return await goListClient.getShoppingLists();
     } catch (e) {
       print("failed to load shopping lists from server: $e");
       rethrow;
@@ -35,26 +23,34 @@ class RemoteStorageProvider extends StorageProvider {
   }
 
   @override
-  Future<void> saveItems(ShoppingList shoppingList, ListOf<Item> items) async {
+  Future<void> upsertShoppingList(ShoppingList shoppingList) async {
     try {
-      await goListClient.sendRequest(
-          endpoint: "/api/shoppinglist/${shoppingList.id}/items",
-          httpMethod: HttpMethod.post,
-          body: items.toJson());
+      await goListClient.upsertShoppingList(shoppingList);
     } catch (e) {
-      print("failed to save items on server: $e");
+      print("failed to save shopping list ${shoppingList.id} on server: $e");
+    }
+  }
+
+  Future<Stream<ShoppingList>> listenForChanges(String shoppingListId) {
+    return goListClient.listenForChanges(shoppingListId);
+  }
+
+  @override
+  Future<void> deleteShoppingList(String shoppingListId) async {
+    try {
+      await goListClient.deleteShoppingList(shoppingListId);
+    } catch (e) {
+      print("failed to delete shopping list $shoppingListId on server: $e");
     }
   }
 
   @override
-  Future<void> saveList(ShoppingList shoppingList) async {
+  Future<ShoppingList> loadShoppingList(String shoppingListId) async {
     try {
-      await goListClient.sendRequest(
-          endpoint: "/api/shoppinglist",
-          httpMethod: HttpMethod.post,
-          body: shoppingList.toJson()..remove("items"));
+      return await goListClient.getShoppingList(shoppingListId);
     } catch (e) {
-      print("failed to save shopping list on server: $e");
+      print("failed to load shopping list $shoppingListId from server: $e");
+      rethrow;
     }
   }
 }

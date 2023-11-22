@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_list/model/item.dart';
-import 'package:go_list/service/golist_languages.dart';
 import 'package:go_list/service/items/icon_mapping.dart';
 import 'package:go_list/style/golist_icons.dart';
 
@@ -30,9 +29,9 @@ class InputToItemParser {
     });
   }
 
-  Future<void> init([String? languageCode]) async {
-    iconMappings = await iconMappingFromJsonFile(
-        "assets/mappings_${languageCode ?? GoListLanguages.getLanguageCode()}.json");
+  Future<void> init(String languageCode) async {
+    iconMappings =
+        await iconMappingFromJsonFile("assets/mappings_$languageCode.json");
   }
 
   Item parseInput(String input) {
