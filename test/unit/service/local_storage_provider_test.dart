@@ -24,7 +24,7 @@ class MockGetStorage extends Mock implements GetStorage {
           },
           {
             "id": "1ab34d81-d3a9-43e9-b4cb-72af96fea6ff",
-            "name": "apfel",
+            "name": "Apfel",
             "iconName": "apple",
             "amount": null,
             "deleted": false,
@@ -81,7 +81,7 @@ void main() {
             "id": "1ab34d81-d3a9-43e9-b4cb-72af96fea6ff",
             "deleted": false,
             "modified": "2023-11-18T18:45:45.154",
-            "name": "apfel",
+            "name": "Apfel",
             "iconName": "apple",
             "amount": null,
             "category": "Category.fruitsVegetables"
@@ -108,7 +108,7 @@ void main() {
         'recentlyUsedItems': [
           {
             'deleted': false,
-            'name': 'apfel',
+            'name': 'Apfel',
             'iconName': 'apple',
             'amount': '',
             'category': 'Category.fruitsVegetables'

@@ -40,7 +40,7 @@ class LocalStorageProvider implements StorageProvider {
           item["modified"] =
               DateTime.fromMillisecondsSinceEpoch(item["modified"])
                   .toIso8601String();
-          if (uniqueNames.add(item["name"])) {
+          if (uniqueNames.add(item["name"].toString().toLowerCase())) {
             recentlyUsedItems
                 .add(Item.fromJson(item).copyForRecentlyUsed().toJson());
           }
