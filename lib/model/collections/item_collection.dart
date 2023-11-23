@@ -16,7 +16,7 @@ class ItemCollection extends GoListCollection<Item> {
   ItemCollection copyForRecentlyUsed() {
     Set<String> uniqueNames = {};
     return ItemCollection(entries
-        .where((item) => uniqueNames.add(item.name.toLowerCase()))
+        .where((item) => uniqueNames.add(item.name.toLowerCase().trim()))
         .map((entry) => entry.copyForRecentlyUsed())
         .toList());
   }
