@@ -14,8 +14,11 @@ class ItemCollection extends GoListCollection<Item> {
   }
 
   ItemCollection copyForRecentlyUsed() {
-    return ItemCollection(
-        entries.map((entry) => entry.copyForRecentlyUsed()).toList());
+    Set<String> uniqueNames = {};
+    return ItemCollection(entries
+        .where((item) => uniqueNames.add(item.name))
+        .map((entry) => entry.copyForRecentlyUsed())
+        .toList());
   }
 
   void removeItemsWithIndexGreater(int limit) {
@@ -28,7 +31,6 @@ class ItemCollection extends GoListCollection<Item> {
   void removeItemsDeletedSinceTenDays() {
     removeWhere((e) => e.deleted == true && e.modifiedAtLeastNDaysBefore(10));
   }
-
 
   void prepend(Item item) {
     entries.insert(0, item);

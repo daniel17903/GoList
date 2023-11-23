@@ -35,14 +35,17 @@ class LocalStorageProvider implements StorageProvider {
                 .toIso8601String();
         shoppingListInOldFormat.remove("device_count");
         var recentlyUsedItems = [];
+        Set<String> uniqueNames = {};
         for (var item in shoppingListInOldFormat["items"]) {
           item["modified"] =
               DateTime.fromMillisecondsSinceEpoch(item["modified"])
                   .toIso8601String();
-          recentlyUsedItems
-              .add(Item.fromJson(item).copyForRecentlyUsed().toJson());
+          if (uniqueNames.add(item["name"])) {
+            recentlyUsedItems
+                .add(Item.fromJson(item).copyForRecentlyUsed().toJson());
+          }
+          shoppingListInOldFormat["recentlyUsedItems"] = recentlyUsedItems;
         }
-        shoppingListInOldFormat["recentlyUsedItems"] = recentlyUsedItems;
       }
 
       ShoppingListCollection shoppingListCollection =
