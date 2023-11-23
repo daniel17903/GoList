@@ -111,7 +111,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
               body: ShoppingListItemWrap(
                   children: _recentlyUsedItemsSorted
                       .optionalPrepend(previewItem)
-                      .items
+                      .itemsToShow()
                       .map<ShoppingListItem>((item) => ShoppingListItem(
                             backgroundColor:
                                 GoListColors.addItemDialogItemBackground,

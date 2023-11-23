@@ -90,4 +90,8 @@ class RecentlyUsedItemCollection {
   bool equals(RecentlyUsedItemCollection other) {
     return items.equals(other.items);
   }
+
+  List<Item> itemsToShow() {
+    return items.entries.take(50).toList();
+  }
 }
