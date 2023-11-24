@@ -21,7 +21,7 @@ class RecentlyUsedItemCollection {
 
   static RecentlyUsedItemCollection fromItemCollection(
       ItemCollection itemCollection) {
-    return RecentlyUsedItemCollection(itemCollection.copyForRecentlyUsed());
+    return itemCollection.copyForRecentlyUsed();
   }
 
   List<Map<String, dynamic>> toJson() {
@@ -47,12 +47,18 @@ class RecentlyUsedItemCollection {
       }
 
       if (searchText != null && searchText.isNotEmpty) {
-        if (startsWithIgnoreCase(entry2.name, searchText)) {
+        bool entry1StartWithSearchText =
+            startsWithIgnoreCase(entry1.name, searchText);
+        bool entry2StartWithSearchText =
+            startsWithIgnoreCase(entry2.name, searchText);
+        if (entry2StartWithSearchText && !entry1StartWithSearchText) {
           return 1;
-        } else if (startsWithIgnoreCase(entry1.name, searchText)) {
+        } else if (entry1StartWithSearchText && !entry2StartWithSearchText) {
           return -1;
         }
-        return 0;
+        // both start with search text or both do not start with search text
+        // -> use alphabetic order
+        return entry1.name.compareTo(entry2.name);
       } else {
         return GoListModel.compareByModified(entry1, entry2);
       }
@@ -85,6 +91,23 @@ class RecentlyUsedItemCollection {
     items.upsert(entry);
     sort();
     items.removeItemsWithIndexGreater(maxItems);
+  }
+
+  void removeDuplicateNamesAndAmount() {
+    Set<Item> existingItems = {};
+    items.removeWhere((Item item) {
+      bool nameExists = existingItems.any(GoListModel.equalsByName(item));
+      existingItems.add(item);
+      return nameExists;
+    });
+    items.entries.where((item) => item.amount != "").forEach((item) {
+      item.amount = "";
+    });
+    items.entries
+        .where((item) => item.name.startsWith(" ") || item.name.endsWith(" "))
+        .forEach((item) {
+      item.name = item.name.trim();
+    });
   }
 
   bool equals(RecentlyUsedItemCollection other) {

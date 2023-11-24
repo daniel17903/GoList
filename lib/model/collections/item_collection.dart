@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:go_list/model/collections/golist_collection.dart';
+import 'package:go_list/model/collections/recently_used_item_collection.dart';
 import 'package:go_list/model/item.dart';
 
 class ItemCollection extends GoListCollection<Item> {
@@ -13,12 +14,11 @@ class ItemCollection extends GoListCollection<Item> {
     return ItemCollection(mergeLists(entries, other.entries));
   }
 
-  ItemCollection copyForRecentlyUsed() {
-    Set<String> uniqueNames = {};
-    return ItemCollection(entries
-        .where((item) => uniqueNames.add(item.name.toLowerCase().trim()))
-        .map((entry) => entry.copyForRecentlyUsed())
-        .toList());
+  RecentlyUsedItemCollection copyForRecentlyUsed() {
+    var recentlyUsedItemCollection =
+        RecentlyUsedItemCollection(ItemCollection(entries));
+    recentlyUsedItemCollection.removeDuplicateNamesAndAmount();
+    return recentlyUsedItemCollection;
   }
 
   void removeItemsWithIndexGreater(int limit) {

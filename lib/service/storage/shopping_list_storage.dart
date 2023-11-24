@@ -13,13 +13,15 @@ class ShoppingListStorage {
   ShoppingListStorage(this.localStorageProvider, this.remoteStorageProvider);
 
   ShoppingListCollection loadShoppingListsFromLocalStorage() {
-    ShoppingListCollection shoppingListsFromLocalStorage =  localStorageProvider.loadShoppingLists();
-    shoppingListsFromLocalStorage.removeDeletedItemsNotModifiedSinceTenDays();
+    ShoppingListCollection shoppingListsFromLocalStorage =
+        localStorageProvider.loadShoppingLists();
+    shoppingListsFromLocalStorage.cleanup();
     return shoppingListsFromLocalStorage;
   }
 
   ShoppingList loadShoppingListFromLocalStorage(String shoppingListId) {
-    ShoppingList shoppingListsFromLocalStorage = localStorageProvider.loadShoppingList(shoppingListId);
+    ShoppingList shoppingListsFromLocalStorage =
+        localStorageProvider.loadShoppingList(shoppingListId);
     shoppingListsFromLocalStorage.items.removeItemsDeletedSinceTenDays();
     return shoppingListsFromLocalStorage;
   }
@@ -31,7 +33,7 @@ class ShoppingListStorage {
 
     ShoppingListCollection shoppingListsFromRemoteStorage =
         (await remoteStorageProvider.loadShoppingLists());
-    shoppingListsFromRemoteStorage.removeDeletedItemsNotModifiedSinceTenDays();
+    shoppingListsFromRemoteStorage.cleanup();
 
     if (!shoppingListsFromRemoteStorage.equals(shoppingListsFromLocalStorage)) {
       ShoppingListCollection merged =
@@ -39,6 +41,7 @@ class ShoppingListStorage {
 
       // update local storage with changes from remote
       merged.entries.forEach(localStorageProvider.upsertShoppingList);
+      // update remote storage with changes from local (e.g. when device was offline during change)
       merged.entries.forEach(remoteStorageProvider.upsertShoppingList);
 
       yield merged;

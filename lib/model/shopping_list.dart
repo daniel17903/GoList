@@ -17,8 +17,8 @@ class ShoppingList extends GoListModel {
       super.id}) {
     this.items = items ?? ItemCollection([]);
     this.items.sort();
-    this.recentlyUsedItems = recentlyUsedItems ??
-        RecentlyUsedItemCollection(this.items.copyForRecentlyUsed());
+    this.recentlyUsedItems =
+        recentlyUsedItems ?? this.items.copyForRecentlyUsed();
   }
 
   ShoppingList.fromJson(dynamic json)
@@ -54,7 +54,6 @@ class ShoppingList extends GoListModel {
         modified: modified ?? DateTime.now(),
         id: id ?? this.id);
   }
-
 
   void deleteItem(Item item) {
     item.deleted = true;

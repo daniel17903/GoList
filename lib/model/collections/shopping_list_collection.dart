@@ -39,9 +39,10 @@ class ShoppingListCollection extends GoListCollection<ShoppingList> {
     _order.addAll(entries.map((e) => e.id).whereNot(_order.contains));
   }
 
-  void removeDeletedItemsNotModifiedSinceTenDays() {
+  void cleanup() {
     for (var shoppingList in entries) {
       shoppingList.items.removeItemsDeletedSinceTenDays();
+      shoppingList.recentlyUsedItems.removeDuplicateNamesAndAmount();
     }
   }
 

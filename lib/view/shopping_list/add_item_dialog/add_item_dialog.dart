@@ -53,7 +53,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   void addNewItemToList(Item? item) {
     if (item != null) {
       Provider.of<GlobalAppState>(context, listen: false)
-          .upsertItem(item.newFromTemplate());
+          .upsertItem(item.copyAsRecentlyUsedItem());
       Navigator.pop(context);
     }
   }
