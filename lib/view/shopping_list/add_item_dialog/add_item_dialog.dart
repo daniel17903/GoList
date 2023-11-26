@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/collections/recently_used_item_collection.dart';
-import 'package:go_list/model/item.dart';
 import 'package:go_list/model/global_app_state.dart';
+import 'package:go_list/model/item.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
-import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item_wrap.dart';
 import 'package:provider/provider.dart';
 
 class AddItemDialog extends StatefulWidget {
@@ -36,7 +35,6 @@ class AddItemDialog extends StatefulWidget {
 }
 
 class _AddItemDialogState extends State<AddItemDialog> {
-  static const horizontalPadding = 40.0;
   Item? previewItem;
   RecentlyUsedItemCollection _recentlyUsedItemsSorted =
       RecentlyUsedItemCollection();
@@ -105,22 +103,19 @@ class _AddItemDialogState extends State<AddItemDialog> {
               ),
             ),
             Expanded(
-                child: ItemListViewer(
-              darkBackground: true,
-              horizontalPadding: horizontalPadding,
-              body: ShoppingListItemWrap(
-                  children: _recentlyUsedItemsSorted
+              child: ItemListViewer(
+                  darkBackground: true,
+                  shoppingListItems: _recentlyUsedItemsSorted
                       .optionalPrepend(previewItem)
                       .itemsToShow()
                       .map<ShoppingListItem>((item) => ShoppingListItem(
-                            backgroundColor:
-                                GoListColors.addItemDialogItemBackground,
-                            item: item,
-                            onItemTapped: addNewItemToList,
-                            horizontalPadding: horizontalPadding,
-                          ))
+                          backgroundColor:
+                              GoListColors.addItemDialogItemBackground,
+                          item: item,
+                          defaultSize: 100,
+                          onItemTapped: () => addNewItemToList(item)))
                       .toList()),
-            ))
+            )
           ]),
         ),
       ),

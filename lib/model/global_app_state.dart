@@ -13,6 +13,7 @@ import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:go_list/service/storage/shopping_list_storage.dart';
+import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 
 class GlobalAppState extends ChangeNotifier {
   final GoListClient goListClient;
@@ -22,6 +23,10 @@ class GlobalAppState extends ChangeNotifier {
   StreamSubscription<ShoppingList>? _streamSubscription;
   bool shouldShowConnectionFailure = false;
   Timer? _showConnectionFailureTimer;
+
+  // for undo feature
+  List<String> recentlyDeletedItems = [];
+  Map<String, Timer> removeRecentlyDeletedItemTimers = {};
 
   GlobalAppState(
       {required this.goListClient,
@@ -177,6 +182,23 @@ class GlobalAppState extends ChangeNotifier {
   void deleteItem(Item item) {
     selectedShoppingList.deleteItem(item);
     shoppingListStorage.upsertShoppingList(selectedShoppingList);
+    recentlyDeletedItems.add(item.id);
+    removeRecentlyDeletedItemTimers[item.id]?.cancel();
+    removeRecentlyDeletedItemTimers[item.id] = Timer(
+        const Duration(milliseconds: ShoppingListItem.allowUndoForMs), () {
+      recentlyDeletedItems.remove(item.id);
+      notifyListeners();
+    });
+    notifyListeners();
+  }
+
+  void unDeleteItem(String itemId) {
+    selectedShoppingList.unDeleteItem(itemId);
+    shoppingListStorage.upsertShoppingList(selectedShoppingList);
+    recentlyDeletedItems.remove(itemId);
+    removeRecentlyDeletedItemTimers[itemId]?.cancel();
+    removeRecentlyDeletedItemTimers.remove(itemId);
+    print("undelete");
     notifyListeners();
   }
 

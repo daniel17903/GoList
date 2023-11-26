@@ -5,19 +5,20 @@ class DisappearAnimation {
   late AnimationController _disappearAnimationController;
 
   final Function() onValueChanged;
-  final Function() onCompleted;
+  late Function() onCompleted;
 
   double value = 1.0;
 
-  static const int disappearDurationMs = 200;
+  final int durationMs;
 
   DisappearAnimation(
-      {required this.onCompleted,
+      {Function()? onCompleted,
       required tickProvider,
-      required this.onValueChanged}) {
+      required this.onValueChanged,
+      required this.durationMs}) {
+    this.onCompleted = onCompleted ?? () {};
     _disappearAnimationController = AnimationController(
-        vsync: tickProvider,
-        duration: const Duration(milliseconds: disappearDurationMs));
+        vsync: tickProvider, duration: Duration(milliseconds: durationMs));
 
     _disappearAnimation = Tween(
       begin: 1.0,
@@ -32,7 +33,7 @@ class DisappearAnimation {
       })
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          onCompleted();
+          this.onCompleted();
         }
       });
   }
