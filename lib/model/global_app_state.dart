@@ -198,7 +198,6 @@ class GlobalAppState extends ChangeNotifier {
     recentlyDeletedItems.remove(itemId);
     removeRecentlyDeletedItemTimers[itemId]?.cancel();
     removeRecentlyDeletedItemTimers.remove(itemId);
-    print("undelete");
     notifyListeners();
   }
 

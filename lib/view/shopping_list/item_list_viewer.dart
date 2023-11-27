@@ -37,7 +37,7 @@ class ItemListViewer extends StatelessWidget {
                     if (header != null) header!,
                     Expanded(
                       child: GridView.extent(
-                        maxCrossAxisExtent: 130,
+                        maxCrossAxisExtent: 125,
                         mainAxisSpacing: 6,
                         crossAxisSpacing: 6,
                         padding: const EdgeInsets.only(bottom: 10),

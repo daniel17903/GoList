@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/model/item.dart';
 import 'package:go_list/style/colors.dart';
+import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
-import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item_wrap.dart';
 
 import '../builders/item_builder.dart';
 import '../fixtures.dart';
@@ -10,7 +10,7 @@ import '../fixtures.dart';
 void main() {
   generateShoppingListItemWidget(Item item) => ShoppingListItem(
       item: item,
-      onItemTapped: (_) => {},
+      onItemTapped: () => {},
       backgroundColor: GoListColors.itemBackground);
 
   testWidgets('Renders ShoppingListItems', (tester) async {
@@ -55,10 +55,12 @@ void main() {
 
     await pumpWrappedWithMaterialApp(
         tester,
-        ShoppingListItemWrap(
-            children: items.map(generateShoppingListItemWidget).toList()));
+        ItemListViewer(
+          shoppingListItems: items.map(generateShoppingListItemWidget).toList(),
+          darkBackground: false,
+        ));
 
-    await expectLater(find.byType(ShoppingListItemWrap),
+    await expectLater(find.byType(ItemListViewer),
         matchesGoldenFile('goldens/shopping_list_item.png'));
   });
 }

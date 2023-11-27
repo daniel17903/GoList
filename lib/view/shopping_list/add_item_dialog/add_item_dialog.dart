@@ -112,7 +112,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                           backgroundColor:
                               GoListColors.addItemDialogItemBackground,
                           item: item,
-                          defaultSize: 100,
+                          defaultSize: 120,
                           onItemTapped: () => addNewItemToList(item)))
                       .toList()),
             )

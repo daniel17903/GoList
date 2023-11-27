@@ -12,10 +12,10 @@ class BlinkAnimation {
 
   double value = 1.0;
   double animateFrom = 1.0;
-  double animateTo = 0.9;
+  double animateTo = 0.93;
   bool isCompleted = false;
 
-  final int durationOfOneBlinkMs = 300;
+  final int durationOfOneBlinkMs = 250;
 
   BlinkAnimation(
       {Function()? onCompleted,

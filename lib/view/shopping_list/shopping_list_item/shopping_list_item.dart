@@ -12,7 +12,7 @@ class ShoppingListItem extends StatelessWidget {
   final itemAnimationController = ItemAnimationController();
   final Item item;
   final Color backgroundColor;
-  final double? defaultSize;
+  final double defaultSize;
   final Function() onItemTapped;
   final Function()? onItemTappedLong;
 
@@ -21,52 +21,56 @@ class ShoppingListItem extends StatelessWidget {
       required this.backgroundColor,
       required this.onItemTapped,
       this.onItemTappedLong,
-      this.defaultSize})
+      this.defaultSize = 120})
       : super(key: Key(item.id));
 
   @override
   Widget build(BuildContext context) {
-    return BlinkDisappearItemContainer(
-        disappearAfterMs: ShoppingListItem.allowUndoForMs,
-        runAnimation: item.deleted,
-        childBuilder: (scale, scaleOuterContainer) => SizedItemContainer(
-            onTapped: onItemTapped,
-            onTappedLong: onItemTappedLong ?? () => {},
-            backgroundColor: backgroundColor,
-            scale: scale,
-            defaultSize: defaultSize,
-            scaleOuterContainer: scaleOuterContainer,
-            childBuilder: (size) => CustomMultiChildLayout(
-                    delegate: ItemLayoutDelegate(containerSize: size),
-                    children: [
-                      LayoutId(
-                        id: ItemLayoutChild.icon,
-                        child: GoListIcons().getIconImageWidget(item.iconName),
-                      ),
-                      LayoutId(
-                        id: ItemLayoutChild.name,
-                        child: Text(item.name,
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                height: 1.15,
-                                letterSpacing: 0)),
-                      ),
-                      if (item.amount != null && item.amount!.isNotEmpty)
-                        LayoutId(
-                          id: ItemLayoutChild.amount,
-                          child: Text(item.amount!,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  height: 1.15,
-                                  letterSpacing: 0)),
-                        ),
-                    ])));
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double scaleRelativeToParentWidth = constraints.maxWidth / defaultSize;
+        return BlinkDisappearItemContainer(
+            disappearAfterMs: ShoppingListItem.allowUndoForMs,
+            runAnimation: item.deleted,
+            childBuilder: (scale) => SizedItemContainer(
+                onTapped: onItemTapped,
+                onTappedLong: onItemTappedLong ?? () => {},
+                backgroundColor: backgroundColor,
+                scale: scale,
+                childBuilder: (size) => CustomMultiChildLayout(
+                        delegate: ItemLayoutDelegate(containerSize: size),
+                        children: [
+                          LayoutId(
+                            id: ItemLayoutChild.icon,
+                            child:
+                                GoListIcons().getIconImageWidget(item.iconName),
+                          ),
+                          LayoutId(
+                            id: ItemLayoutChild.name,
+                            child: Text(item.name,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14 * scaleRelativeToParentWidth,
+                                    height: 1.15 * scaleRelativeToParentWidth,
+                                    letterSpacing: 0)),
+                          ),
+                          if (item.amount != null && item.amount!.isNotEmpty)
+                            LayoutId(
+                              id: ItemLayoutChild.amount,
+                              child: Text(item.amount!,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12 * scaleRelativeToParentWidth,
+                                      height: 1.15 * scaleRelativeToParentWidth,
+                                      letterSpacing: 0)),
+                            ),
+                        ])));
+      },
+    );
   }
 }

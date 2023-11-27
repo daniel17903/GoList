@@ -3,7 +3,7 @@ import 'package:go_list/view/shopping_list/shopping_list_item/animation/blink_an
 import 'package:go_list/view/shopping_list/shopping_list_item/animation/disappear_animation.dart';
 
 class BlinkDisappearItemContainer extends StatefulWidget {
-  final Widget Function(double scaleFactor, bool scaleOuterContainer)
+  final Widget Function(double scaleFactor)
       childBuilder;
   final int disappearAfterMs;
   final bool runAnimation;
@@ -28,7 +28,7 @@ class _BlinkDisappearItemContainerState
   void startStopAnimation() {
     if (!isRunning && widget.runAnimation) {
       isRunning = true;
-      int disappearAnimationDurationMs = 300;
+      int disappearAnimationDurationMs = 250;
       disappearAnimation = DisappearAnimation(
           durationMs: disappearAnimationDurationMs,
           onValueChanged: () => setState(() {}),
@@ -76,8 +76,8 @@ class _BlinkDisappearItemContainerState
       double scale = blinkAnimation!.isCompleted
           ? disappearAnimation!.value
           : blinkAnimation!.value;
-      return widget.childBuilder(scale, blinkAnimation!.isCompleted);
+      return widget.childBuilder(scale);
     }
-    return widget.childBuilder(1, false);
+    return widget.childBuilder(1);
   }
 }
