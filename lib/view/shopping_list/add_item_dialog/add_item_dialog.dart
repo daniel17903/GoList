@@ -6,7 +6,6 @@ import 'package:go_list/model/item.dart';
 import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
-import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 import 'package:provider/provider.dart';
 
 class AddItemDialog extends StatefulWidget {
@@ -51,7 +50,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   void addNewItemToList(Item? item) {
     if (item != null) {
       Provider.of<GlobalAppState>(context, listen: false)
-          .upsertItem(item.copyAsRecentlyUsedItem());
+          .upsertItem(item.copyWithNewIdWithoutAmount());
       Navigator.pop(context);
     }
   }
@@ -104,17 +103,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
             ),
             Expanded(
               child: ItemListViewer(
-                  darkBackground: true,
-                  shoppingListItems: _recentlyUsedItemsSorted
-                      .optionalPrepend(previewItem)
-                      .itemsToShow()
-                      .map<ShoppingListItem>((item) => ShoppingListItem(
-                          backgroundColor:
-                              GoListColors.addItemDialogItemBackground,
-                          item: item,
-                          defaultSize: 120,
-                          onItemTapped: () => addNewItemToList(item)))
-                      .toList()),
+                darkBackground: true,
+                items: [
+                  ...previewItem == null ? [] : [previewItem!],
+                  ..._recentlyUsedItemsSorted.itemsToShow()
+                ],
+                onItemTapped: addNewItemToList,
+                itemBackgroundColor: GoListColors.addItemDialogItemBackground,
+                maxItemSize: 125,
+              ),
             )
           ]),
         ),

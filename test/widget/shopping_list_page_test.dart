@@ -9,15 +9,16 @@ import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/view/drawer/create_new_list_tile.dart';
 import 'package:go_list/view/drawer/shopping_list_drawer.dart';
 import 'package:go_list/view/drawer/shopping_list_tile.dart';
+import 'package:go_list/view/shopping_list/add_item_dialog/add_item_dialog.dart';
 import 'package:go_list/view/shopping_list/item_list_viewer.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import '../../builders/item_builder.dart';
-import '../../builders/shopping_list_builder.dart';
-import '../../fixtures.dart';
+import '../builders/item_builder.dart';
+import '../builders/shopping_list_builder.dart';
+import '../fixtures.dart';
 import 'shopping_list_page_test.mocks.dart';
 
 class MockStream extends Mock implements Stream<ShoppingList> {}
@@ -38,7 +39,7 @@ void main() {
 
   testWidgets('Renders names and amounts of all items', (tester) async {
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection([shoppingList]), shoppingList);
+        ShoppingListCollection([shoppingList]));
 
     expect(find.byType(ShoppingListItem),
         findsNWidgets(shoppingList.items.length));
@@ -54,7 +55,7 @@ void main() {
 
   testWidgets('Deletes an item', (tester) async {
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection([shoppingList]), shoppingList);
+        ShoppingListCollection([shoppingList]));
 
     var originalNumberOfItems = shoppingList.items.length;
     var itemToDelete = shoppingList.items.get(2);
@@ -67,16 +68,55 @@ void main() {
     expect(find.byKey(Key(itemToDelete.id)), findsNothing);
   });
 
+  testWidgets('Adds an item', (tester) async {
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection([shoppingList]));
+
+    var originalNumberOfItems = shoppingList.items.length;
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), "apple");
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(
+        of: find.byType(ShoppingListItem), matching: find.text("apple")));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ShoppingListItem),
+        findsNWidgets(originalNumberOfItems + 1));
+    expect(find.text("apple"), findsOneWidget);
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), "ap");
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(
+        of: find.byType(AddItemDialog), matching: find.text("apple")));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ShoppingListItem),
+        findsNWidgets(originalNumberOfItems + 2));
+    expect(find.text("apple"), findsNWidgets(2));
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    expect(
+        find.descendant(
+            of: find.byType(AddItemDialog),
+            matching: find.byType(ShoppingListItem)),
+        findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byType(AddItemDialog), matching: find.text("apple")),
+        findsOneWidget);
+  });
+
   testWidgets('Deletes a list', (tester) async {
     ShoppingList shoppingListToKeep =
         ShoppingListBuilder().withName("list to keep").build();
     ShoppingList shoppingListToDelete =
         ShoppingListBuilder().withName("list to remove").build();
-    await pumpWithGlobalAppState(
-        tester,
-        const ShoppingListPage(),
-        ShoppingListCollection([shoppingListToKeep, shoppingListToDelete]),
-        shoppingListToDelete);
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection([shoppingListToKeep, shoppingListToDelete]));
 
     // open the drawer
     await tester.tap(find.byIcon(Icons.menu));
@@ -103,7 +143,7 @@ void main() {
 
   testWidgets('Adds a list', (tester) async {
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection([shoppingList]), shoppingList);
+        ShoppingListCollection([shoppingList]));
 
     // open the drawer
     await tester.tap(find.byIcon(Icons.menu));
@@ -131,7 +171,7 @@ void main() {
 
   testWidgets('Edits a lists name', (tester) async {
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection([shoppingList]), shoppingList);
+        ShoppingListCollection([shoppingList]));
 
     // open the edit dialog
     await tester.tap(find.byIcon(Icons.edit));
@@ -178,12 +218,8 @@ void main() {
       return Future.value(streamController.stream);
     });
 
-    await pumpWithGlobalAppState(
-        tester,
-        const ShoppingListPage(),
-        ShoppingListCollection([initialShoppingList]),
-        initialShoppingList,
-        goListClientMock);
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection([initialShoppingList]), goListClientMock);
     await tester.pumpAndSettle();
 
     streamController.add(updatedShoppingList);

@@ -58,8 +58,8 @@ class ShoppingList extends GoListModel {
         id: id ?? this.id);
   }
 
-  void deleteItem(Item item) {
-    item.deleted = true;
+  void deleteItem(String itemId) {
+    items.entryWithId(itemId)?.deleted = true;
     modified = DateTime.now();
   }
 

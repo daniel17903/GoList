@@ -179,14 +179,14 @@ class GlobalAppState extends ChangeNotifier {
   ShoppingList get selectedShoppingList =>
       shoppingLists.entryWithId(settings.selectedShoppingListId)!;
 
-  void deleteItem(Item item) {
-    selectedShoppingList.deleteItem(item);
+  void deleteItem(String itemId) {
+    selectedShoppingList.deleteItem(itemId);
     shoppingListStorage.upsertShoppingList(selectedShoppingList);
-    recentlyDeletedItems.add(item.id);
-    removeRecentlyDeletedItemTimers[item.id]?.cancel();
-    removeRecentlyDeletedItemTimers[item.id] = Timer(
+    recentlyDeletedItems.add(itemId);
+    removeRecentlyDeletedItemTimers[itemId]?.cancel();
+    removeRecentlyDeletedItemTimers[itemId] = Timer(
         const Duration(milliseconds: ShoppingListItem.allowUndoForMs), () {
-      recentlyDeletedItems.remove(item.id);
+      recentlyDeletedItems.remove(itemId);
       notifyListeners();
     });
     notifyListeners();

@@ -6,7 +6,6 @@ import '../golist_model.dart';
 class RecentlyUsedItemCollection {
   static const maxItems = 1000;
   final ItemCollection items;
-  String? previewItemId;
 
   RecentlyUsedItemCollection([ItemCollection? items])
       : items = items ?? ItemCollection([]) {
@@ -63,17 +62,6 @@ class RecentlyUsedItemCollection {
         return GoListModel.compareByModified(entry1, entry2);
       }
     });
-    return this;
-  }
-
-  RecentlyUsedItemCollection optionalPrepend(Item? item) {
-    if (previewItemId != null) {
-      items.removeEntryWithId(previewItemId!);
-    }
-    if (item != null) {
-      previewItemId = item.id;
-      items.prepend(item);
-    }
     return this;
   }
 

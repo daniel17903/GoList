@@ -71,7 +71,7 @@ class Item extends GoListModel implements Comparable<Item> {
     return toJson().toString();
   }
 
-  Item copyAsRecentlyUsedItem() {
+  Item copyWithNewIdWithoutAmount() {
     return Item(name: name, iconName: iconName, amount: "", category: category);
   }
 

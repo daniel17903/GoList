@@ -27,11 +27,8 @@ void main() async {
       (tester) async {
     await setViewSize(tester);
 
-    await pumpWithGlobalAppState(
-        tester,
-        const ShoppingListPage(),
-        ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
-        shoppingListWithRecentlyUsedItems);
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection([shoppingListWithRecentlyUsedItems]));
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
 
@@ -50,7 +47,6 @@ void main() async {
       ..addScenario(
         widget: wrapWithGlobalAppStateProvider(
           ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
-          shoppingListWithRecentlyUsedItems,
           wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Renders recently used items',
@@ -67,7 +63,6 @@ void main() async {
       ..addScenario(
         widget: wrapWithGlobalAppStateProvider(
           ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
-          shoppingListWithRecentlyUsedItems,
           wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Renders recently used items',
@@ -75,7 +70,6 @@ void main() async {
       ..addScenario(
         widget: wrapWithGlobalAppStateProvider(
           ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
-          shoppingListWithRecentlyUsedItems,
           wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Previews an item with a not recently used name',
@@ -91,7 +85,6 @@ void main() async {
       ..addScenario(
         widget: wrapWithGlobalAppStateProvider(
           ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
-          shoppingListWithRecentlyUsedItems,
           wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Previews an item with a partial recently used name',
@@ -107,7 +100,6 @@ void main() async {
       ..addScenario(
         widget: wrapWithGlobalAppStateProvider(
           ShoppingListCollection([shoppingListWithRecentlyUsedItems]),
-          shoppingListWithRecentlyUsedItems,
           wrapWithMaterialApp(const AddItemDialog()),
         ),
         name: 'Previews an item with a recently used name',
