@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_list/style/colors.dart';
-import 'package:go_list/view/shopping_list/item_list_viewer.dart';
+import 'package:go_list/view/shopping_list/item_grid_view.dart';
 
 import '../builders/item_builder.dart';
 import '../fixtures.dart';
@@ -49,15 +49,15 @@ void main() {
 
     await pumpWrappedWithMaterialApp(
         tester,
-        ItemListViewer(
+        ItemGridView(
           items: items,
-          darkBackground: false,
           onItemTapped: (_) {},
           itemBackgroundColor: GoListColors.itemBackground,
           maxItemSize: 140,
+          animate: false,
         ));
 
-    await expectLater(find.byType(ItemListViewer),
+    await expectLater(find.byType(ItemGridView),
         matchesGoldenFile('goldens/shopping_list_item.png'));
   });
 }

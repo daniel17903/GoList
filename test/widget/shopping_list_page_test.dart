@@ -10,7 +10,7 @@ import 'package:go_list/view/drawer/create_new_list_tile.dart';
 import 'package:go_list/view/drawer/shopping_list_drawer.dart';
 import 'package:go_list/view/drawer/shopping_list_tile.dart';
 import 'package:go_list/view/shopping_list/add_item_dialog/add_item_dialog.dart';
-import 'package:go_list/view/shopping_list/item_list_viewer.dart';
+import 'package:go_list/view/shopping_list/main_item_list_viewer.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 import 'package:go_list/view/shopping_list_page.dart';
 import 'package:mockito/annotations.dart';
@@ -61,7 +61,7 @@ void main() {
     var itemToDelete = shoppingList.items.get(2);
 
     await tester.tap(find.byKey(Key(itemToDelete.id)));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(seconds: 2));
 
     expect(find.byType(ShoppingListItem),
         findsNWidgets(originalNumberOfItems - 1));
@@ -164,7 +164,7 @@ void main() {
     // expect the new list to be selected
     expect(
         find.descendant(
-            of: find.byType(ItemListViewer),
+            of: find.byType(MainItemListViewer),
             matching: find.text("new list name")),
         findsOneWidget);
   });
@@ -188,7 +188,7 @@ void main() {
     // expect the new list name to be shown
     expect(
         find.descendant(
-            of: find.byType(ItemListViewer),
+            of: find.byType(MainItemListViewer),
             matching: find.text("new list name")),
         findsOneWidget);
   });
