@@ -9,10 +9,11 @@ import 'package:go_list/service/golist_client.dart';
 import 'package:go_list/view/drawer/create_new_list_tile.dart';
 import 'package:go_list/view/drawer/shopping_list_drawer.dart';
 import 'package:go_list/view/drawer/shopping_list_tile.dart';
-import 'package:go_list/view/shopping_list/add_item_dialog/add_item_dialog.dart';
+import 'package:go_list/view/shopping_list/add_item_dialog.dart';
 import 'package:go_list/view/shopping_list/main_item_list_viewer.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 import 'package:go_list/view/shopping_list_page.dart';
+import 'package:go_list/view/undo_button.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
@@ -34,6 +35,8 @@ void main() {
       ItemBuilder().withName("item c").withAmount("3").build(),
       ItemBuilder().withName("item d").withAmount("4").build(),
       ItemBuilder().withName("item e").withAmount("5").build(),
+    ]).withRecentlyUsedItems([
+      ItemBuilder().withName("recently used").build(),
     ]).build();
   });
 
@@ -68,14 +71,14 @@ void main() {
     expect(find.byKey(Key(itemToDelete.id)), findsNothing);
   });
 
-  testWidgets('Adds an item', (tester) async {
+  testWidgets('Adds a new item with amount', (tester) async {
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
         ShoppingListCollection([shoppingList]));
 
     var originalNumberOfItems = shoppingList.items.length;
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), "apple");
+    await tester.enterText(find.byType(TextField), "apple 22");
     await tester.pumpAndSettle();
     await tester.tap(find.descendant(
         of: find.byType(ShoppingListItem), matching: find.text("apple")));
@@ -84,19 +87,25 @@ void main() {
     expect(find.byType(ShoppingListItem),
         findsNWidgets(originalNumberOfItems + 1));
     expect(find.text("apple"), findsOneWidget);
+    expect(find.text("22"), findsOneWidget);
+  });
 
+  testWidgets('Adds a recently used item', (tester) async {
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection([shoppingList]));
+
+    var originalNumberOfItems = shoppingList.items.length;
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), "ap");
-    await tester.pumpAndSettle();
     await tester.tap(find.descendant(
-        of: find.byType(AddItemDialog), matching: find.text("apple")));
+        of: find.byType(AddItemDialog), matching: find.text("recently used")));
     await tester.pumpAndSettle();
 
     expect(find.byType(ShoppingListItem),
-        findsNWidgets(originalNumberOfItems + 2));
-    expect(find.text("apple"), findsNWidgets(2));
+        findsNWidgets(originalNumberOfItems + 1));
+    expect(find.text("recently used"), findsOneWidget);
 
+    // still shows only one recently used item
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
     expect(
@@ -106,7 +115,8 @@ void main() {
         findsOneWidget);
     expect(
         find.descendant(
-            of: find.byType(AddItemDialog), matching: find.text("apple")),
+            of: find.byType(AddItemDialog),
+            matching: find.text("recently used")),
         findsOneWidget);
   });
 
@@ -167,6 +177,58 @@ void main() {
             of: find.byType(MainItemListViewer),
             matching: find.text("new list name")),
         findsOneWidget);
+  });
+
+  testWidgets('Adds a new item to a new list', (tester) async {
+    await pumpWithGlobalAppState(tester, const ShoppingListPage(),
+        ShoppingListCollection([shoppingList]));
+
+    // open the drawer
+    await tester.tap(find.byIcon(Icons.menu));
+    await tester.pumpAndSettle();
+
+    // click on 'create new list'
+    await tester.tap(find.byType(CreateNewListTile));
+    await tester.pumpAndSettle();
+
+    // insert new list name and click save in dialog
+    await tester.enterText(
+        find.descendant(
+            of: find.byType(AlertDialog), matching: find.byType(TextFormField)),
+        "new list name");
+    await tester.tap(find.text("Save"));
+    await tester.pumpAndSettle();
+
+    // expect the new list to be selected
+    expect(
+        find.descendant(
+            of: find.byType(MainItemListViewer),
+            matching: find.text("new list name")),
+        findsOneWidget);
+
+    // insert an item
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), "apple");
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(
+        of: find.byType(ShoppingListItem), matching: find.text("apple")));
+    await tester.pumpAndSettle();
+
+    // expect it to be shown
+    expect(find.byType(ShoppingListItem), findsOneWidget);
+    expect(find.text("apple"), findsOneWidget);
+
+    // insert another item
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(
+        of: find.byType(AddItemDialog), matching: find.text("apple")));
+    await tester.pumpAndSettle();
+
+    // expect both to be shown
+    expect(find.byType(ShoppingListItem), findsNWidgets(2));
+    expect(find.text("apple"), findsNWidgets(2));
   });
 
   testWidgets('Edits a lists name', (tester) async {

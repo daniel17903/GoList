@@ -5,7 +5,7 @@ import 'package:go_list/model/item.dart';
 import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 
 const double spacing = 6;
-const animationDuration = Duration(milliseconds: 500);
+const animationDuration = Duration(milliseconds: 350);
 
 class ItemGridView extends StatefulWidget {
   final Function(Item) onItemTapped;

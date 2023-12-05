@@ -5,6 +5,7 @@ import 'package:go_list/view/dialog/dialog_utils.dart';
 import 'package:go_list/view/dialog/edit_item_dialog.dart';
 import 'package:go_list/view/dialog/edit_list_dialog.dart';
 import 'package:go_list/view/shopping_list/item_grid_view.dart';
+import 'package:go_list/view/undo_button.dart';
 import 'package:provider/provider.dart';
 
 class MainItemListViewer extends StatelessWidget {
@@ -55,20 +56,17 @@ class MainItemListViewer extends StatelessWidget {
                                 .selectedShoppingList.items.entries
                                 .where((item) => item.deleted == false)
                                 .toList(),
-                            onItemTapped: (item) => item.deleted
-                                ? Provider.of<GlobalAppState>(context,
-                                        listen: false)
-                                    .unDeleteItem(item.id)
-                                : Provider.of<GlobalAppState>(context,
-                                        listen: false)
-                                    .deleteItem(item.id),
-                            onItemTappedLong: (item) => item.deleted
-                                ? {}
-                                : EditItemDialog.show(context, item),
+                            onItemTapped: (item) => Provider.of<GlobalAppState>(
+                                    context,
+                                    listen: false)
+                                .deleteItem(item.id),
+                            onItemTappedLong: (item) =>
+                                EditItemDialog.show(context, item),
                             itemBackgroundColor: GoListColors.itemBackground,
                             maxItemSize: 140,
                             animate: true,
-                          ))
+                          )),
+                          const UndoButton()
                         ]))));
       }),
     );

@@ -86,12 +86,10 @@ class GlobalAppState extends ChangeNotifier {
 
   void showConnectionFailure() {
     shouldShowConnectionFailure = true;
-    print("shouldShowConnectionFailure $shouldShowConnectionFailure");
     notifyListeners();
     _showConnectionFailureTimer?.cancel();
     _showConnectionFailureTimer = Timer(const Duration(seconds: 5), () {
       shouldShowConnectionFailure = false;
-      print("shouldShowConnectionFailure $shouldShowConnectionFailure");
       notifyListeners();
     });
   }
@@ -112,10 +110,14 @@ class GlobalAppState extends ChangeNotifier {
   }
 
   void setSelectedShoppingListId(String selectedShoppingListId) {
-    settings.selectedShoppingListId = selectedShoppingListId;
-    shoppingListStorage.saveSettings(settings);
-    notifyListeners();
-    _listenForChangesInSelectedShoppingList(forceReconnect: true);
+    if (selectedShoppingListId != settings.selectedShoppingListId) {
+      recentlyDeletedItems.clear();
+      removeRecentlyDeletedItemTimers.clear();
+      settings.selectedShoppingListId = selectedShoppingListId;
+      shoppingListStorage.saveSettings(settings);
+      notifyListeners();
+      _listenForChangesInSelectedShoppingList(forceReconnect: true);
+    }
   }
 
   void _listenForChangesInSelectedShoppingList(
@@ -192,12 +194,13 @@ class GlobalAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void unDeleteItem(String itemId) {
-    selectedShoppingList.unDeleteItem(itemId);
+  void unDeleteItem() {
+    String lastDeletedItemId = recentlyDeletedItems[0];
+    selectedShoppingList.unDeleteItem(lastDeletedItemId);
     shoppingListStorage.upsertShoppingList(selectedShoppingList);
-    recentlyDeletedItems.remove(itemId);
-    removeRecentlyDeletedItemTimers[itemId]?.cancel();
-    removeRecentlyDeletedItemTimers.remove(itemId);
+    recentlyDeletedItems.remove(lastDeletedItemId);
+    removeRecentlyDeletedItemTimers[lastDeletedItemId]?.cancel();
+    removeRecentlyDeletedItemTimers.remove(lastDeletedItemId);
     notifyListeners();
   }
 

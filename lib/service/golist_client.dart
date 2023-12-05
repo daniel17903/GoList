@@ -127,7 +127,6 @@ class GoListClient {
         return ShoppingList.fromJson(jsonDecode(shoppingListJson));
       });
     }, (error, stack) {
-      print(error);
       throw Exception('Failed to connect to websocket');
     });
     if (stream == null) {
