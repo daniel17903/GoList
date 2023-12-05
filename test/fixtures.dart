@@ -68,20 +68,16 @@ Future<void> loadImages(WidgetTester tester) async {
   }
 }
 
-Future<void> pumpWithGlobalAppState(WidgetTester tester, Widget w,
-    ShoppingListCollection shoppingLists, ShoppingList selectedShoppingList,
+Future<void> pumpWithGlobalAppState(
+    WidgetTester tester, Widget w, ShoppingListCollection shoppingLists,
     [GoListClient? goListClient]) async {
   await pump(
-      tester,
-      wrapWithGlobalAppStateProvider(
-          shoppingLists, selectedShoppingList, w, goListClient),
+      tester, wrapWithGlobalAppStateProvider(shoppingLists, w, goListClient),
       withImages: true);
 }
 
 ChangeNotifierProvider<GlobalAppState> wrapWithGlobalAppStateProvider(
-    ShoppingListCollection shoppingLists,
-    ShoppingList selectedShoppingList,
-    Widget w,
+    ShoppingListCollection shoppingLists, Widget w,
     [GoListClient? goListClient]) {
   GoListClient goListClientOrDefault = goListClient ?? GoListClientMock();
   var globalAppState = GlobalAppState(

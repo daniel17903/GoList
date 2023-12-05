@@ -15,8 +15,8 @@ class ItemCollection extends GoListCollection<Item> {
   }
 
   RecentlyUsedItemCollection copyForRecentlyUsed() {
-    var recentlyUsedItemCollection =
-        RecentlyUsedItemCollection(ItemCollection(entries));
+    var recentlyUsedItemCollection = RecentlyUsedItemCollection(
+        ItemCollection(entries.map((e) => e.copyForRecentlyUsed()).toList()));
     recentlyUsedItemCollection.removeDuplicateNamesAndAmount();
     return recentlyUsedItemCollection;
   }

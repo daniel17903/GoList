@@ -39,7 +39,7 @@ class InputToItemParser {
     String? amount = parseAmount(input);
     String name = input;
     if (amount != null) {
-      name = input.replaceFirst(amount, "");
+      name = input.replaceFirst(amount, "").trim();
     }
 
     IconMapping mappingForInput = findMappingForName(input);

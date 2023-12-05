@@ -13,33 +13,30 @@ const nameHeight = 0.3;
 const amountHeight = 0.15;
 
 class ItemLayoutDelegate extends MultiChildLayoutDelegate {
-  final double containerSize;
-
-  ItemLayoutDelegate({required this.containerSize});
 
   @override
   void performLayout(Size size) {
-    Offset center = Offset(containerSize / 2, containerSize / 2);
-    double maxContentWidth = containerSize - 2 * paddingSide * containerSize;
+    Offset center = Offset(size.width / 2, size.width / 2);
+    double maxContentWidth = size.width - 2 * paddingSide * size.width;
 
     final Size iconSize = layoutChild(ItemLayoutChild.icon,
-        BoxConstraints(maxHeight: containerSize * iconHeight));
+        BoxConstraints(maxHeight: size.width * iconHeight));
 
     final Size nameTextSize = layoutChild(
         ItemLayoutChild.name,
         BoxConstraints(
-            maxHeight: containerSize * nameHeight,
+            maxHeight: size.width * nameHeight,
             maxWidth: maxContentWidth,
             minWidth: maxContentWidth));
 
-    double yBelowIcon = paddingTop * containerSize +
+    double yBelowIcon = paddingTop * size.width +
         iconSize.height +
-        paddingBelowIcon * containerSize;
+        paddingBelowIcon * size.width;
 
     // vertical center between lower icon border and container bottom
     double yCenterOfNameAndAmount = yBelowIcon +
-        (containerSize - yBelowIcon) / 2 -
-        paddingBelowAmount * containerSize;
+        (size.width - yBelowIcon) / 2 -
+        paddingBelowAmount * size.width;
 
     double yOfNameAndAmount =
         yCenterOfNameAndAmount - nameTextSize.height / 2;
@@ -48,32 +45,32 @@ class ItemLayoutDelegate extends MultiChildLayoutDelegate {
       final Size amountTextSize = layoutChild(
           ItemLayoutChild.amount,
           BoxConstraints(
-              maxHeight: containerSize * amountHeight,
+              maxHeight: size.width * amountHeight,
               maxWidth: maxContentWidth,
               minWidth: maxContentWidth));
 
       yOfNameAndAmount = yCenterOfNameAndAmount -
           (nameTextSize.height +
                   amountTextSize.height +
-                  paddingBelowName * containerSize) /
+                  paddingBelowName * size.width) /
               2;
 
       positionChild(ItemLayoutChild.name,
-          Offset(paddingSide * containerSize, yOfNameAndAmount));
+          Offset(paddingSide * size.width, yOfNameAndAmount));
       positionChild(
           ItemLayoutChild.amount,
           Offset(
-              paddingSide * containerSize,
+              paddingSide * size.width,
               yOfNameAndAmount +
                   nameTextSize.height +
-                  paddingBelowName * containerSize));
+                  paddingBelowName * size.width));
     } else {
       positionChild(ItemLayoutChild.name,
-          Offset(paddingSide * containerSize, yOfNameAndAmount));
+          Offset(paddingSide * size.width, yOfNameAndAmount));
     }
 
     // vertically center icon in available space above text
-    double dyIcon = paddingTop * containerSize;
+    double dyIcon = paddingTop * size.width;
     double availableExtraSpace = yOfNameAndAmount - dyIcon - iconSize.height;
     dyIcon += availableExtraSpace / 2;
 

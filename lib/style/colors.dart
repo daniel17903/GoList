@@ -13,10 +13,12 @@ class GoListColors {
   static const Color yellow = Color(0xfff6f294);
 
   static const Color grey = Color(0xff898989);
+  static const Color pink = Color(0xffe4b2d2);
+  static const Color lightBlue = Color(0xffbde5ee);
 
   static const backgroundGradientColors = [
-    Color(0xffe4b2d2),
-    Color(0xffbde5ee),
+    pink,
+    lightBlue,
     Color(0xffd8e8af),
     yellow,
     appBarColor,

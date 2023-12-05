@@ -50,6 +50,10 @@ class Item extends GoListModel implements Comparable<Item> {
     findMapping();
   }
 
+  bool equalsById(Item other) {
+    return id == other.id;
+  }
+
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
@@ -71,8 +75,13 @@ class Item extends GoListModel implements Comparable<Item> {
     return toJson().toString();
   }
 
-  Item copyAsRecentlyUsedItem() {
-    return Item(name: name, iconName: iconName, amount: "", category: category);
+  Item copyAsNewItem() {
+    return Item(
+        name: name,
+        iconName: iconName,
+        amount: amount,
+        category: category,
+        deleted: false);
   }
 
   T copy<T extends GoListModel>() {

@@ -28,7 +28,7 @@ void main() async {
     await setViewSize(tester);
 
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection([shoppingList]), shoppingList);
+        ShoppingListCollection([shoppingList]));
 
     await expectLater(find.byType(MaterialApp),
         matchesGoldenFile('goldens/shopping_list_page.png'));
@@ -39,7 +39,7 @@ void main() async {
     await setViewSize(tester);
 
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection([shoppingList]), shoppingList);
+        ShoppingListCollection([shoppingList]));
     await tester.longPress(find.text(itemToEdit.name));
     await tester.pumpAndSettle();
 
@@ -52,7 +52,7 @@ void main() async {
     await setViewSize(tester);
 
     await pumpWithGlobalAppState(tester, const ShoppingListPage(),
-        ShoppingListCollection([shoppingList]), shoppingList);
+        ShoppingListCollection([shoppingList]));
     await tester.tap(find.byIcon(Icons.edit));
     await tester.pumpAndSettle();
 

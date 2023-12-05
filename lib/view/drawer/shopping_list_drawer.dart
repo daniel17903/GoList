@@ -11,7 +11,7 @@ import 'package:go_list/view/drawer/shopping_list_tile.dart';
 import 'package:provider/provider.dart';
 
 class ShoppingListDrawer extends StatelessWidget {
-  const ShoppingListDrawer({Key? key}) : super(key: key);
+  const ShoppingListDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {

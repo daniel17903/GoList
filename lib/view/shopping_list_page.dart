@@ -7,7 +7,7 @@ import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/style/colors.dart';
 import 'package:go_list/view/bottom_navigation_bar.dart';
 import 'package:go_list/view/drawer/shopping_list_drawer.dart';
-import 'package:go_list/view/shopping_list/add_item_dialog/add_item_dialog.dart';
+import 'package:go_list/view/shopping_list/add_item_dialog.dart';
 import 'package:go_list/view/shopping_list/main_item_list_viewer.dart';
 import 'package:provider/provider.dart';
 

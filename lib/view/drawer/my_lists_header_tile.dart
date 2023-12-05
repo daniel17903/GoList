@@ -8,7 +8,7 @@ class MyListsHeaderTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
-        AppLocalizations.of(context)!.my_lists,
+        AppLocalizations.of(context).my_lists,
         style: TextStyle(color: Colors.primaries.first, fontSize: 16),
       ),
     );

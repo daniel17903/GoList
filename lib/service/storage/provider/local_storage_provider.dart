@@ -29,6 +29,9 @@ class LocalStorageProvider implements StorageProvider {
       List<dynamic> shoppingListsInOldFormat =
           oldGetStorage.read("shoppingLists");
       for (var shoppingListInOldFormat in shoppingListsInOldFormat) {
+        if(shoppingListInOldFormat["deleted"] == true){
+          continue;
+        }
         shoppingListInOldFormat["modified"] =
             DateTime.fromMillisecondsSinceEpoch(
                     shoppingListInOldFormat["modified"])

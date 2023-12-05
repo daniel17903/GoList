@@ -13,6 +13,7 @@ import 'package:go_list/service/items/input_to_item_parser.dart';
 import 'package:go_list/service/storage/provider/local_storage_provider.dart';
 import 'package:go_list/service/storage/provider/remote_storage_provider.dart';
 import 'package:go_list/service/storage/shopping_list_storage.dart';
+import 'package:go_list/view/shopping_list/shopping_list_item/shopping_list_item.dart';
 
 class GlobalAppState extends ChangeNotifier {
   final GoListClient goListClient;
@@ -22,6 +23,10 @@ class GlobalAppState extends ChangeNotifier {
   StreamSubscription<ShoppingList>? _streamSubscription;
   bool shouldShowConnectionFailure = false;
   Timer? _showConnectionFailureTimer;
+
+  // for undo feature
+  List<String> recentlyDeletedItems = [];
+  Map<String, Timer> removeRecentlyDeletedItemTimers = {};
 
   GlobalAppState(
       {required this.goListClient,
@@ -81,12 +86,10 @@ class GlobalAppState extends ChangeNotifier {
 
   void showConnectionFailure() {
     shouldShowConnectionFailure = true;
-    print("shouldShowConnectionFailure $shouldShowConnectionFailure");
     notifyListeners();
     _showConnectionFailureTimer?.cancel();
     _showConnectionFailureTimer = Timer(const Duration(seconds: 5), () {
       shouldShowConnectionFailure = false;
-      print("shouldShowConnectionFailure $shouldShowConnectionFailure");
       notifyListeners();
     });
   }
@@ -107,10 +110,14 @@ class GlobalAppState extends ChangeNotifier {
   }
 
   void setSelectedShoppingListId(String selectedShoppingListId) {
-    settings.selectedShoppingListId = selectedShoppingListId;
-    shoppingListStorage.saveSettings(settings);
-    notifyListeners();
-    _listenForChangesInSelectedShoppingList(forceReconnect: true);
+    if (selectedShoppingListId != settings.selectedShoppingListId) {
+      recentlyDeletedItems.clear();
+      removeRecentlyDeletedItemTimers.clear();
+      settings.selectedShoppingListId = selectedShoppingListId;
+      shoppingListStorage.saveSettings(settings);
+      notifyListeners();
+      _listenForChangesInSelectedShoppingList(forceReconnect: true);
+    }
   }
 
   void _listenForChangesInSelectedShoppingList(
@@ -174,9 +181,26 @@ class GlobalAppState extends ChangeNotifier {
   ShoppingList get selectedShoppingList =>
       shoppingLists.entryWithId(settings.selectedShoppingListId)!;
 
-  void deleteItem(Item item) {
-    selectedShoppingList.deleteItem(item);
+  void deleteItem(String itemId) {
+    selectedShoppingList.deleteItem(itemId);
     shoppingListStorage.upsertShoppingList(selectedShoppingList);
+    recentlyDeletedItems.add(itemId);
+    removeRecentlyDeletedItemTimers[itemId]?.cancel();
+    removeRecentlyDeletedItemTimers[itemId] = Timer(
+        const Duration(milliseconds: ShoppingListItem.allowUndoForMs), () {
+      recentlyDeletedItems.remove(itemId);
+      notifyListeners();
+    });
+    notifyListeners();
+  }
+
+  void unDeleteItem() {
+    String lastDeletedItemId = recentlyDeletedItems[0];
+    selectedShoppingList.unDeleteItem(lastDeletedItemId);
+    shoppingListStorage.upsertShoppingList(selectedShoppingList);
+    recentlyDeletedItems.remove(lastDeletedItemId);
+    removeRecentlyDeletedItemTimers[lastDeletedItemId]?.cancel();
+    removeRecentlyDeletedItemTimers.remove(lastDeletedItemId);
     notifyListeners();
   }
 
