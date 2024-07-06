@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/service/golist_client.dart';
@@ -17,7 +18,9 @@ class RemoteStorageProvider extends StorageProvider {
     try {
       return await goListClient.getShoppingLists();
     } catch (e) {
-      print("failed to load shopping lists from server: $e");
+      if (kDebugMode) {
+        print("failed to load shopping lists from server: $e");
+      }
       rethrow;
     }
   }
@@ -27,7 +30,9 @@ class RemoteStorageProvider extends StorageProvider {
     try {
       await goListClient.upsertShoppingList(shoppingList);
     } catch (e) {
-      print("failed to save shopping list ${shoppingList.id} on server: $e");
+      if (kDebugMode) {
+        print("failed to save shopping list ${shoppingList.id} on server: $e");
+      }
     }
   }
 
@@ -40,7 +45,9 @@ class RemoteStorageProvider extends StorageProvider {
     try {
       await goListClient.deleteShoppingList(shoppingListId);
     } catch (e) {
-      print("failed to delete shopping list $shoppingListId on server: $e");
+      if (kDebugMode) {
+        print("failed to delete shopping list $shoppingListId on server: $e");
+      }
     }
   }
 
@@ -49,7 +56,9 @@ class RemoteStorageProvider extends StorageProvider {
     try {
       return await goListClient.getShoppingList(shoppingListId);
     } catch (e) {
-      print("failed to load shopping list $shoppingListId from server: $e");
+      if (kDebugMode) {
+        print("failed to load shopping list $shoppingListId from server: $e");
+      }
       rethrow;
     }
   }

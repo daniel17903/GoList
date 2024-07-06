@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/collections/shopping_list_collection.dart';
 import 'package:go_list/model/item.dart';
@@ -123,7 +124,9 @@ class GlobalAppState extends ChangeNotifier {
   void _listenForChangesInSelectedShoppingList(
       {forceReconnect = false, retries = 0}) async {
     onError(e) {
-      print("failed to listen for changes: $e");
+      if (kDebugMode) {
+        print("failed to listen for changes: $e");
+      }
       _streamSubscription = null;
       if (retries == 0) {
         showConnectionFailure();

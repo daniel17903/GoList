@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:app_links/app_links.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_list/model/global_app_state.dart';
 import 'package:go_list/style/colors.dart';
@@ -18,13 +19,15 @@ class ShoppingListPage extends StatefulWidget {
   State<ShoppingListPage> createState() => _ShoppingListPageState();
 }
 
-class _ShoppingListPageState extends State<ShoppingListPage> {
+class _ShoppingListPageState extends State<ShoppingListPage>
+    with WidgetsBindingObserver {
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _appLinks = AppLinks();
     // Check initial link if app was in cold state (terminated)
     _appLinks.getInitialLink().then(handleUri);
@@ -42,7 +45,9 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
               .joinListWithToken(uri.queryParameters["token"]!);
           globalAppState.upsertAndSelectShoppingList(joinedShoppingList);
         } catch (e) {
-          print("failed to join list: $e");
+          if(kDebugMode){
+            print("failed to join list: $e");
+          }
           globalAppState.showConnectionFailure();
         }
       });
@@ -50,7 +55,20 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // auto refresh when app is resumed
+    if (state == AppLifecycleState.resumed) {
+      if (kDebugMode) {
+        print("App is resumed, auto refreshing...");
+      }
+      Provider.of<GlobalAppState>(context, listen: false)
+          .loadListsFromStorage();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _linkSubscription?.cancel();
     super.dispose();
   }

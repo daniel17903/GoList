@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -39,7 +40,9 @@ class GoListIcons {
                 snapshot.data! ? name : defaultIconAssetName;
           } else if (snapshot.hasError) {
             existingImageAssetName = defaultIconAssetName;
-            print("Error loading item image: ${snapshot.error}");
+            if (kDebugMode) {
+              print("Error loading item image: ${snapshot.error}");
+            }
           }
 
           return Image.asset(
