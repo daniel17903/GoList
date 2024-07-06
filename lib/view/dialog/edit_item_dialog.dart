@@ -9,7 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dialog_utils.dart';
 
 class EditItemDialog extends StatefulWidget {
-  const EditItemDialog({Key? key, required this.item}) : super(key: key);
+  const EditItemDialog({super.key, required this.item});
 
   final Item item;
 

@@ -22,7 +22,7 @@ class ShoppingListStorage {
   ShoppingList loadShoppingListFromLocalStorage(String shoppingListId) {
     ShoppingList shoppingListsFromLocalStorage =
         localStorageProvider.loadShoppingList(shoppingListId);
-    shoppingListsFromLocalStorage.items.removeItemsDeletedSinceTenDays();
+    shoppingListsFromLocalStorage.items.removeItemsDeletedSinceDays();
     return shoppingListsFromLocalStorage;
   }
 

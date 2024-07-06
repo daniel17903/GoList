@@ -28,8 +28,14 @@ class ItemCollection extends GoListCollection<Item> {
     }
   }
 
-  void removeItemsDeletedSinceTenDays() {
-    removeWhere((e) => e.deleted == true && e.modifiedAtLeastNDaysBefore(10));
+  /// Removes items that have been deleted for at least [dayCount] days to prevent
+  /// the list from growing indefinitely.
+  /// Downside: If deleted items are still saved as undeleted on another device
+  /// after [dayCount] days they will be added again once this other device
+  /// syncs its items.
+  void removeItemsDeletedSinceDays({int dayCount = 90}) {
+    removeWhere(
+        (e) => e.deleted == true && e.modifiedAtLeastNDaysBefore(dayCount));
   }
 
   void prepend(Item item) {

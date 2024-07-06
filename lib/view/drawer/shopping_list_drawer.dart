@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_list/model/shopping_list.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_list/model/global_app_state.dart';
+import 'package:go_list/model/shopping_list.dart';
 import 'package:go_list/style/colors.dart';
-import 'package:go_list/view/dialog/dialog_utils.dart';
-import 'package:go_list/view/dialog/settings_dialog.dart';
 import 'package:go_list/view/drawer/create_new_list_tile.dart';
 import 'package:go_list/view/drawer/my_lists_header_tile.dart';
 import 'package:go_list/view/drawer/shopping_list_tile.dart';
+import 'package:go_list/view/settings_page.dart';
 import 'package:provider/provider.dart';
 
 class ShoppingListDrawer extends StatelessWidget {
@@ -58,9 +58,11 @@ class ShoppingListDrawer extends StatelessWidget {
         SafeArea(
           top: false,
           child: InkWell(
-            onTap: () => DialogUtils.showSmallAlertDialog(
-                context: context,
-                contentBuilder: (_) => const SettingsDialog()),
+            onTap: () => Navigator.push(
+              context,
+              platformPageRoute(
+                  context: context, builder: (context) => const SettingsPage()),
+            ),
             child: Container(
               color: GoListColors.settingsButtonBackground,
               child: Padding(

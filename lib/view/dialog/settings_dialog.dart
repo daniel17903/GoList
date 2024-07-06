@@ -6,7 +6,7 @@ import 'package:go_list/service/golist_languages.dart';
 import 'package:provider/provider.dart';
 
 class SettingsDialog extends StatefulWidget {
-  const SettingsDialog({Key? key}) : super(key: key);
+  const SettingsDialog({super.key});
 
   @override
   State<SettingsDialog> createState() => _SettingsDialogState();

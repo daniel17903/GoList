@@ -21,6 +21,12 @@
     },
     "what_to_buy": "What do you want to buy?",
     "settings": "Settings",
+    "language": "Language",
+    "about": "About GoList",
+    "version": "Version",
+    "privacy_policy": "Privacy Policy",
+    "privacy_policy_url": "https://golist.ge1ger.de/privacy_policy_en",
+    "source_code": "Source Code",
 
     "connection_failed": "GoList is offline"
 }
