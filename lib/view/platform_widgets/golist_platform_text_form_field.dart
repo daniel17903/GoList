@@ -7,8 +7,7 @@ class GoListPlatformTextFormField
   final String? labelText;
   final TextEditingController? controller;
 
-  const GoListPlatformTextFormField({Key? key, this.labelText, this.controller})
-      : super(key: key);
+  const GoListPlatformTextFormField({super.key, this.labelText, this.controller});
 
   @override
   Widget createCupertinoWidget(BuildContext context) {

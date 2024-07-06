@@ -41,7 +41,7 @@ class ShoppingListCollection extends GoListCollection<ShoppingList> {
 
   void cleanup() {
     for (var shoppingList in entries) {
-      shoppingList.items.removeItemsDeletedSinceTenDays();
+      shoppingList.items.removeItemsDeletedSinceDays();
       shoppingList.recentlyUsedItems.removeDuplicateNamesAndAmount();
     }
   }

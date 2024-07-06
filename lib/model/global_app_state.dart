@@ -164,7 +164,7 @@ class GlobalAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void upsertShoppingList(ShoppingList shoppingList) {
+  void upsertAndSelectShoppingList(ShoppingList shoppingList) {
     shoppingLists.upsert(shoppingList);
     shoppingListStorage.upsertShoppingList(shoppingList);
     setSelectedShoppingListId(shoppingList.id);

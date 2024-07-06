@@ -47,7 +47,7 @@ class _CreateNewListDialogState extends State<CreateNewListDialog> {
             Navigator.pop(context); // close dialog
             Navigator.pop(context); // close menu
             Provider.of<GlobalAppState>(context, listen: false)
-                .upsertShoppingList(
+                .upsertAndSelectShoppingList(
                     ShoppingList(name: _newListNameInputController.text));
           },
           child: Text(AppLocalizations.of(context).save),

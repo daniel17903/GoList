@@ -27,7 +27,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     super.initState();
     _appLinks = AppLinks();
     // Check initial link if app was in cold state (terminated)
-    _appLinks.getInitialAppLink().then(handleUri);
+    _appLinks.getInitialLink().then(handleUri);
     // Handle link when app is in warm state (front or background)
     _linkSubscription = _appLinks.uriLinkStream.listen(handleUri);
   }
@@ -40,8 +40,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
         try {
           var joinedShoppingList = await globalAppState.goListClient
               .joinListWithToken(uri.queryParameters["token"]!);
-          // this will add the shopping list to the state and make it the selected list
-          globalAppState.upsertShoppingList(joinedShoppingList);
+          globalAppState.upsertAndSelectShoppingList(joinedShoppingList);
         } catch (e) {
           print("failed to join list: $e");
           globalAppState.showConnectionFailure();
@@ -63,8 +62,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     return Container(
         decoration: BoxDecoration(
             gradient: RadialGradient(
-          radius: screenSize.height / radiusUnit, // 2.0 = screen height
-          center: Alignment.bottomCenter, // behind the fab
+          radius: screenSize.height / radiusUnit,
+          center: Alignment.bottomCenter,
           colors: GoListColors.backgroundGradientColors,
         )),
         child: Scaffold(

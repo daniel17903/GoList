@@ -21,6 +21,12 @@
   "amount": "Menge",
   "what_to_buy": "Was möchtest du einkaufen?",
   "settings": "Einstellungen",
+  "language": "Sprache",
+  "about": "Über GoList",
+  "version": "Version",
+  "privacy_policy": "Datenschutz-Bestimmungen",
+  "privacy_policy_url": "https://golist.ge1ger.de/privacy_policy_de",
+  "source_code": "Quellcode",
 
   "connection_failed": "GoList ist offline"
 }

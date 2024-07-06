@@ -9,8 +9,7 @@ import 'package:provider/provider.dart';
 class EditListDialog extends StatefulWidget {
   final ShoppingList shoppingList;
 
-  const EditListDialog({Key? key, required this.shoppingList})
-      : super(key: key);
+  const EditListDialog({super.key, required this.shoppingList});
 
   @override
   State<EditListDialog> createState() => _EditListDialogState();
@@ -54,7 +53,7 @@ class _EditListDialogState extends State<EditListDialog> {
             onPressed: () {
               widget.shoppingList.name = _nameTextInputController.text;
               Provider.of<GlobalAppState>(context, listen: false)
-                  .upsertShoppingList(widget.shoppingList);
+                  .upsertAndSelectShoppingList(widget.shoppingList);
               Navigator.pop(context);
             })
       ],
