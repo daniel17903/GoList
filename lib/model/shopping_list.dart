@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:go_list/model/collections/item_collection.dart';
 import 'package:go_list/model/collections/recently_used_item_collection.dart';
 import 'package:go_list/model/golist_model.dart';
@@ -9,7 +7,6 @@ import 'item.dart';
 class ShoppingList extends GoListModel {
   late ItemCollection items;
   late RecentlyUsedItemCollection recentlyUsedItems;
-
 
   ShoppingList(
       {required super.name,

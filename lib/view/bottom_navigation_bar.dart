@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_list/model/global_app_state.dart';
@@ -24,7 +25,9 @@ class GoListBottomNavigationBar extends StatelessWidget {
                 Rect.fromLTWH(0, 0, size.width, size.height / 2));
       },
     ).catchError((e) {
-      print("Failed to share list: $e");
+      if (kDebugMode) {
+        print("Failed to share list: $e");
+      }
       Provider.of<GlobalAppState>(context, listen: false)
           .showConnectionFailure();
     });
