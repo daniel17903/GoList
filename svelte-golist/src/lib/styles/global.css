@@ -1,0 +1,341 @@
+:root {
+  /* Color palette from Flutter app */
+  --primary-color: #2196F3;
+  --app-bar-color: #404E55;
+  --item-background: rgba(255, 255, 255, 0.9);
+  --add-item-dialog-background: #404E55;
+  --add-item-dialog-item-background: rgba(255, 255, 255, 0.1);
+  --background-gradient-start: #1976D2;
+  --background-gradient-end: #42A5F5;
+  
+  /* Spacing */
+  --spacing: 16px;
+  --border-radius: 10px;
+  
+  /* Typography */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --letter-spacing: 0.5px;
+  --line-height: 1.15;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  line-height: var(--line-height);
+  letter-spacing: var(--letter-spacing);
+  background: radial-gradient(
+    ellipse at bottom center,
+    var(--background-gradient-end) 0%,
+    var(--background-gradient-start) 100%
+  );
+  min-height: 100vh;
+  color: white;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: var(--spacing);
+  padding-bottom: 80px; /* Space for bottom navigation */
+}
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.item-card {
+  background: var(--item-background);
+  border-radius: var(--border-radius);
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #333;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.item-card:active {
+  transform: translateY(0);
+}
+
+.item-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+  object-fit: contain;
+}
+
+.item-name {
+  font-size: 12px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.item-amount {
+  font-size: 10px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.fab {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--app-bar-color);
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--app-bar-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.nav-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.dialog {
+  background: var(--add-item-dialog-background);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dialog-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid white;
+  border-radius: var(--border-radius);
+  background: transparent;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.input-field::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.button-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.button-primary:hover {
+  background: #1976D2;
+}
+
+.button-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.button-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.list-title {
+  font-size: 22px;
+  color: white;
+  margin: 0;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  color: white;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.icon-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.undo-button {
+  position: fixed;
+  bottom: 150px;
+  right: 20px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+
+.undo-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.connection-failed {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f44336;
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .item-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+  }
+  
+  .item-card {
+    min-height: 80px;
+    padding: 8px;
+  }
+  
+  .item-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .item-name {
+    font-size: 11px;
+  }
+}
